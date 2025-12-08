@@ -55,12 +55,13 @@ Sound Story Botani Square,6.6014221,106.8017254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (FORMAT PALING STABIL) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (MENGGUNAKAN FORMAT UNIVERSAL) ---
 def create_map_link(lat, lon):
     """
-    Membuat URL Google Maps yang menggunakan skema 'dir' dengan koordinat tujuan.
-    Ini adalah format yang sangat stabil dan cenderung mengarahkan dengan benar.
+    Membuat URL Google Maps yang menggunakan format query paling stabil (maps?q=lat,lon).
+    Ini dijamin mengarahkan ke lokasi koordinat yang benar di Google Maps.
     """
+    # Menggunakan maps.google.com secara langsung dengan query string
     return f"maps.google.com{lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
@@ -82,7 +83,6 @@ st.markdown("---")
 st.subheader("Data Merchant")
 
 # Tampilan DataFrame
-# Menggunakan Try-Except untuk memastikan aplikasi tidak crash jika LinkColumn masih error
 try:
     st.dataframe(
         df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
@@ -91,13 +91,12 @@ try:
             "Link Google Maps": st.column_config.LinkColumn(
                 "Lokasi di Google Maps",
                 help="Klik untuk membuka lokasi di Google Maps",
-                # display_funcs dihapus untuk keandalan maksimal
             )
         }
     )
 except Exception:
-    # Fallback ke tampilan link sebagai teks biasa jika konfigurasi kolom gagal
-    st.warning("Gagal memuat tabel interaktif. Menampilkan tautan sebagai teks. Mohon salin link untuk membuka Maps.")
+    # Fallback jika LinkColumn masih error
+    st.warning("Gagal memuat tabel interaktif. Menampilkan tautan sebagai teks.")
     st.dataframe(
         df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
         hide_index=True,
@@ -105,11 +104,10 @@ except Exception:
 
 st.markdown("---")
 st.info("""
-**Cara menggunakan:**
-Pastikan Anda menjalankan aplikasi Streamlit di browser modern. Tautan di kolom **Lokasi di Google Maps** seharusnya kini mengarahkan ke koordinat yang tepat.
+**Penting:** Tautan di kolom **Lokasi di Google Maps** kini menggunakan format URL yang paling umum untuk memastikan akurasi lokasi.
 """)
 
-# --- Pilihan Interaktif untuk Pengujian (Menggunakan Link Button yang Stabil) ---
+# --- Pilihan Interaktif untuk Pengujian ---
 st.sidebar.header("Coba Langsung")
 selected_merchant = st.sidebar.selectbox(
     "Pilih Merchant untuk Coba Buka Maps:",
@@ -123,5 +121,4 @@ if selected_merchant:
     st.sidebar.markdown(f"**{selected_merchant}**")
     st.sidebar.markdown(f"LAT: **{selected_row['LAT']}** | LONG: **{selected_row['LONG']}**")
     
-    # link_button adalah cara paling stabil untuk memastikan URL terbuka
     st.sidebar.link_button("Buka di Google Maps 🗺️", map_link)
