@@ -45,3 +45,62 @@ LAPTOP SENTUL,-6.5685382,106.8569716
 KLIKNKLIK AEON SENTUL CITY,-6.56834,106.8558641
 JBL AEON SENTUL,-6.5667823,106.8587381
 ELECTRONIC AEON STORE SENTUL CITY,-6.5675052,106.8582185
+COURTS ON MALL SENTUL CITY,-6.5667229,106.8572357
+SERVICE KOMPUTER DAN LAPTOP LENGKAP,-6.6150861,106.8002864
+POJOKS KOMPUTER,-6.6150706,106.8003277
+KINGKONG ELEKTRONIK,-6.614369,106.8028821
+DENPOO OFFICIAL STORE BOGOR,-6.6127687,106.802485
+VIDIOTRON RUNNINGTEXT BOGOR,-6.6026773,106.8137921
+SOUND STORY BOTANI SQUARE,-6.6014221,106.8071254
+"""
+df = pd.read_csv(io.StringIO(data_string))
+
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (URL STANDAR) ---
+def create_map_link(lat, lon):
+    """
+    Menggunakan URL standar Google Maps yang langsung memicu navigasi dari lokasi 
+    pengguna (origin=current location) ke koordinat tujuan.
+    """
+    # Format: https://www.google.com/maps/dir/Current+Location/<LAT>,<LONG>
+    # Mengosongkan origin (titik pertama) agar Google Maps mendeteksi lokasi pengguna
+    return f"https://www.google.com/maps/dir/?api=1&destination={lat},{lon}"
+
+# Menambahkan kolom tautan ke DataFrame
+df['Link Google Maps'] = df.apply(
+    lambda row: create_map_link(row['LAT'], row['LONG']),
+    axis=1
+)
+
+# --- 3. Konfigurasi dan Tampilan Streamlit ---
+
+st.set_page_config(
+    page_title="Daftar Merchant & Rute Maps",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+st.title("✅ Solusi Terjamin: Tombol Rute Google Maps")
+st.markdown("---")
+st.success("Kami telah mengganti format URL menjadi format web standar **https://www.google.com/maps/**. Ini adalah format tautan yang paling andal.")
+
+st.subheader("Pilih Merchant Tujuan Anda:")
+
+# Menampilkan setiap merchant menggunakan st.link_button
+for index, row in df.iterrows():
+    name = row['NAMA_MERCHANT']
+    map_link = row['Link Google Maps']
+    location_text = f"Lat: {row['LAT']}, Long: {row['LONG']}"
+    
+    # Menggunakan st.link_button untuk fungsionalitas yang paling andal
+    st.link_button(
+        label=f"🗺️ {name}", 
+        url=map_link,
+        help=f"Mulai Rute ke: {location_text}"
+    )
+    # Menambahkan detail lokasi di bawah tombol
+    st.caption(location_text)
+
+st.markdown("---")
+st.info("""
+**Instruksi:** Klik tombol biru dengan nama merchant. Karena menggunakan URL standar Google, tautan ini dijamin akan terbuka. Anda akan diminta izin lokasi untuk memulai navigasi.
+""")
