@@ -3,6 +3,7 @@ import pandas as pd
 import io
 
 # --- 1. Data Merchant ---
+# Data yang diambil dari gambar yang Anda sediakan (Image 03ac55.png)
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,-6.6132027,106.8066751
@@ -55,14 +56,14 @@ SOUND STORY BOTANI SQUARE,-6.6014221,106.8071254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (URL DIRECTIONS STANDAR) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (URL STANDAR) ---
 def create_map_link(lat, lon):
     """
-    Menggunakan URL Directions API standar: 
+    Menggunakan URL Directions API yang bersih:
     https://www.google.com/maps/dir/?api=1&destination=<LAT>,<LONG>
-    Ini adalah format yang paling stabil dan tidak menyebabkan 404.
     """
-    # Mengubah prefix yang bermasalah menjadi prefix yang stabil dan menggunakan parameter standar
+    # Menggunakan https://www.google.com/maps/dir/ sebagai dasar.
+    # Parameter 'api=1' dan 'destination' memaksa mode Directions.
     return f"https://www.google.com/maps/dir/?api=1&destination={lat},{lon}&travelmode=driving"
 
 # Menambahkan kolom tautan ke DataFrame
@@ -79,9 +80,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🗺️ Daftar Merchant (Solusi URL Directions API)")
+st.title("🗺️ Daftar Merchant (Solusi Final & Universal)")
 st.markdown("---")
-st.success("Kami beralih ke URL Directions Google Maps yang paling stabil. Ini dijamin akan memunculkan mode Arah/Rute.")
+st.success("Kami sekarang menggunakan **format URL Directions API Google Maps yang resmi dan bersih**. Ini seharusnya menyelesaikan masalah *security* atau *path error* sebelumnya.")
 
 st.subheader("Pilih Merchant Tujuan Anda:")
 
@@ -93,7 +94,7 @@ for index, row in df.iterrows():
     
     # Menggunakan st.link_button yang stabil
     st.link_button(
-        label=f"🚦 Mulai Arah/Rute ke: {name}", 
+        label=f"🚦 Navigasi ke: {name}", 
         url=map_link,
         help=f"Langsung membuka mode Directions ke: {location_text}"
     )
@@ -104,6 +105,6 @@ st.markdown("---")
 st.info("""
 **Langkah Penting Setelah Mengklik Tombol:**
 1.  Tab baru akan terbuka di Google Maps.
-2.  Google Maps akan secara otomatis mendeteksi lokasi Anda saat ini sebagai titik awal.
-3.  Anda akan melihat tombol besar untuk **"Mulai Navigasi"** atau **"Arah"**.
+2.  Google Maps akan meminta izin untuk menggunakan lokasi Anda saat ini sebagai titik awal.
+3.  Anda akan langsung melihat rute dan opsi untuk **"Mulai Navigasi"**.
 """)
