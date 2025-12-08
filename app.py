@@ -59,10 +59,8 @@ df = pd.read_csv(io.StringIO(data_string))
 # --- 2. Fungsi untuk Membuat Tautan Google Maps yang Akurat ---
 def create_map_link(lat, lon):
     """
-    Membuat URL Google Maps menggunakan format API publik standar:
-    https://www.google.com/maps/search/?api=1&query=<LAT>,<LONG>
+    Membuat URL Google Maps menggunakan format API publik standar dan stabil.
     """
-    # Menggunakan format URL yang terbukti stabil
     return f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
@@ -72,29 +70,64 @@ df['Link Google Maps'] = df.apply(
 )
 
 # --- 3. Konfigurasi dan Tampilan Streamlit ---
+
+# Tambahkan CSS kustom untuk meniru tampilan kartu sederhana
+st.markdown(
+    """
+    <style>
+    .merchant-card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+    }
+    .merchant-name {
+        font-weight: bold;
+        font-size: 1.1em;
+        text-decoration: none !important;
+        color: #007bff; /* Warna link biru */
+    }
+    .merchant-location {
+        color: #666;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.set_page_config(
-    page_title="Daftar Merchant & Lokasi Maps",
+    page_title="Daftar Merchant & Lokasi Maps (Kartu)",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st.title("📍 Daftar Merchant dengan Lokasi Google Maps")
+st.title("🛍️ Daftar Merchant Berdasarkan Lokasi")
+st.markdown("Klik nama merchant untuk langsung melihat lokasi di Google Maps.")
 st.markdown("---")
 
-st.subheader("Klik Nama Merchant untuk Melihat Lokasi di Maps")
 
-# Menampilkan daftar merchant sebagai link yang dapat diklik
+# Menampilkan setiap merchant dalam format kartu
 for index, row in df.iterrows():
     name = row['NAMA_MERCHANT']
     map_link = row['Link Google Maps']
+    location_text = f"Lat: {row['LAT']}, Long: {row['LONG']}"
     
-    # Menggunakan st.markdown untuk membuat link Markdown. 
-    # Ini adalah cara paling stabil untuk membuat link yang berfungsi di Streamlit.
-    st.markdown(f"**➤ [{name}]({map_link})**")
-    st.caption(f"Lat: {row['LAT']}, Long: {row['LONG']}")
+    # Membuat kartu menggunakan HTML dan Markdown
     
-st.markdown("---")
-
-st.info("""
-**Informasi:** Setiap nama merchant di atas adalah tautan yang akan membuka lokasi yang tepat di Google Maps pada tab baru.
-""")
+    # 1. Membuat tautan yang membungkus seluruh konten kartu
+    # Menggunakan target="_blank" agar membuka di tab baru
+    card_content = f"""
+    <a href="{map_link}" target="_blank" style="text-decoration: none; color: inherit;">
+        <div class="merchant-card">
+            <p class="merchant-name">{name}</p>
+            <p class="merchant-location">
+                📍 {location_text}
+            </p>
+        </div>
+    </a>
+    """
+    st.markdown(card_content, unsafe_allow_html=True)
