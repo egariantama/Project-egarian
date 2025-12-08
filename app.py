@@ -3,6 +3,7 @@ import pandas as pd
 import io
 
 # --- 1. Data Merchant ---
+# PASTIKAN INI ADALAH TIGA TANDA KUTIP TERTUTUP DENGAN BENAR
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,-6.6132027,106.8066751
@@ -55,14 +56,14 @@ SOUND STORY BOTANI SQUARE,-6.6014221,106.8071254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (MODE NAVIGASI) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (MODE NAVIGASI STABIL) ---
 def create_map_link(lat, lon):
     """
     Menggunakan URL standar Google Maps yang langsung memicu navigasi dari lokasi 
-    pengguna (origin=current location) ke koordinat tujuan.
+    pengguna ke koordinat tujuan.
     """
-    # Format ini adalah yang paling stabil dan memicu mode Directions/Rute
-    return f"https://maps.google.com/maps/contrib/108449331610311730344{lat},{lon}"
+    # Menggunakan format URL yang paling stabil dan memicu mode Directions/Rute
+    return f"https://www.google.com/maps/search/7{lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
 df['Link Google Maps'] = df.apply(
@@ -78,9 +79,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🗺️ Daftar Merchant (Langsung Mulai Rute)")
+st.title("🗺️ Daftar Merchant (Solusi Tombol Tautan)")
 st.markdown("---")
-st.success("**Fungsi Aktif:** Mengklik tombol sekarang akan **langsung** meminta izin lokasi Anda dan memulai navigasi ke merchant.")
+st.success("Menggunakan tombol tautan Streamlit, ini adalah metode yang paling stabil dan tidak menyebabkan error terkait *column config*.")
 
 st.subheader("Pilih Merchant Tujuan Anda:")
 
@@ -92,14 +93,14 @@ for index, row in df.iterrows():
     
     # Menggunakan st.link_button untuk fungsionalitas yang paling andal
     st.link_button(
-        label=f"🚗 Navigasi ke: {name}", 
+        label=f"🚗 Mulai Rute ke: {name}", 
         url=map_link,
-        help=f"Mulai Rute ke: {location_text}"
+        help=f"Langsung navigasi ke: {location_text}"
     )
     # Menambahkan detail lokasi di bawah tombol
     st.caption(location_text)
 
 st.markdown("---")
 st.info("""
-**Instruksi:** Klik tombol biru. Google Maps akan terbuka di tab baru. Untuk memulai rute, pastikan Anda mengizinkan Google Maps mengakses lokasi Anda saat ini.
+**Instruksi:** Klik tombol biru. Google Maps akan terbuka di tab baru dalam mode Directions. Pastikan Anda mengizinkan Google Maps mengakses lokasi Anda saat ini.
 """)
