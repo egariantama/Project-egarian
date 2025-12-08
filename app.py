@@ -56,12 +56,13 @@ SOUND STORY BOTANI SQUARE,-6.6014221,106.8071254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps yang Akurat ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (MODE NAVIGASI) ---
 def create_map_link(lat, lon):
     """
-    Membuat URL Google Maps menggunakan format API publik standar dan stabil.
+    Membuat URL Google Maps yang memicu pencarian rute dari lokasi pengguna (asumsi)
+    ke koordinat tujuan (<LAT>,<LONG>).
     """
-    return f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
+    return f"maps.google.com{lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
 df['Link Google Maps'] = df.apply(
@@ -71,7 +72,7 @@ df['Link Google Maps'] = df.apply(
 
 # --- 3. Konfigurasi dan Tampilan Streamlit ---
 
-# Tambahkan CSS kustom untuk meniru tampilan kartu sederhana
+# Tambahkan CSS kustom untuk tampilan kartu sederhana
 st.markdown(
     """
     <style>
@@ -87,7 +88,7 @@ st.markdown(
         font-weight: bold;
         font-size: 1.1em;
         text-decoration: none !important;
-        color: #007bff; /* Warna link biru */
+        color: #dc3545; /* Mengubah warna link menjadi merah/merah marun */
     }
     .merchant-location {
         color: #666;
@@ -100,15 +101,14 @@ st.markdown(
 )
 
 st.set_page_config(
-    page_title="Daftar Merchant & Lokasi Maps (Kartu)",
+    page_title="Daftar Merchant & Rute Maps",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st.title("🛍️ Daftar Merchant Berdasarkan Lokasi")
-st.markdown("Klik nama merchant untuk langsung melihat lokasi di Google Maps.")
+st.title("🗺️ Daftar Merchant (Klik untuk Mulai Rute)")
 st.markdown("---")
-
+st.subheader("Pilih Merchant Tujuan Anda:")
 
 # Menampilkan setiap merchant dalam format kartu
 for index, row in df.iterrows():
@@ -116,18 +116,21 @@ for index, row in df.iterrows():
     map_link = row['Link Google Maps']
     location_text = f"Lat: {row['LAT']}, Long: {row['LONG']}"
     
-    # Membuat kartu menggunakan HTML dan Markdown
-    
-    # 1. Membuat tautan yang membungkus seluruh konten kartu
-    # Menggunakan target="_blank" agar membuka di tab baru
+    # Membuat kartu yang berfungsi sebagai link ke Maps (memulai rute)
     card_content = f"""
     <a href="{map_link}" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="merchant-card">
-            <p class="merchant-name">{name}</p>
+            <p class="merchant-name">
+                <span style="color: #dc3545;">➤</span> {name}
+            </p>
             <p class="merchant-location">
-                📍 {location_text}
+                GPS: {location_text}
             </p>
         </div>
     </a>
     """
     st.markdown(card_content, unsafe_allow_html=True)
+
+st.markdown("---")
+st.info("""
+**Penting:** Setelah mengklik, Google Maps akan otomatis meminta izin lokasi Anda dan mencari rute
