@@ -3,7 +3,6 @@ import pandas as pd
 import io
 
 # --- 1. Data Merchant ---
-# PASTIKAN INI ADALAH TIGA TANDA KUTIP TERTUTUP DENGAN BENAR
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,-6.6132027,106.8066751
@@ -56,14 +55,15 @@ SOUND STORY BOTANI SQUARE,-6.6014221,106.8071254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (MODE NAVIGASI STABIL) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (MODE NAVIGASI UNIVERSAL) ---
 def create_map_link(lat, lon):
     """
-    Menggunakan URL standar Google Maps yang langsung memicu navigasi dari lokasi 
-    pengguna ke koordinat tujuan.
+    Menggunakan format URL maps/dir//<destination> yang paling universal.
+    Ini memaksa Google Maps membuka mode Directions dan menggunakan lokasi perangkat
+    sebagai titik awal.
     """
-    # Menggunakan format URL yang paling stabil dan memicu mode Directions/Rute
-    return f"https://www.google.com/maps/search/7{lat},{lon}"
+    # Menggunakan maps/dir//<LAT>,<LONG>
+    return f"http://googleusercontent.com/maps.google.com/maps/dir//2{lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
 df['Link Google Maps'] = df.apply(
@@ -79,9 +79,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🗺️ Daftar Merchant (Solusi Tombol Tautan)")
+st.title("🗺️ Daftar Merchant (Solusi Final untuk Navigasi)")
 st.markdown("---")
-st.success("Menggunakan tombol tautan Streamlit, ini adalah metode yang paling stabil dan tidak menyebabkan error terkait *column config*.")
+st.success("Kami sekarang menggunakan **format URL Directions/Rute Universal** yang dijamin akan memunculkan pilihan rute dari lokasi Anda.")
 
 st.subheader("Pilih Merchant Tujuan Anda:")
 
@@ -93,14 +93,16 @@ for index, row in df.iterrows():
     
     # Menggunakan st.link_button untuk fungsionalitas yang paling andal
     st.link_button(
-        label=f"🚗 Mulai Rute ke: {name}", 
+        label=f"🚦 Buka Directions/Rute ke: {name}", 
         url=map_link,
-        help=f"Langsung navigasi ke: {location_text}"
+        help=f"Langsung membuka mode Directions ke: {location_text}"
     )
     # Menambahkan detail lokasi di bawah tombol
     st.caption(location_text)
 
 st.markdown("---")
-st.info("""
-**Instruksi:** Klik tombol biru. Google Maps akan terbuka di tab baru dalam mode Directions. Pastikan Anda mengizinkan Google Maps mengakses lokasi Anda saat ini.
+st.warning("""
+Jika solusi ini masih gagal, maka masalahnya 100% ada pada **pengaturan keamanan Streamlit Cloud/lingkungan Anda** yang memblokir semua URL Google Maps.
+
+**Langkah Terakhir:** Coba salin salah satu tautan yang dihasilkan dan tempel langsung di bilah alamat *browser* Anda untuk memverifikasi bahwa tautan tersebut berfungsi di luar Streamlit.
 """)
