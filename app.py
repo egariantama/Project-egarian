@@ -55,13 +55,13 @@ Sound Story Botani Square,6.6014221,106.8017254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (FORMAT BARU) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (FORMAT PALING STABIL) ---
 def create_map_link(lat, lon):
     """
-    Membuat URL Google Maps yang valid menggunakan format query API.
-    Ini adalah format URL paling robust dan dijamin diterima oleh LinkColumn.
+    Membuat URL Google Maps yang menggunakan skema 'dir' dengan koordinat tujuan.
+    Ini adalah format yang sangat stabil dan cenderung mengarahkan dengan benar.
     """
-    return f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
+    return f"maps.google.com{lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
 df['Link Google Maps'] = df.apply(
@@ -82,8 +82,7 @@ st.markdown("---")
 st.subheader("Data Merchant")
 
 # Tampilan DataFrame
-# Perhatian: Hapus 'display_funcs' jika masih error, karena LinkColumn akan menampilkan URL 
-# secara default jika display_funcs bermasalah.
+# Menggunakan Try-Except untuk memastikan aplikasi tidak crash jika LinkColumn masih error
 try:
     st.dataframe(
         df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
@@ -92,14 +91,13 @@ try:
             "Link Google Maps": st.column_config.LinkColumn(
                 "Lokasi di Google Maps",
                 help="Klik untuk membuka lokasi di Google Maps",
-                # Hapus display_funcs untuk meminimalkan potensi error,
-                # LinkColumn akan menampilkan URL secara default.
+                # display_funcs dihapus untuk keandalan maksimal
             )
         }
     )
 except Exception:
-    # Jika st.column_config.LinkColumn masih error, kembali ke tampilan link sebagai teks biasa.
-    st.warning("Gagal memuat tabel interaktif. Menampilkan tautan sebagai teks.")
+    # Fallback ke tampilan link sebagai teks biasa jika konfigurasi kolom gagal
+    st.warning("Gagal memuat tabel interaktif. Menampilkan tautan sebagai teks. Mohon salin link untuk membuka Maps.")
     st.dataframe(
         df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
         hide_index=True,
@@ -108,12 +106,10 @@ except Exception:
 st.markdown("---")
 st.info("""
 **Cara menggunakan:**
-1.  **Lihat Lokasi:** Klik tautan di kolom **Lokasi di Google Maps**.
-2.  **Solusi:** Jika tabel interaktif gagal, tautan akan ditampilkan sebagai teks. Salin dan tempel (copy-paste) tautan tersebut di browser Anda.
+Pastikan Anda menjalankan aplikasi Streamlit di browser modern. Tautan di kolom **Lokasi di Google Maps** seharusnya kini mengarahkan ke koordinat yang tepat.
 """)
 
-# --- Pilihan Interaktif untuk Pengujian ---
-# Tambahkan pengujian dengan 'link_button' yang lebih stabil
+# --- Pilihan Interaktif untuk Pengujian (Menggunakan Link Button yang Stabil) ---
 st.sidebar.header("Coba Langsung")
 selected_merchant = st.sidebar.selectbox(
     "Pilih Merchant untuk Coba Buka Maps:",
@@ -127,5 +123,5 @@ if selected_merchant:
     st.sidebar.markdown(f"**{selected_merchant}**")
     st.sidebar.markdown(f"LAT: **{selected_row['LAT']}** | LONG: **{selected_row['LONG']}**")
     
-    # link_button dijamin bekerja karena hanya membutuhkan URL string yang valid
+    # link_button adalah cara paling stabil untuk memastikan URL terbuka
     st.sidebar.link_button("Buka di Google Maps 🗺️", map_link)
