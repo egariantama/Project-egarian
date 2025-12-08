@@ -3,6 +3,7 @@ import pandas as pd
 import io
 
 # --- 1. Data Merchant ---
+# Pastikan data ini diapit dengan tiga tanda kutip (""") yang benar
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,-6.6132027,106.8066751
@@ -58,11 +59,9 @@ df = pd.read_csv(io.StringIO(data_string))
 # --- 2. Fungsi untuk Membuat Tautan Google Maps (MODE NAVIGASI UNIVERSAL) ---
 def create_map_link(lat, lon):
     """
-    Menggunakan format URL maps/dir//<destination> yang paling universal.
-    Ini memaksa Google Maps membuka mode Directions dan menggunakan lokasi perangkat
-    sebagai titik awal.
+    Menggunakan maps/dir//<LAT>,<LONG>. Tanda // memaksa Google Maps untuk 
+    menggunakan lokasi perangkat sebagai titik awal (Origin).
     """
-    # Menggunakan maps/dir//<LAT>,<LONG>
     return f"http://googleusercontent.com/maps.google.com/maps/dir//2{lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
@@ -79,11 +78,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🗺️ Daftar Merchant (Solusi Final untuk Navigasi)")
+st.title("🗺️ Daftar Merchant (Langsung Arah/Rute)")
 st.markdown("---")
-st.success("Kami sekarang menggunakan **format URL Directions/Rute Universal** yang dijamin akan memunculkan pilihan rute dari lokasi Anda.")
-
-st.subheader("Pilih Merchant Tujuan Anda:")
+st.markdown("Klik nama merchant di bawah ini untuk **langsung diarahkan ke Google Maps Directions**.")
 
 # Menampilkan setiap merchant menggunakan st.link_button
 for index, row in df.iterrows():
@@ -92,17 +89,19 @@ for index, row in df.iterrows():
     location_text = f"Lat: {row['LAT']}, Long: {row['LONG']}"
     
     # Menggunakan st.link_button untuk fungsionalitas yang paling andal
+    # Label tombol menggunakan nama merchant untuk kesederhanaan
     st.link_button(
-        label=f"🚦 Buka Directions/Rute ke: {name}", 
+        label=f"➡️ {name}", 
         url=map_link,
         help=f"Langsung membuka mode Directions ke: {location_text}"
     )
-    # Menambahkan detail lokasi di bawah tombol
+    # Menambahkan detail lokasi
     st.caption(location_text)
 
 st.markdown("---")
-st.warning("""
-Jika solusi ini masih gagal, maka masalahnya 100% ada pada **pengaturan keamanan Streamlit Cloud/lingkungan Anda** yang memblokir semua URL Google Maps.
-
-**Langkah Terakhir:** Coba salin salah satu tautan yang dihasilkan dan tempel langsung di bilah alamat *browser* Anda untuk memverifikasi bahwa tautan tersebut berfungsi di luar Streamlit.
+st.info("""
+**Penting:**
+1.  Tombol ini menggunakan format URL Google Maps yang paling dasar dan universal.
+2.  Ketika dibuka, Anda akan langsung melihat tombol "Mulai" atau "Directions/Arah".
+3.  Pastikan Anda memberikan izin akses lokasi pada *browser* Anda.
 """)
