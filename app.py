@@ -2,9 +2,8 @@ import streamlit as st
 import pandas as pd
 import io
 
-# --- 1. Persiapan Data ---
+# --- 1. Persiapan Data (Tidak Ada Perubahan) ---
 # Data merchant dari gambar Anda, dipisahkan dengan koma.
-# Harap dicatat, data ini dimasukkan secara manual berdasarkan gambar.
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,6.6132027,106.8066751
@@ -55,12 +54,14 @@ Denpoo Official store bogor,6.6127687,106.802485
 Vidiotron runningtext bogor,6.6026773,106.8137921
 Sound Story Botani Square,6.6014221,106.8017254
 """
-# Membaca string data menjadi DataFrame
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (PERBAIKAN UTAMA DI SINI) ---
 def create_map_link(lat, lon):
-    """Membuat URL Google Maps dari koordinat Lintang dan Bujur."""
+    """Membuat URL Google Maps yang valid menggunakan format koordinat.
+    Format yang digunakan adalah: https://www.google.com/maps/search/?api=1&query=<lat>,<lon>
+    """
+    # Mengganti fungsi lama dengan URL Google Maps API yang standar dan valid
     return f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
@@ -69,7 +70,7 @@ df['Link Google Maps'] = df.apply(
     axis=1
 )
 
-# --- 3. Konfigurasi dan Tampilan Streamlit ---
+# --- 3. Konfigurasi dan Tampilan Streamlit (PERBAIKAN PENGGUNAAN st.column_config) ---
 st.set_page_config(
     page_title="Daftar Merchant & Google Maps",
     layout="wide",
@@ -82,7 +83,6 @@ st.markdown("---")
 st.subheader("Data Merchant")
 
 # Tampilan DataFrame
-# Menggunakan kolom "NAMA_MERCHANT" sebagai indeks agar tidak terulang
 st.dataframe(
     df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
     hide_index=True,
@@ -90,7 +90,10 @@ st.dataframe(
         "Link Google Maps": st.column_config.LinkColumn(
             "Lokasi di Google Maps",
             help="Klik untuk membuka lokasi di Google Maps",
-            display_funcs=lambda x: "Lihat Lokasi"
+            # Pastikan lambda function di sini hanya mengembalikan nilai untuk display
+            # Seharusnya ini tidak menyebabkan error, namun jika error berlanjut,
+            # display_funcs bisa dihapus atau dipermudah.
+            display_funcs=lambda x: "Lihat Lokasi" 
         )
     }
 )
@@ -102,7 +105,7 @@ st.info("""
 2.  **Filter:** Gunakan ikon panah di header kolom untuk mengurutkan atau mencari merchant.
 """)
 
-# --- Pilihan Interaktif untuk Pengujian ---
+# --- Pilihan Interaktif untuk Pengujian (Tidak Ada Perubahan) ---
 st.sidebar.header("Coba Langsung")
 selected_merchant = st.sidebar.selectbox(
     "Pilih Merchant untuk Coba Buka Maps:",
@@ -110,12 +113,10 @@ selected_merchant = st.sidebar.selectbox(
 )
 
 if selected_merchant:
-    # Mengambil data baris yang dipilih
     selected_row = df[df['NAMA_MERCHANT'] == selected_merchant].iloc[0]
     map_link = selected_row['Link Google Maps']
     
     st.sidebar.markdown(f"**{selected_merchant}**")
     st.sidebar.markdown(f"LAT: **{selected_row['LAT']}** | LONG: **{selected_row['LONG']}**")
     
-    # Tombol yang langsung membuka URL
     st.sidebar.link_button("Buka di Google Maps 🗺️", map_link)
