@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
 import io
 
-# --- 1. Persiapan Data (Tidak Ada Perubahan) ---
-# Data merchant dari gambar Anda, dipisahkan dengan koma.
+# --- 1. Persiapan Data ---
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,6.6132027,106.8066751
@@ -56,12 +55,12 @@ Sound Story Botani Square,6.6014221,106.8017254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (PERBAIKAN UTAMA DI SINI) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (FORMAT BARU) ---
 def create_map_link(lat, lon):
-    """Membuat URL Google Maps yang valid menggunakan format koordinat.
-    Format yang digunakan adalah: https://www.google.com/maps/search/?api=1&query=<lat>,<lon>
     """
-    # Mengganti fungsi lama dengan URL Google Maps API yang standar dan valid
+    Membuat URL Google Maps yang valid menggunakan format query API.
+    Ini adalah format URL paling robust dan dijamin diterima oleh LinkColumn.
+    """
     return f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
@@ -70,7 +69,7 @@ df['Link Google Maps'] = df.apply(
     axis=1
 )
 
-# --- 3. Konfigurasi dan Tampilan Streamlit (PERBAIKAN PENGGUNAAN st.column_config) ---
+# --- 3. Konfigurasi dan Tampilan Streamlit ---
 st.set_page_config(
     page_title="Daftar Merchant & Google Maps",
     layout="wide",
@@ -83,29 +82,38 @@ st.markdown("---")
 st.subheader("Data Merchant")
 
 # Tampilan DataFrame
-st.dataframe(
-    df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
-    hide_index=True,
-    column_config={
-        "Link Google Maps": st.column_config.LinkColumn(
-            "Lokasi di Google Maps",
-            help="Klik untuk membuka lokasi di Google Maps",
-            # Pastikan lambda function di sini hanya mengembalikan nilai untuk display
-            # Seharusnya ini tidak menyebabkan error, namun jika error berlanjut,
-            # display_funcs bisa dihapus atau dipermudah.
-            display_funcs=lambda x: "Lihat Lokasi" 
-        )
-    }
-)
+# Perhatian: Hapus 'display_funcs' jika masih error, karena LinkColumn akan menampilkan URL 
+# secara default jika display_funcs bermasalah.
+try:
+    st.dataframe(
+        df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
+        hide_index=True,
+        column_config={
+            "Link Google Maps": st.column_config.LinkColumn(
+                "Lokasi di Google Maps",
+                help="Klik untuk membuka lokasi di Google Maps",
+                # Hapus display_funcs untuk meminimalkan potensi error,
+                # LinkColumn akan menampilkan URL secara default.
+            )
+        }
+    )
+except Exception:
+    # Jika st.column_config.LinkColumn masih error, kembali ke tampilan link sebagai teks biasa.
+    st.warning("Gagal memuat tabel interaktif. Menampilkan tautan sebagai teks.")
+    st.dataframe(
+        df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
+        hide_index=True,
+    )
 
 st.markdown("---")
 st.info("""
 **Cara menggunakan:**
-1.  **Lihat Lokasi:** Klik tautan **Lihat Lokasi** di kolom paling kanan. Ini akan membuka tab baru dengan Google Maps.
-2.  **Filter:** Gunakan ikon panah di header kolom untuk mengurutkan atau mencari merchant.
+1.  **Lihat Lokasi:** Klik tautan di kolom **Lokasi di Google Maps**.
+2.  **Solusi:** Jika tabel interaktif gagal, tautan akan ditampilkan sebagai teks. Salin dan tempel (copy-paste) tautan tersebut di browser Anda.
 """)
 
-# --- Pilihan Interaktif untuk Pengujian (Tidak Ada Perubahan) ---
+# --- Pilihan Interaktif untuk Pengujian ---
+# Tambahkan pengujian dengan 'link_button' yang lebih stabil
 st.sidebar.header("Coba Langsung")
 selected_merchant = st.sidebar.selectbox(
     "Pilih Merchant untuk Coba Buka Maps:",
@@ -119,4 +127,5 @@ if selected_merchant:
     st.sidebar.markdown(f"**{selected_merchant}**")
     st.sidebar.markdown(f"LAT: **{selected_row['LAT']}** | LONG: **{selected_row['LONG']}**")
     
+    # link_button dijamin bekerja karena hanya membutuhkan URL string yang valid
     st.sidebar.link_button("Buka di Google Maps 🗺️", map_link)
