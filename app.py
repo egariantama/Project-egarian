@@ -1,20 +1,41 @@
 import streamlit as st
 import pandas as pd
 
-st.title("📍 Daftar Merchant Google Maps")
+st.set_page_config(page_title="Daftar Merchant Google Maps", layout="wide")
 
-# Data merchant bisa kamu ganti
-data = [
-    {"nama": "Kedai Kopi ABC", "alamat": "Kedai Kopi ABC Denpasar"},
-    {"nama": "Toko Roti Mawar", "alamat": "Toko Roti Mawar Denpasar"},
-    {"nama": "Ayam Bakar Madu", "alamat": "Ayam Bakar Madu Renon"},
-]
+st.title("📍 Daftar Merchant – Klik untuk buka Google Maps")
 
-df = pd.DataFrame(data)
+# ====== 1. Load Excel =======
 
-for i, row in df.iterrows():
-    url = f"https://www.google.com/maps?q={row['alamat'].replace(' ', '+')}"
+# Ubah nama file sesuai folder kamu
+FILE_PATH = "Potensi Ekstensifikasi 2.xlsx"
+
+try:
+    df = pd.read_excel(FILE_PATH)
+except Exception as e:
+    st.error(f"Gagal membuka file Excel: {e}")
+    st.stop()
+
+# ===== Check required columns =====
+required_cols = ["NAMA_MERCHANT", "LAT", "LONG"]
+for col in required_cols:
+    if col not in df.columns:
+        st.error(f"Kolom '{col}' tidak ditemukan di Excel!")
+        st.stop()
+
+# ====== 2. Tampilkan daftar link =======
+
+for idx, row in df.iterrows():
+
+    # Buat URL Google Maps berdasar GPS
+    url = f"https://www.google.com/maps?q={row['LAT']},{row['LONG']}"
+
     st.markdown(
-        f"🔗 **[{row['nama']}]({url})** – _{row['alamat']}_",
+        f"""
+        🔗 **[{row['NAMA_MERCHANT']}]({url})**  
+        📌 Koordinat: {row['LAT']}, {row['LONG']}  
+        ---
+        """,
         unsafe_allow_html=True
     )
+
