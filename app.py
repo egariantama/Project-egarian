@@ -3,7 +3,7 @@ import pandas as pd
 import io
 
 # --- 1. Data Merchant ---
-# Menggabungkan data NAMA_MERCHANT, LAT, dan LONG menjadi format string CSV
+# Data merchant yang Anda berikan
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,-6.6132027,106.8066751
@@ -61,8 +61,8 @@ def create_map_link(lat, lon):
     """
     Membuat URL Google Maps menggunakan format API publik standar:
     https://www.google.com/maps/search/?api=1&query=<LAT>,<LONG>
-    Format ini sangat stabil untuk LinkColumn Streamlit.
     """
+    # Menggunakan format URL yang terbukti stabil
     return f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
@@ -73,60 +73,28 @@ df['Link Google Maps'] = df.apply(
 
 # --- 3. Konfigurasi dan Tampilan Streamlit ---
 st.set_page_config(
-    page_title="Daftar Merchant & Google Maps",
+    page_title="Daftar Merchant & Lokasi Maps",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st.title("📍 Daftar Merchant dengan Tautan Google Maps")
+st.title("📍 Daftar Merchant dengan Lokasi Google Maps")
 st.markdown("---")
 
-st.subheader("Data Merchant")
+st.subheader("Klik Nama Merchant untuk Melihat Lokasi di Maps")
 
-# Tampilan DataFrame
-try:
-    st.dataframe(
-        df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
-        hide_index=True,
-        column_order=('NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps'),
-        column_config={
-            "NAMA_MERCHANT": st.column_config.TextColumn("Nama Merchant"),
-            "LAT": st.column_config.NumberColumn("Latitude"),
-            "LONG": st.column_config.NumberColumn("Longitude"),
-            "Link Google Maps": st.column_config.LinkColumn(
-                "Lokasi di Google Maps",
-                help="Klik untuk membuka lokasi yang tepat di Google Maps",
-                # Menggunakan display_funcs yang sederhana untuk stabilitas
-                display_funcs=lambda x: "Lihat Peta" 
-            )
-        }
-    )
-except Exception:
-    # Fallback jika terjadi error pada LinkColumn (seringnya TypeError)
-    st.warning("Gagal memuat tabel interaktif. Menampilkan tautan sebagai teks.")
-    st.dataframe(
-        df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
-        hide_index=True,
-    )
-
+# Menampilkan daftar merchant sebagai link yang dapat diklik
+for index, row in df.iterrows():
+    name = row['NAMA_MERCHANT']
+    map_link = row['Link Google Maps']
+    
+    # Menggunakan st.markdown untuk membuat link Markdown. 
+    # Ini adalah cara paling stabil untuk membuat link yang berfungsi di Streamlit.
+    st.markdown(f"**➤ [{name}]({map_link})**")
+    st.caption(f"Lat: {row['LAT']}, Long: {row['LONG']}")
+    
 st.markdown("---")
+
 st.info("""
-**Cara menggunakan:** Klik tautan **Lihat Peta** di kolom paling kanan. Ini akan membuka tab baru yang langsung mengarah ke lokasi merchant di Google Maps.
+**Informasi:** Setiap nama merchant di atas adalah tautan yang akan membuka lokasi yang tepat di Google Maps pada tab baru.
 """)
-
-# --- Pilihan Interaktif untuk Pengujian ---
-st.sidebar.header("Coba Langsung")
-selected_merchant = st.sidebar.selectbox(
-    "Pilih Merchant untuk Coba Buka Maps:",
-    df['NAMA_MERCHANT']
-)
-
-if selected_merchant:
-    selected_row = df[df['NAMA_MERCHANT'] == selected_merchant].iloc[0]
-    map_link = selected_row['Link Google Maps']
-    
-    st.sidebar.markdown(f"**{selected_merchant}**")
-    st.sidebar.markdown(f"LAT: **{selected_row['LAT']}** | LONG: **{selected_row['LONG']}**")
-    
-    # link_button dijamin bekerja dan berfungsi sebagai pengujian
-    st.sidebar.link_button("Buka di Google Maps 🗺️", map_link)
