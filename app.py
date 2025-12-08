@@ -1,56 +1,121 @@
 import streamlit as st
 import pandas as pd
+import io
 
-st.set_page_config(
-    page_title="Daftar Merchant Google Maps",
-    layout="wide"
+# --- 1. Persiapan Data ---
+# Data merchant dari gambar Anda, dipisahkan dengan koma.
+# Harap dicatat, data ini dimasukkan secara manual berdasarkan gambar.
+data_string = """
+NAMA_MERCHANT,LAT,LONG
+PD MATERIAL CIBALOK,6.6132027,106.8066751
+MEDIA ELEKTRONIK 3,6.6063072,106.8021991
+Kent X Gusli HomeS,6.6073314,106.8002995
+JIPANG CEL,6.6043556,106.8039727
+Indo Prima Computer,6.6066264,106.8008805
+devaiz coorporate,6.6095033,106.801439
+CygnusWorks Indonesia,6.6076137,106.8053613
+CITY ELECTRONIC,6.6060265,106.8006652
+Bogor Neon,6.6085674,106.8041497
+BKTech Komputindo,6.611017,106.8053853
+TOKO LENGKAP TERMURAH TERLENGKAP,6.4845179,106.8423677
+Levoait Air Purifier Cibinong City Mall,6.4843587,106.8418851
+JBL Official Store Cibinong City Mall,6.4843587,106.8418851
+IT GALERI Cibinong City Mall,6.4842002,106.8412312
+BOSCH Electornic city,6.4844693,106.8421802
+AGRES ID CIBINONG CITY MALL 1 LAPTOP SPESIALIS,6.4842002,106.8423123
+TOKO KOMPUTER DAN AKSESORIES,6.5690996,106.8077601
+Toko digital cahaya,6.577761,106.8075371
+RamaStore,6.5778193,106.8075136
+LG,6.569193,106.807814
+Lenovo Handphone,6.569193,106.807814
+Jual beli handphone oppo vivo iphone dan lain lain,6.577761,106.8075372
+InKQ,6.56947,106.8079
+Handajaya Computer,6.5693051,106.8077829
+Condel Service,6.5758667,106.8082511
+Popyvora,6.6116114,106.8103135
+PanggungDigital,6.6056214,106.8129063
+Matrial Epul,6.6153052,106.8183351
+KEDAI DATA,6.6112593,106.8097489
+Jual Kepingan CD Bp Tanto,6.6182139,106.8123361
+Hjamaludin cell,6.6162339,106.8128572
+Bengkel Motor 3M,6.6163773,106.8175873
+Aceng Production Bogor Kota,6.6050875,106.8140603
+Abicom Servis Komputer,6.6178859,106.8157697
+SENTUL SHOP,6.5675072,106.8582132
+PUSAT ELEKTRONIK SENTUL BOGOR,6.5671158,106.8587295
+Laptop Sentul,6.5685382,106.8569716
+KLIkNKLIK Aeon Sentul City,6.56834,106.8588641
+JBL AEON SENTUL,6.5667823,106.8587381
+Electronic Aeon Store Sentul City,6.5675052,106.8582185
+Courts ON Mall Sentul City,6.5667229,106.8572357
+Service Komputer dan Laptop Lengkap,6.6150861,106.8002864
+Pojoks Komputer,6.6150706,106.8003277
+Kingkong Elektronik,6.614369,106.8028821
+Denpoo Official store bogor,6.6127687,106.802485
+Vidiotron runningtext bogor,6.6026773,106.8137921
+Sound Story Botani Square,6.6014221,106.8017254
+"""
+# Membaca string data menjadi DataFrame
+df = pd.read_csv(io.StringIO(data_string))
+
+# --- 2. Fungsi untuk Membuat Tautan Google Maps ---
+def create_map_link(lat, lon):
+    """Membuat URL Google Maps dari koordinat Lintang dan Bujur."""
+    return f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
+
+# Menambahkan kolom tautan ke DataFrame
+df['Link Google Maps'] = df.apply(
+    lambda row: create_map_link(row['LAT'], row['LONG']),
+    axis=1
 )
 
-st.title("📍 Daftar Merchant – Klik untuk buka Google Maps")
+# --- 3. Konfigurasi dan Tampilan Streamlit ---
+st.set_page_config(
+    page_title="Daftar Merchant & Google Maps",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# =======================
-# 1. Load Excel
-# =======================
+st.title("📍 Daftar Merchant dengan Tautan Google Maps")
+st.markdown("---")
 
-FILE_PATH = "Potensi Ekstensifikasi 2.xlsx"
+st.subheader("Data Merchant")
 
-try:
-    df = pd.read_excel(FILE_PATH)
-except Exception as e:
-    st.error(f"Gagal membuka file Excel: {e}")
-    st.stop()
+# Tampilan DataFrame
+# Menggunakan kolom "NAMA_MERCHANT" sebagai indeks agar tidak terulang
+st.dataframe(
+    df[['NAMA_MERCHANT', 'LAT', 'LONG', 'Link Google Maps']],
+    hide_index=True,
+    column_config={
+        "Link Google Maps": st.column_config.LinkColumn(
+            "Lokasi di Google Maps",
+            help="Klik untuk membuka lokasi di Google Maps",
+            display_funcs=lambda x: "Lihat Lokasi"
+        )
+    }
+)
 
-# =======================
-# 2. Validasi Kolom
-# =======================
+st.markdown("---")
+st.info("""
+**Cara menggunakan:**
+1.  **Lihat Lokasi:** Klik tautan **Lihat Lokasi** di kolom paling kanan. Ini akan membuka tab baru dengan Google Maps.
+2.  **Filter:** Gunakan ikon panah di header kolom untuk mengurutkan atau mencari merchant.
+""")
 
-required_cols = ["NAMA_MERCHANT", "LAT", "LONG"]
-missing = [c for c in required_cols if c not in df.columns]
+# --- Pilihan Interaktif untuk Pengujian ---
+st.sidebar.header("Coba Langsung")
+selected_merchant = st.sidebar.selectbox(
+    "Pilih Merchant untuk Coba Buka Maps:",
+    df['NAMA_MERCHANT']
+)
 
-if len(missing) > 0:
-    st.error(f"Kolom berikut tidak ditemukan di Excel: {missing}")
-    st.stop()
-
-# =======================
-# 3. Tampilkan Daftar Merchant
-# =======================
-
-st.subheader("🔗 Klik nama merchant untuk membuka lokasi di Google Maps")
-
-for idx, row in df.iterrows():
-
-    nama = str(row["NAMA_MERCHANT"])
-    lat = row["LAT"]
-    lon = row["LONG"]
-
-    # Link Google Maps
-    url = f"https://www.google.com/maps?q={lat},{lon}"
-
-    st.markdown(
-        f"""
-        ### [{nama}]({url})
-        🧭 Koordinat: `{lat}, {lon}`
-        ---
-        """,
-        unsafe_allow_html=True
-    )
+if selected_merchant:
+    # Mengambil data baris yang dipilih
+    selected_row = df[df['NAMA_MERCHANT'] == selected_merchant].iloc[0]
+    map_link = selected_row['Link Google Maps']
+    
+    st.sidebar.markdown(f"**{selected_merchant}**")
+    st.sidebar.markdown(f"LAT: **{selected_row['LAT']}** | LONG: **{selected_row['LONG']}**")
+    
+    # Tombol yang langsung membuka URL
+    st.sidebar.link_button("Buka di Google Maps 🗺️", map_link)
