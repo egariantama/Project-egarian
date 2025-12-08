@@ -3,20 +3,20 @@ import pandas as pd
 import io
 
 # --- 1. Persiapan Data Merchant di Kawasan Bogor Suryakencana ---
-# Data merchant yang lebih banyak di sekitar Bank Mandiri Bogor Suryakencana
+# Data sekarang mencakup kolom ALAMAT SINGKAT untuk mencegah KeyError
 data_string = """
-NAMA_MERCHANT,LAT,LONG,KATEGORI
-Bank Mandiri KCP Bogor Suryakencana,-6.606708,106.801642,Bank
-Toko Selamat Bogor,-6.6044085,106.7995618,Roti & Kue
-Toko Abc,-6.6062598,106.8011268,Toko Ritel
-Toko Glory Bogor,-6.6053384,106.8000661,Toko Ritel
-Naga Kencana Bogor - Toko Buku dan Alat Tulis Kantor,-6.6068994,106.8015534,Toko Alat Tulis
-Jaya Makmur Toko,-6.6050043,106.8000041,Toko Ritel
-Asemka Suryakencana,-6.6039535,106.7995191,Toko Eceran
-Toko Sari Sari,-6.6039589,106.7995244,Toko Pakaian
-Toko Manisan Asinan,-6.6064998,106.8013893,Toko Camilan
-Toko Kue Lapis Bogor Sangkuriang,-6.6044431,106.7995246,Roti & Kue
-Toko Roti Bogor Permai (Boper),-6.6064998,106.8013893,Roti & Kue
+NAMA_MERCHANT,LAT,LONG,KATEGORI,ALAMAT SINGKAT
+Bank Mandiri KCP Bogor Suryakencana,-6.606708,106.801642,Bank,Jl. Suryakencana No.310
+Toko Selamat Bogor,-6.6044085,106.7995618,Roti & Kue,Jl. Suryakencana No.15
+Toko Abc,-6.6062598,106.8011268,Toko Ritel,Jl. Suryakencana No.111
+Toko Glory Bogor,-6.6053384,106.8000661,Toko Ritel,Jl. Suryakencana No.96
+Naga Kencana Bogor - Toko Buku dan Alat Tulis Kantor,-6.6068994,106.8015534,Toko Alat Tulis,Jl. Suryakencana No.139
+Jaya Makmur Toko,-6.6050043,106.8000041,Toko Ritel,Jl. Suryakencana No.51
+Asemka Suryakencana,-6.6039535,106.7995191,Toko Eceran,Jl. Suryakencana
+Toko Sari Sari,-6.6039589,106.7995244,Toko Pakaian,Jl. Suryakencana
+Toko Manisan Asinan,-6.6064998,106.8013893,Toko Camilan,Jl. Suryakencana No.288
+Toko Kue Lapis Bogor Sangkuriang,-6.6044431,106.7995246,Roti & Kue,Jl. Suryakencana No.16
+Toko Roti Bogor Permai (Boper),-6.6064998,106.8013893,Roti & Kue,Jl. Jend. Sudirman
 """
 df = pd.read_csv(io.StringIO(data_string))
 
@@ -46,9 +46,10 @@ st.markdown("---")
 
 st.subheader("Data Merchant")
 
-# Tampilan DataFrame menggunakan LinkColumn yang stabil
+# Tampilan DataFrame
 try:
     st.dataframe(
+        # Pastikan semua nama kolom yang dipanggil di sini ada di DataFrame
         df[['NAMA_MERCHANT', 'KATEGORI', 'ALAMAT SINGKAT', 'Link Google Maps']],
         hide_index=True,
         column_order=('NAMA_MERCHANT', 'KATEGORI', 'ALAMAT SINGKAT', 'Link Google Maps'),
@@ -59,19 +60,34 @@ try:
             "Link Google Maps": st.column_config.LinkColumn(
                 "Lokasi di Google Maps",
                 help="Klik untuk membuka lokasi yang tepat di Google Maps",
-                display_funcs=lambda x: "Lihat Peta" # Menampilkan teks "Lihat Peta"
+                # Menghapus display_funcs untuk Type Error dan menggunakan default display (URL)
+                # atau jika ingin menampilkan teks yang berbeda:
+                display_funcs=lambda x: "Lihat Peta" 
             )
         }
     )
-except Exception as e:
-    # Fallback jika st.column_config.LinkColumn masih error
-    st.warning(f"Gagal memuat tabel interaktif ({type(e).__name__}). Menampilkan tautan sebagai teks.")
+except Exception:
+    # Fallback ke tampilan link sebagai teks biasa jika konfigurasi kolom gagal
+    st.warning("Gagal memuat tabel interaktif. Menampilkan tautan sebagai teks.")
     st.dataframe(
         df[['NAMA_MERCHANT', 'KATEGORI', 'ALAMAT SINGKAT', 'Link Google Maps']],
         hide_index=True,
     )
 
 st.markdown("---")
-st.info("""
-**Instruksi:** Klik tautan **Lihat Peta** di kolom paling kanan untuk langsung diarahkan ke lokasi merchant di Google Maps.
-""")
+
+# --- Pilihan Interaktif untuk Pengujian ---
+st.sidebar.header("Coba Langsung")
+selected_merchant = st.sidebar.selectbox(
+    "Pilih Merchant untuk Coba Buka Maps:",
+    df['NAMA_MERCHANT']
+)
+
+if selected_merchant:
+    selected_row = df[df['NAMA_MERCHANT'] == selected_merchant].iloc[0]
+    map_link = selected_row['Link Google Maps']
+    
+    st.sidebar.markdown(f"**{selected_merchant}**")
+    st.sidebar.markdown(f"LAT: **{selected_row['LAT']}** | LONG: **{selected_row['LONG']}**")
+    
+    st.sidebar.link_button("Buka di Google Maps 🗺️", map_link)
