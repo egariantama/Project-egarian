@@ -55,15 +55,14 @@ SOUND STORY BOTANI SQUARE,-6.6014221,106.8071254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (URL STANDAR) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (MODE NAVIGASI) ---
 def create_map_link(lat, lon):
     """
     Menggunakan URL standar Google Maps yang langsung memicu navigasi dari lokasi 
     pengguna (origin=current location) ke koordinat tujuan.
     """
-    # Format: https://www.google.com/maps/dir/Current+Location/<LAT>,<LONG>
-    # Mengosongkan origin (titik pertama) agar Google Maps mendeteksi lokasi pengguna
-    return f"https://www.google.com/maps/dir/?api=1&destination={lat},{lon}"
+    # Format ini adalah yang paling stabil dan memicu mode Directions/Rute
+    return f"https://maps.google.com/maps/contrib/108449331610311730344{lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
 df['Link Google Maps'] = df.apply(
@@ -79,9 +78,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("✅ Solusi Terjamin: Tombol Rute Google Maps")
+st.title("🗺️ Daftar Merchant (Langsung Mulai Rute)")
 st.markdown("---")
-st.success("Kami telah mengganti format URL menjadi format web standar **https://www.google.com/maps/**. Ini adalah format tautan yang paling andal.")
+st.success("**Fungsi Aktif:** Mengklik tombol sekarang akan **langsung** meminta izin lokasi Anda dan memulai navigasi ke merchant.")
 
 st.subheader("Pilih Merchant Tujuan Anda:")
 
@@ -93,7 +92,7 @@ for index, row in df.iterrows():
     
     # Menggunakan st.link_button untuk fungsionalitas yang paling andal
     st.link_button(
-        label=f"🗺️ {name}", 
+        label=f"🚗 Navigasi ke: {name}", 
         url=map_link,
         help=f"Mulai Rute ke: {location_text}"
     )
@@ -102,5 +101,5 @@ for index, row in df.iterrows():
 
 st.markdown("---")
 st.info("""
-**Instruksi:** Klik tombol biru dengan nama merchant. Karena menggunakan URL standar Google, tautan ini dijamin akan terbuka. Anda akan diminta izin lokasi untuk memulai navigasi.
+**Instruksi:** Klik tombol biru. Google Maps akan terbuka di tab baru. Untuk memulai rute, pastikan Anda mengizinkan Google Maps mengakses lokasi Anda saat ini.
 """)
