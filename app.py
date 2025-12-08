@@ -3,6 +3,7 @@ import pandas as pd
 import io
 
 # --- 1. Persiapan Data ---
+# Data merchant dari gambar Anda
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,6.6132027,106.8066751
@@ -55,14 +56,13 @@ Sound Story Botani Square,6.6014221,106.8017254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (MENGGUNAKAN FORMAT UNIVERSAL) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (FORMAT UNIVERSAL TERBAIK) ---
 def create_map_link(lat, lon):
     """
-    Membuat URL Google Maps yang menggunakan format query paling stabil (maps?q=lat,lon).
-    Ini dijamin mengarahkan ke lokasi koordinat yang benar di Google Maps.
+    Membuat URL Google Maps yang menggunakan format API publik standar.
+    Format: https://www.google.com/maps/search/?api=1&query=<LAT>,<LONG>
     """
-    # Menggunakan maps.google.com secara langsung dengan query string
-    return f"maps.google.com{lat},{lon}"
+    return f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
 
 # Menambahkan kolom tautan ke DataFrame
 df['Link Google Maps'] = df.apply(
@@ -104,7 +104,7 @@ except Exception:
 
 st.markdown("---")
 st.info("""
-**Penting:** Tautan di kolom **Lokasi di Google Maps** kini menggunakan format URL yang paling umum untuk memastikan akurasi lokasi.
+**Penting:** Tautan kini menggunakan format URL Google Maps publik yang paling akurat.
 """)
 
 # --- Pilihan Interaktif untuk Pengujian ---
