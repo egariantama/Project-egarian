@@ -3,7 +3,6 @@ import pandas as pd
 import io
 
 # --- 1. Data Merchant ---
-# Pastikan data ini diapit dengan tiga tanda kutip (""") yang benar
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,-6.6132027,106.8066751
@@ -56,13 +55,15 @@ SOUND STORY BOTANI SQUARE,-6.6014221,106.8071254
 """
 df = pd.read_csv(io.StringIO(data_string))
 
-# --- 2. Fungsi untuk Membuat Tautan Google Maps (MODE NAVIGASI UNIVERSAL) ---
+# --- 2. Fungsi untuk Membuat Tautan Google Maps (URL DIRECTIONS STANDAR) ---
 def create_map_link(lat, lon):
     """
-    Menggunakan maps/dir//<LAT>,<LONG>. Tanda // memaksa Google Maps untuk 
-    menggunakan lokasi perangkat sebagai titik awal (Origin).
+    Menggunakan URL Directions API standar: 
+    https://www.google.com/maps/dir/?api=1&destination=<LAT>,<LONG>
+    Ini adalah format yang paling stabil dan tidak menyebabkan 404.
     """
-    return f"http://googleusercontent.com/maps.google.com/maps/dir//2{lat},{lon}"
+    # Mengubah prefix yang bermasalah menjadi prefix yang stabil dan menggunakan parameter standar
+    return f"https://www.google.com/maps/dir/?api=1&destination={lat},{lon}&travelmode=driving"
 
 # Menambahkan kolom tautan ke DataFrame
 df['Link Google Maps'] = df.apply(
@@ -78,9 +79,11 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🗺️ Daftar Merchant (Langsung Arah/Rute)")
+st.title("🗺️ Daftar Merchant (Solusi URL Directions API)")
 st.markdown("---")
-st.markdown("Klik nama merchant di bawah ini untuk **langsung diarahkan ke Google Maps Directions**.")
+st.success("Kami beralih ke URL Directions Google Maps yang paling stabil. Ini dijamin akan memunculkan mode Arah/Rute.")
+
+st.subheader("Pilih Merchant Tujuan Anda:")
 
 # Menampilkan setiap merchant menggunakan st.link_button
 for index, row in df.iterrows():
@@ -88,10 +91,9 @@ for index, row in df.iterrows():
     map_link = row['Link Google Maps']
     location_text = f"Lat: {row['LAT']}, Long: {row['LONG']}"
     
-    # Menggunakan st.link_button untuk fungsionalitas yang paling andal
-    # Label tombol menggunakan nama merchant untuk kesederhanaan
+    # Menggunakan st.link_button yang stabil
     st.link_button(
-        label=f"➡️ {name}", 
+        label=f"🚦 Mulai Arah/Rute ke: {name}", 
         url=map_link,
         help=f"Langsung membuka mode Directions ke: {location_text}"
     )
@@ -100,8 +102,8 @@ for index, row in df.iterrows():
 
 st.markdown("---")
 st.info("""
-**Penting:**
-1.  Tombol ini menggunakan format URL Google Maps yang paling dasar dan universal.
-2.  Ketika dibuka, Anda akan langsung melihat tombol "Mulai" atau "Directions/Arah".
-3.  Pastikan Anda memberikan izin akses lokasi pada *browser* Anda.
+**Langkah Penting Setelah Mengklik Tombol:**
+1.  Tab baru akan terbuka di Google Maps.
+2.  Google Maps akan secara otomatis mendeteksi lokasi Anda saat ini sebagai titik awal.
+3.  Anda akan melihat tombol besar untuk **"Mulai Navigasi"** atau **"Arah"**.
 """)
