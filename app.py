@@ -3,7 +3,6 @@ import pandas as pd
 import io
 
 # --- 1. Data Merchant ---
-# Data merchant yang Anda berikan
 data_string = """
 NAMA_MERCHANT,LAT,LONG
 PD MATERIAL CIBALOK,-6.6132027,106.8066751
@@ -60,7 +59,7 @@ df = pd.read_csv(io.StringIO(data_string))
 def create_map_link(lat, lon):
     """
     Membuat URL Google Maps yang memicu pencarian rute dari lokasi pengguna (asumsi)
-    ke koordinat tujuan (<LAT>,<LONG>).
+    ke koordinat tujuan.
     """
     return f"maps.google.com{lat},{lon}"
 
@@ -72,65 +71,55 @@ df['Link Google Maps'] = df.apply(
 
 # --- 3. Konfigurasi dan Tampilan Streamlit ---
 
-# Tambahkan CSS kustom untuk tampilan kartu sederhana
-st.markdown(
-    """
-    <style>
-    .merchant-card {
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 10px;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-    }
-    .merchant-name {
-        font-weight: bold;
-        font-size: 1.1em;
-        text-decoration: none !important;
-        color: #dc3545; /* Mengubah warna link menjadi merah/merah marun */
-    }
-    .merchant-location {
-        color: #666;
-        font-size: 0.9em;
-        margin-top: 5px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 st.set_page_config(
     page_title="Daftar Merchant & Rute Maps",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st.title("🗺️ Daftar Merchant (Klik untuk Mulai Rute)")
+st.title("🗺️ Daftar Merchant (Perbaikan Link)")
 st.markdown("---")
 st.subheader("Pilih Merchant Tujuan Anda:")
+st.markdown("Klik nama merchant di dalam kartu untuk langsung memulai navigasi di Google Maps.")
 
-# Menampilkan setiap merchant dalam format kartu
+# Menampilkan setiap merchant dalam format kartu stabil menggunakan st.container
 for index, row in df.iterrows():
     name = row['NAMA_MERCHANT']
     map_link = row['Link Google Maps']
     location_text = f"Lat: {row['LAT']}, Long: {row['LONG']}"
     
-    # Membuat kartu yang berfungsi sebagai link ke Maps (memulai rute)
-    card_content = f"""
-    <a href="{map_link}" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="merchant-card">
-            <p class="merchant-name">
-                <span style="color: #dc3545;">➤</span> {name}
-            </p>
-            <p class="merchant-location">
-                GPS: {location_text}
-            </p>
-        </div>
-    </a>
-    """
-    st.markdown(card_content, unsafe_allow_html=True)
+    # Menggunakan st.container(border=True) untuk membuat tampilan kartu yang stabil
+    with st.container(border=True):
+        # Menggunakan tautan Markdown yang stabil untuk nama merchant
+        # Tautan ini akan membuka tab baru (_blank) dan meniru warna merah yang Anda inginkan
+        st.markdown(
+            f"""
+            <a href="{map_link}" target="_blank" style="text-decoration: none; color: #dc3545; font-weight: bold; font-size: 1.1em;">
+                ➤ {name}
+            </a>
+            """, 
+            unsafe_allow_html=True
+        )
+        # Menampilkan detail lokasi
+        st.caption(f"📍 GPS: {location_text}")
 
 st.markdown("---")
 st.info("""
-**Penting:** Setelah mengklik, Google Maps akan otomatis meminta izin lokasi Anda dan mencari rute
+**Penting:** Jika tautan masih tidak berfungsi setelah perbaikan ini, kemungkinan masalahnya terletak pada pengaturan *security sandbox* di lingkungan Streamlit Anda atau *browser* yang Anda gunakan.
+""")
+
+# Menambahkan opsi untuk menyalin tautan sebagai cadangan
+st.sidebar.header("Opsi Cadangan: Salin Tautan")
+selected_merchant = st.sidebar.selectbox(
+    "Pilih Merchant untuk Salin Tautan:",
+    df['NAMA_MERCHANT']
+)
+
+if selected_merchant:
+    selected_row = df[df['NAMA_MERCHANT'] == selected_merchant].iloc[0]
+    map_link = selected_row['Link Google Maps']
+    
+    st.sidebar.markdown(f"Tautan untuk **{selected_merchant}**:")
+    # Menampilkan tautan sebagai teks yang bisa disalin
+    st.sidebar.code(map_link)
+    st.sidebar.markdown("Salin tautan di atas dan tempel di *browser* Anda jika tombol tidak berfungsi.")
