@@ -252,15 +252,48 @@ elif menu == "💑 Konseling Pernikahan":
     """, unsafe_allow_html=True)
 
 elif menu == "👨‍👩‍👧 Konseling Parenting":
+    st.subheader("👨‍👩‍👧 Konseling Parenting")
+
+    psikolog = st.selectbox(
+        "Pilih Konselor Parenting",
+        [
+            "Dr. Rina Lestari, M.Psi – Parenting Anak",
+            "Budi Santoso, M.Psi – Parenting Remaja",
+            "Konselor Parenting Online"
+        ]
+    )
+
+    if psikolog.startswith("Dr. Rina"):
+        fokus = [
+            "Parenting anak usia dini",
+            "Pola asuh positif",
+            "Manajemen emosi anak"
+        ]
+        pesan_wa = "Halo, saya ingin konseling parenting anak"
+    elif psikolog.startswith("Budi"):
+        fokus = [
+            "Parenting remaja",
+            "Komunikasi orang tua & anak",
+            "Manajemen perilaku remaja"
+        ]
+        pesan_wa = "Halo, saya ingin konseling parenting remaja"
+    else:
+        fokus = [
+            "Sesi online fleksibel",
+            "Privasi terjamin",
+            "Cocok untuk orang tua sibuk"
+        ]
+        pesan_wa = "Halo, saya ingin konseling parenting online"
+
     st.markdown(f"""
     <div class="card">
-        <h3>Konseling Parenting</h3>
+        <h3>🧠 {psikolog}</h3>
         <ul>
-            <li>Parenting anak & remaja</li>
-            <li>Pola asuh positif</li>
-            <li>Pendampingan keluarga</li>
+            <li>{fokus[0]}</li>
+            <li>{fokus[1]}</li>
+            <li>{fokus[2]}</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin konseling parenting')}">
+        <a class="cta" href="https://wa.me/{WA_NUMBER}?text={urllib.parse.quote(pesan_wa)}">
             Konsultasi Sekarang
         </a>
     </div>
@@ -283,6 +316,7 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
 
 
