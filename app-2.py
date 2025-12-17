@@ -114,13 +114,11 @@ menu = st.selectbox(
     ]
 )
 
-def wa_link(text):
-    return f"https://wa.me/{WA_NUMBER}?text={urllib.parse.quote(text)}"
-
 # =========================
 # PAKET WEDDING
 # =========================
 if menu == "💍 Paket Wedding & Pembiayaan":
+
     st.subheader("💍 Pilih Paket Wedding & Skema Cicilan")
 
     paket = st.radio(
@@ -135,35 +133,59 @@ if menu == "💍 Paket Wedding & Pembiayaan":
         harga = 550_000_000
         paket_nama = "Paket Wedding Gold"
 
+    # ===== CARD =====
     st.markdown(f"""
-<div class="card">
-    <h3>📊 Hasil Simulasi Cicilan</h3>
-    <p>Harga Paket: <b>Rp {harga:,.0f}</b></p>
-    <p>DP ({dp}%): <b>Rp {dp_nominal:,.0f}</b></p>
-    <p>Pokok Pembiayaan: <b>Rp {pokok:,.0f}</b></p>
-    <p>Bunga: <b>6,9% FIX per tahun</b></p>
-    <p>Cicilan per bulan:</p>
-    <div class="price">Rp {cicilan:,.0f}</div>
-</div>
-""", unsafe_allow_html=True)
+    <div class="card">
+        <h3>{paket_nama}</h3>
+        <div class="price">Rp {harga:,.0f}</div>
+        <ul>
+            <li>Dekorasi & WO profesional</li>
+            <li>Katering sesuai paket</li>
+            <li>Dokumentasi & support keluarga</li>
+            <li><b>Tersedia cicilan bunga FIX 6,9%</b></li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-# ===== CTA BUTTON (DIPISAH) =====
-st.markdown(
-    f"""
-    <a class="cta" href="{wa_link(
-        f'Halo, saya ingin ajukan {paket_nama} dengan DP {dp}% tenor {tenor} bulan. Estimasi cicilan Rp {cicilan:,.0f}/bulan'
-    )}" target="_blank">
+    # ===== SIMULASI =====
+    dp = st.slider("DP (%)", 10, 50, 20)
+    tenor = st.selectbox("Tenor (bulan)", [12, 24, 36, 48, 60])
+
+    bunga = 6.9
+    bunga_bulanan = bunga / 12 / 100
+    dp_nominal = harga * dp / 100
+    pokok = harga - dp_nominal
+    cicilan = (pokok * bunga_bulanan) / (1 - (1 + bunga_bulanan) ** -tenor)
+
+    st.markdown(f"""
+    <div class="card">
+        <h3>📊 Hasil Simulasi Cicilan</h3>
+        <p>Harga Paket: <b>Rp {harga:,.0f}</b></p>
+        <p>DP ({dp}%): <b>Rp {dp_nominal:,.0f}</b></p>
+        <p>Pokok Pembiayaan: <b>Rp {pokok:,.0f}</b></p>
+        <p>Bunga: <b>6,9% FIX per tahun</b></p>
+        <p>Cicilan per bulan:</p>
+        <div class="price">Rp {cicilan:,.0f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ===== CTA DIPISAH (INI PENTING) =====
+    st.markdown(
+        f"""
+        <a class="cta" href="https://wa.me/{WA_NUMBER}?text=Halo, saya ingin ajukan {paket_nama} DP {dp}% tenor {tenor} bulan. Cicilan Rp {cicilan:,.0f}/bulan"
+        target="_blank">
         🚀 Ajukan Sekarang
-    </a>
-    """,
-    unsafe_allow_html=True
-)
+        </a>
+        """,
+        unsafe_allow_html=True
+    )
 
 # =========================
 # SIMULASI KREDIT
 # =========================
 elif menu == "💳 Simulasi Kredit Wedding":
-    st.subheader("💳 Simulasi Kredit / Cicilan Wedding")
+    st.subheader("💳 Simulasi Kredit Wedding")
+    st.info("Menu ini berjalan normal ✅")
 
     harga = st.number_input("Harga Paket (Rp)", min_value=50000000, step=10000000)
     dp = st.slider("DP (%)", 10, 50, 20)
@@ -290,6 +312,7 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
 
 
