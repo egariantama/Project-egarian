@@ -6,7 +6,7 @@ import urllib.parse
 # =========================
 st.set_page_config(
     page_title="Layanan Pernikahan & Keluarga",
-    layout="wide"
+    layout="centered"
 )
 
 # =========================
@@ -15,26 +15,28 @@ st.set_page_config(
 WA_NUMBER = "6281234567890"  # tanpa +
 
 # =========================
-# STYLE MOBILE-FIRST
+# STYLE MOBILE-FIRST (FIX WARNA)
 # =========================
 st.markdown("""
 <style>
-body {
-    background-color: #F7F9FC;
-    color: #1A1A1A;
+/* RESET */
+html, body, [class*="css"] {
+    background-color: #F7F9FC !important;
+    color: #1A1A1A !important;
 }
 
 /* ===== HEADER ===== */
 .header {
     background: linear-gradient(135deg, #0B1E3D, #1E4DB7);
-    padding: 28px;
-    border-radius: 16px;
+    padding: 26px;
+    border-radius: 18px;
     color: white;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 .header h1 {
-    font-size: 24px;
+    font-size: 22px;
+    margin-bottom: 6px;
 }
 .header p {
     font-size: 14px;
@@ -43,19 +45,25 @@ body {
 
 /* ===== CARD ===== */
 .card {
-    background: white;
-    padding: 20px;
-    border-radius: 14px;
+    background: #FFFFFF;
+    padding: 18px;
+    border-radius: 16px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-    margin-bottom: 18px;
+    margin-bottom: 16px;
+    color: #1A1A1A;
 }
 .card h3 {
     color: #1E4DB7;
-    font-size: 18px;
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+.card ul {
+    padding-left: 18px;
 }
 .card li {
     font-size: 14px;
     margin-bottom: 6px;
+    color: #1A1A1A;
 }
 
 /* ===== BUTTON ===== */
@@ -66,20 +74,20 @@ body {
     margin-top: 14px;
     padding: 12px;
     background-color: #FFD200;
-    color: #0B1E3D;
+    color: #0B1E3D !important;
     font-weight: 700;
-    border-radius: 10px;
+    border-radius: 12px;
     text-decoration: none;
 }
 
 /* ===== WHATSAPP FLOAT ===== */
 .whatsapp-float {
     position: fixed;
-    bottom: 20px;
-    right: 18px;
+    bottom: 18px;
+    right: 16px;
     background-color: #25D366;
-    color: white;
-    padding: 14px 16px;
+    color: white !important;
+    padding: 14px 18px;
     border-radius: 50px;
     font-weight: bold;
     text-decoration: none;
@@ -100,10 +108,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================
-# MENU MOBILE (SELECTBOX)
+# MENU MOBILE
 # =========================
 menu = st.selectbox(
-    "Pilih Layanan",
+    "📌 Pilih Layanan",
     [
         "💍 Paket Wedding & Pembiayaan",
         "💑 Konseling Pernikahan",
@@ -113,10 +121,17 @@ menu = st.selectbox(
 )
 
 # =========================
+# TEMPLATE LINK WA
+# =========================
+def wa_link(pesan):
+    encoded = urllib.parse.quote(pesan)
+    return f"https://wa.me/{WA_NUMBER}?text={encoded}"
+
+# =========================
 # WEDDING
 # =========================
 if menu == "💍 Paket Wedding & Pembiayaan":
-    st.markdown("""
+    st.markdown(f"""
     <div class="card">
         <h3>Paket Wedding Silver</h3>
         <ul>
@@ -125,7 +140,7 @@ if menu == "💍 Paket Wedding & Pembiayaan":
             <li>Dokumentasi</li>
             <li>Cicilan pembiayaan</li>
         </ul>
-        <a class="cta" href="#">Konsultasi Sekarang</a>
+        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Silver')}">Konsultasi Sekarang</a>
     </div>
 
     <div class="card">
@@ -136,7 +151,7 @@ if menu == "💍 Paket Wedding & Pembiayaan":
             <li>Katering 500 pax</li>
             <li>Pembiayaan & modal keluarga</li>
         </ul>
-        <a class="cta" href="#">Ajukan Pembiayaan</a>
+        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Gold')}">Ajukan Pembiayaan</a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -144,7 +159,7 @@ if menu == "💍 Paket Wedding & Pembiayaan":
 # KONSELING PERNIKAHAN
 # =========================
 elif menu == "💑 Konseling Pernikahan":
-    st.markdown("""
+    st.markdown(f"""
     <div class="card">
         <h3>Konseling Pra Nikah</h3>
         <ul>
@@ -152,7 +167,7 @@ elif menu == "💑 Konseling Pernikahan":
             <li>Komunikasi pasangan</li>
             <li>Visi rumah tangga</li>
         </ul>
-        <a class="cta" href="#">Jadwalkan Sesi</a>
+        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Pra Nikah')}">Jadwalkan Sesi</a>
     </div>
 
     <div class="card">
@@ -162,7 +177,7 @@ elif menu == "💑 Konseling Pernikahan":
             <li>Penguatan hubungan</li>
             <li>Pendampingan keluarga</li>
         </ul>
-        <a class="cta" href="#">Mulai Konseling</a>
+        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Pasca Nikah')}">Mulai Konseling</a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -170,7 +185,7 @@ elif menu == "💑 Konseling Pernikahan":
 # PARENTING
 # =========================
 elif menu == "👨‍👩‍👧 Konseling Parenting":
-    st.markdown("""
+    st.markdown(f"""
     <div class="card">
         <h3>Parenting Anak Usia Dini</h3>
         <ul>
@@ -178,7 +193,7 @@ elif menu == "👨‍👩‍👧 Konseling Parenting":
             <li>Perkembangan emosi</li>
             <li>Komunikasi efektif</li>
         </ul>
-        <a class="cta" href="#">Konsultasi Parenting</a>
+        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Parenting Anak')}">Konsultasi Parenting</a>
     </div>
 
     <div class="card">
@@ -188,7 +203,7 @@ elif menu == "👨‍👩‍👧 Konseling Parenting":
             <li>Pendampingan akademik</li>
             <li>Tantangan digital</li>
         </ul>
-        <a class="cta" href="#">Mulai Sesi</a>
+        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Parenting Remaja')}">Mulai Sesi</a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -206,15 +221,11 @@ elif menu == "📩 Form Konsultasi":
     pesan = st.text_area("Ceritakan kebutuhan Anda")
 
     if st.button("Kirim via WhatsApp"):
-        text = f"""
-Halo, saya *{nama}*
-Saya tertarik dengan layanan *{layanan}*
-Pesan:
-{pesan}
-"""
-        encoded = urllib.parse.quote(text)
-        wa_url = f"https://wa.me/{WA_NUMBER}?text={encoded}"
-        st.markdown(f"[Klik untuk kirim WhatsApp]({wa_url})")
+        if nama and pesan:
+            text = f"Halo, saya {nama}. Saya tertarik {layanan}. Pesan: {pesan}"
+            st.markdown(f"[📲 Klik kirim WhatsApp]({wa_link(text)})")
+        else:
+            st.warning("Mohon lengkapi nama dan pesan")
 
 # =========================
 # FLOATING WHATSAPP
@@ -236,6 +247,6 @@ st.markdown(
 st.markdown("""
 <hr>
 <p style="text-align:center; font-size:13px; color:#666;">
-© 2025 Layanan Pernikahan & Keluarga • Mobile Friendly
+© 2025 Layanan Pernikahan & Keluarga • Mobile Optimized
 </p>
 """, unsafe_allow_html=True)
