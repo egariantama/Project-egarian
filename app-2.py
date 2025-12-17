@@ -136,48 +136,28 @@ if menu == "💍 Paket Wedding & Pembiayaan":
         paket_nama = "Paket Wedding Gold"
 
     st.markdown(f"""
-    <div class="card">
-        <h3>{paket_nama}</h3>
-        <div class="price">Rp {harga:,.0f}</div>
-        <ul>
-            <li>Dekorasi & WO profesional</li>
-            <li>Katering sesuai paket</li>
-            <li>Dokumentasi & support keluarga</li>
-            <li><b>Tersedia cicilan bunga FIX 6,9%</b></li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
+<div class="card">
+    <h3>📊 Hasil Simulasi Cicilan</h3>
+    <p>Harga Paket: <b>Rp {harga:,.0f}</b></p>
+    <p>DP ({dp}%): <b>Rp {dp_nominal:,.0f}</b></p>
+    <p>Pokok Pembiayaan: <b>Rp {pokok:,.0f}</b></p>
+    <p>Bunga: <b>6,9% FIX per tahun</b></p>
+    <p>Cicilan per bulan:</p>
+    <div class="price">Rp {cicilan:,.0f}</div>
+</div>
+""", unsafe_allow_html=True)
 
-    st.subheader("💳 Simulasi Cicilan")
-
-    dp = st.slider("DP (%)", 10, 50, 20)
-    tenor = st.selectbox("Tenor (bulan)", [12, 24, 36, 48, 60])
-
-    bunga = 6.9  # FIX per tahun
-    bunga_bulanan = bunga / 12 / 100
-
-    dp_nominal = harga * dp / 100
-    pokok = harga - dp_nominal
-
-    cicilan = (pokok * bunga_bulanan) / (1 - (1 + bunga_bulanan) ** -tenor)
-
-    st.markdown(f"""
-    <div class="card">
-        <h3>📊 Hasil Simulasi Cicilan</h3>
-        <p>Harga Paket: <b>Rp {harga:,.0f}</b></p>
-        <p>DP ({dp}%): <b>Rp {dp_nominal:,.0f}</b></p>
-        <p>Pokok Pembiayaan: <b>Rp {pokok:,.0f}</b></p>
-        <p>Bunga: <b>6,9% FIX per tahun</b></p>
-        <p>Cicilan per bulan:</p>
-        <div class="price">Rp {cicilan:,.0f}</div>
-
-        <a class="cta" href="{wa_link(
-            f'Halo, saya ingin ajukan {paket_nama} dengan DP {dp}% tenor {tenor} bulan. Estimasi cicilan Rp {cicilan:,.0f}/bulan'
-        )}">
-            Ajukan Paket & Cicilan
-        </a>
-    </div>
-    """, unsafe_allow_html=True)
+# ===== CTA BUTTON (DIPISAH) =====
+st.markdown(
+    f"""
+    <a class="cta" href="{wa_link(
+        f'Halo, saya ingin ajukan {paket_nama} dengan DP {dp}% tenor {tenor} bulan. Estimasi cicilan Rp {cicilan:,.0f}/bulan'
+    )}" target="_blank">
+        🚀 Ajukan Sekarang
+    </a>
+    """,
+    unsafe_allow_html=True
+)
 
 # =========================
 # SIMULASI KREDIT
@@ -310,6 +290,7 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
 
 
