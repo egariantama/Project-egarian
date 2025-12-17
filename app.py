@@ -108,8 +108,8 @@ bulan_id = [
 # INPUT RUNNING TEXT
 # =========================
 running_text = st.sidebar.text_input(
-    "Running Text Informasi Cabang",
-    "Selamat Datang di Bank Mandiri | Layanan Buka Rekening Cepat | Prioritas Kepuasan Nasabah"
+    "Running Text Informasi",
+    "Hai... Destia Chairany. R, ayok semangat aku sayang sama kamu, kamu cantik hari ini, kamu spesial banget buat aku"
 )
 
 # =========================
@@ -170,3 +170,4 @@ while True:
     )
 
     time.sleep(1)
+
