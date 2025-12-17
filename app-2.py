@@ -160,19 +160,26 @@ elif menu == "💳 Simulasi Kredit Wedding":
     harga = st.number_input("Harga Paket (Rp)", min_value=50000000, step=10000000)
     dp = st.slider("DP (%)", 10, 50, 20)
     tenor = st.selectbox("Tenor (bulan)", [12, 24, 36, 48, 60])
-    bunga = st.slider("Bunga per tahun (%)", 6.0, 15.0, 10.0)
+
+    bunga = 6.9  # FIX per tahun
+    st.info("📌 Bunga FIX 6,9% per tahun")
 
     dp_nominal = harga * dp / 100
     pokok = harga - dp_nominal
     bunga_bulanan = bunga / 12 / 100
+
     cicilan = (pokok * bunga_bulanan) / (1 - (1 + bunga_bulanan) ** -tenor)
 
     st.markdown(f"""
     <div class="card">
-        <h3>Hasil Simulasi</h3>
+        <h3>Hasil Simulasi Kredit</h3>
+        <p>Pokok Pembiayaan:</p>
+        <b>Rp {pokok:,.0f}</b>
+        <p>Bunga:</p>
+        <b>6,9% FIX per tahun</b>
         <p>Cicilan per bulan:</p>
         <div class="price">Rp {cicilan:,.0f}</div>
-        <a class="cta" href="{wa_link('Halo, saya ingin ajukan kredit wedding')}">
+        <a class="cta" href="{wa_link('Halo, saya ingin ajukan kredit wedding bunga fix 6,9%')}">
             Ajukan Sekarang
         </a>
     </div>
@@ -249,3 +256,4 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
