@@ -210,16 +210,42 @@ elif menu == "💰 Metode Pembayaran":
 # KONSELING
 # =========================
 elif menu == "💑 Konseling Pernikahan":
+    st.subheader("💑 Konseling Pernikahan – Pilih Psikolog")
+
     st.markdown(f"""
     <div class="card">
-        <h3>Konseling Pra & Pasca Nikah</h3>
+        <h3>🧠 Dr. Maya Putri, M.Psi., Psikolog</h3>
         <ul>
-            <li>Kesiapan mental & finansial</li>
-            <li>Manajemen konflik</li>
-            <li>Penguatan komunikasi</li>
+            <li>Spesialis Pra Nikah & Komunikasi Pasangan</li>
+            <li>Pengelolaan konflik rumah tangga</li>
+            <li>Penguatan emotional bonding</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin konseling pernikahan')}">
-            Jadwalkan Sesi
+        <a class="cta" href="{wa_link('Halo, saya ingin konseling pernikahan dengan Dr. Maya Putri')}">
+            Konsultasi dengan Dr. Maya
+        </a>
+    </div>
+
+    <div class="card">
+        <h3>🧠 Ahmad Fauzi, M.Psi., Psikolog</h3>
+        <ul>
+            <li>Konseling Pasca Nikah</li>
+            <li>Masalah kepercayaan & emosi</li>
+            <li>Manajemen stres keluarga</li>
+        </ul>
+        <a class="cta" href="{wa_link('Halo, saya ingin konseling pernikahan dengan Ahmad Rizky')}">
+            Konsultasi dengan Psikolog Ahmad
+        </a>
+    </div>
+
+    <div class="card">
+        <h3>🧠 Konselor Pernikahan (Online)</h3>
+        <ul>
+            <li>Sesi fleksibel via Zoom / WhatsApp Call</li>
+            <li>Cocok untuk pasangan LDR</li>
+            <li>Privasi terjamin</li>
+        </ul>
+        <a class="cta" href="{wa_link('Halo, saya ingin konseling pernikahan online')}">
+            Booking Sesi Online
         </a>
     </div>
     """, unsafe_allow_html=True)
@@ -256,4 +282,5 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
