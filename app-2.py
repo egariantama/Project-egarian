@@ -88,7 +88,7 @@ html, body, [class*="css"] {
 # =========================
 st.markdown("""
 <div class="header">
-    <h1>💍 Layanan Pernikahan & Keluarga</h1>
+    <h1>💍 Wedding to Fun</h1>
     <p>Dari persiapan pernikahan hingga membangun keluarga harmonis</p>
 </div>
 """, unsafe_allow_html=True)
@@ -276,6 +276,7 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
 
 
