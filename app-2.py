@@ -121,32 +121,60 @@ def wa_link(text):
 # PAKET WEDDING
 # =========================
 if menu == "💍 Paket Wedding & Pembiayaan":
+    st.subheader("💍 Pilih Paket Wedding & Skema Cicilan")
+
+    paket = st.radio(
+        "Pilih Paket Wedding",
+        ["Silver – Rp 350.000.000", "Gold – Rp 550.000.000"]
+    )
+
+    if "Silver" in paket:
+        harga = 350_000_000
+        paket_nama = "Paket Wedding Silver"
+    else:
+        harga = 550_000_000
+        paket_nama = "Paket Wedding Gold"
+
     st.markdown(f"""
     <div class="card">
-        <h3>Paket Wedding Silver</h3>
-        <div class="price">Rp 350.000.000</div>
+        <h3>{paket_nama}</h3>
+        <div class="price">Rp {harga:,.0f}</div>
         <ul>
-            <li>Dekorasi & venue standar</li>
-            <li>Katering 300 pax</li>
-            <li>Dokumentasi</li>
-            <li>Opsi cicilan / pembiayaan</li>
+            <li>Dekorasi & WO profesional</li>
+            <li>Katering sesuai paket</li>
+            <li>Dokumentasi & support keluarga</li>
+            <li><b>Tersedia cicilan bunga FIX 6,9%</b></li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Silver')}">
-            Booking Sekarang
-        </a>
     </div>
+    """, unsafe_allow_html=True)
 
+    st.subheader("💳 Simulasi Cicilan")
+
+    dp = st.slider("DP (%)", 10, 50, 20)
+    tenor = st.selectbox("Tenor (bulan)", [12, 24, 36, 48, 60])
+
+    bunga = 6.9  # FIX per tahun
+    bunga_bulanan = bunga / 12 / 100
+
+    dp_nominal = harga * dp / 100
+    pokok = harga - dp_nominal
+
+    cicilan = (pokok * bunga_bulanan) / (1 - (1 + bunga_bulanan) ** -tenor)
+
+    st.markdown(f"""
     <div class="card">
-        <h3>Paket Wedding Gold</h3>
-        <div class="price">Rp 550.000.000</div>
-        <ul>
-            <li>WO profesional full day</li>
-            <li>Dekorasi premium</li>
-            <li>Katering 500 pax</li>
-            <li>Pembiayaan & modal awal keluarga</li>
-        </ul>
-        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Gold')}">
-            Ajukan Pembiayaan
+        <h3>📊 Hasil Simulasi Cicilan</h3>
+        <p>Harga Paket: <b>Rp {harga:,.0f}</b></p>
+        <p>DP ({dp}%): <b>Rp {dp_nominal:,.0f}</b></p>
+        <p>Pokok Pembiayaan: <b>Rp {pokok:,.0f}</b></p>
+        <p>Bunga: <b>6,9% FIX per tahun</b></p>
+        <p>Cicilan per bulan:</p>
+        <div class="price">Rp {cicilan:,.0f}</div>
+
+        <a class="cta" href="{wa_link(
+            f'Halo, saya ingin ajukan {paket_nama} dengan DP {dp}% tenor {tenor} bulan. Estimasi cicilan Rp {cicilan:,.0f}/bulan'
+        )}">
+            Ajukan Paket & Cicilan
         </a>
     </div>
     """, unsafe_allow_html=True)
@@ -282,5 +310,6 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
 
