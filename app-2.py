@@ -12,7 +12,7 @@ st.set_page_config(
 # =========================
 # NOMOR WHATSAPP
 # =========================
-WA_NUMBER = "6282147035769"  # ganti nomor asli
+WA_NUMBER = "6282147035769"
 
 # =========================
 # STYLE
@@ -114,16 +114,47 @@ menu = st.selectbox(
     ]
 )
 
-# =========================
-# WA LINK
-# =========================
 def wa_link(text):
     return f"https://wa.me/{WA_NUMBER}?text={urllib.parse.quote(text)}"
 
 # =========================
+# PAKET WEDDING
+# =========================
+if menu == "💍 Paket Wedding & Pembiayaan":
+    st.markdown(f"""
+    <div class="card">
+        <h3>Paket Wedding Silver</h3>
+        <div class="price">Rp 350.000.000</div>
+        <ul>
+            <li>Dekorasi & venue standar</li>
+            <li>Katering 300 pax</li>
+            <li>Dokumentasi</li>
+            <li>Opsi cicilan / pembiayaan</li>
+        </ul>
+        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Silver')}">
+            Booking Sekarang
+        </a>
+    </div>
+
+    <div class="card">
+        <h3>Paket Wedding Gold</h3>
+        <div class="price">Rp 550.000.000</div>
+        <ul>
+            <li>WO profesional full day</li>
+            <li>Dekorasi premium</li>
+            <li>Katering 500 pax</li>
+            <li>Pembiayaan & modal awal keluarga</li>
+        </ul>
+        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Gold')}">
+            Ajukan Pembiayaan
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
+# =========================
 # SIMULASI KREDIT
 # =========================
-if menu == "💳 Simulasi Kredit Wedding":
+elif menu == "💳 Simulasi Kredit Wedding":
     st.subheader("💳 Simulasi Kredit / Cicilan Wedding")
 
     harga = st.number_input("Harga Paket (Rp)", min_value=50000000, step=10000000)
@@ -139,12 +170,9 @@ if menu == "💳 Simulasi Kredit Wedding":
     st.markdown(f"""
     <div class="card">
         <h3>Hasil Simulasi</h3>
-        <p>Harga Paket: <b>Rp {harga:,.0f}</b></p>
-        <p>DP ({dp}%): <b>Rp {dp_nominal:,.0f}</b></p>
-        <p>Tenor: <b>{tenor} bulan</b></p>
-        <p><b>Cicilan / bulan:</b></p>
+        <p>Cicilan per bulan:</p>
         <div class="price">Rp {cicilan:,.0f}</div>
-        <a class="cta" href="{wa_link('Halo, saya ingin ajukan pembiayaan wedding')}">
+        <a class="cta" href="{wa_link('Halo, saya ingin ajukan kredit wedding')}">
             Ajukan Sekarang
         </a>
     </div>
@@ -154,47 +182,64 @@ if menu == "💳 Simulasi Kredit Wedding":
 # METODE PEMBAYARAN
 # =========================
 elif menu == "💰 Metode Pembayaran":
-    st.subheader("💰 Metode Pembayaran")
-
     st.markdown("""
     <div class="card">
-        <h3>📱 Pembayaran QRIS</h3>
-        <ul>
-            <li>Mendukung semua e-wallet & mobile banking</li>
-            <li>OVO, GoPay, Dana, ShopeePay, Livin’, dll</li>
-        </ul>
-        <p><b>QRIS akan dikirim via WhatsApp</b></p>
-        <a class="cta" href="https://wa.me/6282147035769">
-            Minta QRIS
-        </a>
+        <h3>📱 QRIS</h3>
+        <p>QRIS akan dikirim via WhatsApp</p>
     </div>
 
     <div class="card">
         <h3>🏦 Transfer Bank</h3>
         <ul>
-            <li><b>Bank Mandiri</b> : 123000111222 a.n Wedding Service</li>
-            <li><b>Bank BNI</b> : 8888888888 a.n Wedding Service</li>
-            <li><b>Bank BCA</b> : 7777777777 a.n Wedding Service</li>
-            <li><b>Bank BRI</b> : 6666666666 a.n Wedding Service</li>
+            <li>Mandiri : 123000111222</li>
+            <li>BNI : 8888888888</li>
+            <li>BCA : 7777777777</li>
+            <li>BRI : 6666666666</li>
         </ul>
-        <p><i>*Mohon konfirmasi pembayaran via WhatsApp</i></p>
     </div>
     """, unsafe_allow_html=True)
 
 # =========================
-# (MENU LAIN TETAP)
+# KONSELING
+# =========================
+elif menu == "💑 Konseling Pernikahan":
+    st.markdown(f"""
+    <div class="card">
+        <h3>Konseling Pra & Pasca Nikah</h3>
+        <ul>
+            <li>Kesiapan mental & finansial</li>
+            <li>Manajemen konflik</li>
+            <li>Penguatan komunikasi</li>
+        </ul>
+        <a class="cta" href="{wa_link('Halo, saya ingin konseling pernikahan')}">
+            Jadwalkan Sesi
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
+elif menu == "👨‍👩‍👧 Konseling Parenting":
+    st.markdown(f"""
+    <div class="card">
+        <h3>Konseling Parenting</h3>
+        <ul>
+            <li>Parenting anak & remaja</li>
+            <li>Pola asuh positif</li>
+            <li>Pendampingan keluarga</li>
+        </ul>
+        <a class="cta" href="{wa_link('Halo, saya ingin konseling parenting')}">
+            Konsultasi Sekarang
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
+# =========================
+# FORM
 # =========================
 elif menu == "📩 Form Konsultasi":
-    st.subheader("📩 Form Konsultasi Cepat")
-    nama = st.text_input("Nama Lengkap")
-    layanan = st.selectbox("Pilih Layanan", ["Wedding", "Kredit Wedding", "Konseling"])
+    nama = st.text_input("Nama")
     pesan = st.text_area("Pesan")
-
-    if st.button("Kirim via WhatsApp"):
-        if nama and pesan:
-            st.markdown(f"[📲 Kirim WhatsApp]({wa_link(f'Halo, saya {nama}. {pesan}')})")
-        else:
-            st.warning("Lengkapi data")
+    if st.button("Kirim WhatsApp"):
+        st.markdown(f"[📲 Kirim]({wa_link(f'Halo saya {nama}. {pesan}')})")
 
 # =========================
 # FLOAT WA
@@ -203,11 +248,4 @@ st.markdown(f"""
 <a class="whatsapp-float" href="https://wa.me/{WA_NUMBER}" target="_blank">
 💬 WhatsApp
 </a>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<hr>
-<p style="text-align:center; font-size:13px;">
-© 2025 Layanan Pernikahan & Keluarga
-</p>
 """, unsafe_allow_html=True)
