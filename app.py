@@ -1,93 +1,50 @@
 import streamlit as st
-from datetime import datetime, timedelta
-import time
 
 # =========================
 # KONFIGURASI HALAMAN
 # =========================
 st.set_page_config(
-    page_title="Jam Digital Cabang",
+    page_title="Layanan Pernikahan & Keluarga",
     layout="wide"
 )
 
 # =========================
-# PILIH ZONA WAKTU
-# =========================
-zona = st.sidebar.selectbox(
-    "Pilih Zona Waktu",
-    ["WIB", "WITA", "WIT"]
-)
-
-offset = {"WIB": 7, "WITA": 8, "WIT": 9}[zona]
-
-# =========================
-# STYLE RESPONSIVE CORPORATE
+# STYLE GLOBAL
 # =========================
 st.markdown(
     """
     <style>
     body {
-        background-color: #0B1E3D;
+        background-color: #F7F9FC;
     }
-
-    /* ===== DESKTOP / TV ===== */
-    .clock {
-        font-size: 100px;
-        font-weight: bold;
-        text-align: center;
-        color: #FFD200;
-        margin-top: 20px;
-    }
-    .date {
-        font-size: 36px;
-        text-align: center;
+    .header {
+        background: linear-gradient(135deg, #0B1E3D, #1E4DB7);
+        padding: 40px;
+        border-radius: 12px;
         color: white;
-        margin-top: -20px;
-    }
-    .countdown {
-        font-size: 34px;
         text-align: center;
-        color: #FFD200;
-        margin-top: 10px;
-        font-weight: bold;
+        margin-bottom: 30px;
     }
-    .running-text {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
+    .section-title {
+        color: #0B1E3D;
+        margin-bottom: 20px;
+    }
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    .cta {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 16px;
         background-color: #FFD200;
         color: #0B1E3D;
-        font-size: 28px;
         font-weight: bold;
-        padding: 10px;
-        animation: marquee 15s linear infinite;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-
-    /* ===== MOBILE MODE ===== */
-    @media only screen and (max-width: 768px) {
-        .clock {
-            font-size: 48px;
-            margin-top: 10px;
-        }
-        .date {
-            font-size: 18px;
-            margin-top: 0;
-        }
-        .countdown {
-            font-size: 16px;
-            padding: 0 10px;
-        }
-        .running-text {
-            font-size: 14px;
-            padding: 6px;
-        }
-    }
-
-    @keyframes marquee {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
+        border-radius: 8px;
+        text-decoration: none;
     }
     </style>
     """,
@@ -95,79 +52,158 @@ st.markdown(
 )
 
 # =========================
-# NAMA HARI & BULAN (ID)
+# HEADER
 # =========================
-hari_id = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
-bulan_id = [
-    "Januari", "Februari", "Maret", "April",
-    "Mei", "Juni", "Juli", "Agustus",
-    "September", "Oktober", "November", "Desember"
-]
-
-# =========================
-# INPUT RUNNING TEXT
-# =========================
-running_text = st.sidebar.text_input(
-    "Running Text Informasi",
-    "Hai... Destia Chairany. R, ayok semangat aku sayang sama kamu, kamu cantik hari ini, kamu spesial banget buat aku"
+st.markdown(
+    """
+    <div class="header">
+        <h1>Layanan Pernikahan & Keluarga</h1>
+        <p>Mendampingi perjalanan sakral pernikahan hingga membangun keluarga harmonis</p>
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
 # =========================
-# TARGET RAMADHAN
+# MENU NAVIGASI
 # =========================
-ramadhan_date = datetime(2026, 2, 18, 0, 0, 0)
+menu = st.tabs([
+    "💍 Paket Wedding & Pembiayaan",
+    "💑 Konseling Pernikahan",
+    "👨‍👩‍👧 Konseling Parenting"
+])
 
 # =========================
-# PLACEHOLDER
+# TAB 1 – WEDDING
 # =========================
-clock_placeholder = st.empty()
-date_placeholder = st.empty()
-countdown_placeholder = st.empty()
-running_placeholder = st.empty()
+with menu[0]:
+    st.markdown("<h2 class='section-title'>Penawaran Paket Wedding & Pembiayaan</h2>", unsafe_allow_html=True)
 
-# =========================
-# LOOP JAM
-# =========================
-while True:
-    now = datetime.utcnow() + timedelta(hours=offset)
+    col1, col2 = st.columns(2)
 
-    jam = now.strftime("%H:%M:%S")
-    hari = hari_id[now.weekday()]
-    tanggal = now.day
-    bulan = bulan_id[now.month - 1]
-    tahun = now.year
-
-    diff = ramadhan_date - now
-    if diff.total_seconds() > 0:
-        days = diff.days
-        hours, remainder = divmod(diff.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        countdown_text = (
-            f"Menuju Ramadhan 1447 H • "
-            f"{days} Hari {hours} Jam {minutes} Menit {seconds} Detik"
+    with col1:
+        st.markdown(
+            """
+            <div class="card">
+                <h3>Paket Wedding Silver</h3>
+                <ul>
+                    <li>Venue & dekorasi standar</li>
+                    <li>MC & dokumentasi</li>
+                    <li>Katering 300 pax</li>
+                    <li>Opsi cicilan pembiayaan</li>
+                </ul>
+                <a class="cta" href="#">Konsultasi Sekarang</a>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-    else:
-        countdown_text = "🌙 Selamat Menunaikan Ibadah Puasa Ramadhan 🌙"
 
-    clock_placeholder.markdown(
-        f"<div class='clock'>{jam} {zona}</div>",
-        unsafe_allow_html=True
-    )
+    with col2:
+        st.markdown(
+            """
+            <div class="card">
+                <h3>Paket Wedding Gold</h3>
+                <ul>
+                    <li>Venue premium & dekorasi eksklusif</li>
+                    <li>Wedding Organizer profesional</li>
+                    <li>Katering 500 pax</li>
+                    <li>Pembiayaan & modal usaha keluarga</li>
+                </ul>
+                <a class="cta" href="#">Ajukan Pembiayaan</a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    date_placeholder.markdown(
-        f"<div class='date'>{hari}, {tanggal} {bulan} {tahun}</div>",
-        unsafe_allow_html=True
-    )
+# =========================
+# TAB 2 – KONSELING PERNIKAHAN
+# =========================
+with menu[1]:
+    st.markdown("<h2 class='section-title'>Konsultasi & Konseling Pernikahan</h2>", unsafe_allow_html=True)
 
-    countdown_placeholder.markdown(
-        f"<div class='countdown'>{countdown_text}</div>",
-        unsafe_allow_html=True
-    )
+    col1, col2 = st.columns(2)
 
-    running_placeholder.markdown(
-        f"<div class='running-text'>{running_text}</div>",
-        unsafe_allow_html=True
-    )
+    with col1:
+        st.markdown(
+            """
+            <div class="card">
+                <h3>Konseling Pra Nikah</h3>
+                <ul>
+                    <li>Kesiapan mental & finansial</li>
+                    <li>Komunikasi pasangan</li>
+                    <li>Perencanaan kehidupan rumah tangga</li>
+                </ul>
+                <a class="cta" href="#">Jadwalkan Sesi</a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    time.sleep(1)
+    with col2:
+        st.markdown(
+            """
+            <div class="card">
+                <h3>Konseling Pasca Nikah</h3>
+                <ul>
+                    <li>Manajemen konflik rumah tangga</li>
+                    <li>Penguatan hubungan suami-istri</li>
+                    <li>Pendampingan masalah keluarga</li>
+                </ul>
+                <a class="cta" href="#">Konseling Sekarang</a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
+# =========================
+# TAB 3 – KONSELING PARENTING
+# =========================
+with menu[2]:
+    st.markdown("<h2 class='section-title'>Konsultasi & Konseling Parenting</h2>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown(
+            """
+            <div class="card">
+                <h3>Parenting Anak Usia Dini</h3>
+                <ul>
+                    <li>Pola asuh positif</li>
+                    <li>Perkembangan emosi anak</li>
+                    <li>Komunikasi efektif orang tua & anak</li>
+                </ul>
+                <a class="cta" href="#">Konsultasi Parenting</a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with col2:
+        st.markdown(
+            """
+            <div class="card">
+                <h3>Parenting Remaja</h3>
+                <ul>
+                    <li>Pendampingan akademik</li>
+                    <li>Masalah emosi & sosial</li>
+                    <li>Tantangan digital & pergaulan</li>
+                </ul>
+                <a class="cta" href="#">Mulai Sesi</a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+# =========================
+# FOOTER
+# =========================
+st.markdown(
+    """
+    <hr>
+    <p style="text-align:center; color:gray;">
+    © 2025 Layanan Pernikahan & Keluarga • Konseling Profesional & Terpercaya
+    </p>
+    """,
+    unsafe_allow_html=True
+)
