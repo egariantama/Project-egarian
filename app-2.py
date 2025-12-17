@@ -5,7 +5,7 @@ import urllib.parse
 # KONFIGURASI HALAMAN
 # =========================
 st.set_page_config(
-    page_title="Wedding to Fun",
+    page_title="Wedding to Fund",
     layout="centered"
 )
 
@@ -88,7 +88,7 @@ html, body, [class*="css"] {
 # =========================
 st.markdown("""
 <div class="header">
-    <h1>💍 Wedding to Fun</h1>
+    <h1>💍 Wedding to Fund</h1>
     <p>Dari persiapan pernikahan hingga membangun keluarga harmonis</p>
 </div>
 """, unsafe_allow_html=True)
@@ -276,6 +276,7 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
 
 
