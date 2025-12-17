@@ -10,16 +10,15 @@ st.set_page_config(
 )
 
 # =========================
-# NOMOR WHATSAPP (GANTI)
+# NOMOR WHATSAPP
 # =========================
-WA_NUMBER = "6281234567890"  # tanpa +
+WA_NUMBER = "6281234567890"
 
 # =========================
-# STYLE MOBILE-FIRST (FIX WARNA)
+# STYLE MOBILE-FIRST + ANIMASI PROMO
 # =========================
 st.markdown("""
 <style>
-/* RESET */
 html, body, [class*="css"] {
     background-color: #F7F9FC !important;
     color: #1A1A1A !important;
@@ -32,7 +31,7 @@ html, body, [class*="css"] {
     border-radius: 18px;
     color: white;
     text-align: center;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
 }
 .header h1 {
     font-size: 22px;
@@ -40,7 +39,23 @@ html, body, [class*="css"] {
 }
 .header p {
     font-size: 14px;
-    opacity: 0.95;
+}
+
+/* ===== PROMO ANIMATION ===== */
+.promo {
+    background: linear-gradient(90deg, #FFD200, #FFB703);
+    color: #0B1E3D;
+    padding: 14px;
+    border-radius: 14px;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 18px;
+    animation: pulse 1.8s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
 }
 
 /* ===== CARD ===== */
@@ -50,20 +65,20 @@ html, body, [class*="css"] {
     border-radius: 16px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     margin-bottom: 16px;
-    color: #1A1A1A;
 }
 .card h3 {
     color: #1E4DB7;
     font-size: 17px;
-    margin-bottom: 10px;
 }
-.card ul {
-    padding-left: 18px;
+.price {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0B1E3D;
+    margin: 10px 0;
 }
 .card li {
     font-size: 14px;
     margin-bottom: 6px;
-    color: #1A1A1A;
 }
 
 /* ===== BUTTON ===== */
@@ -73,14 +88,14 @@ html, body, [class*="css"] {
     text-align: center;
     margin-top: 14px;
     padding: 12px;
-    background-color: #FFD200;
-    color: #0B1E3D !important;
+    background-color: #1E4DB7;
+    color: white !important;
     font-weight: 700;
     border-radius: 12px;
     text-decoration: none;
 }
 
-/* ===== WHATSAPP FLOAT ===== */
+/* ===== FLOAT WA ===== */
 .whatsapp-float {
     position: fixed;
     bottom: 18px;
@@ -92,7 +107,6 @@ html, body, [class*="css"] {
     font-weight: bold;
     text-decoration: none;
     z-index: 9999;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -108,7 +122,16 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================
-# MENU MOBILE
+# PROMO
+# =========================
+st.markdown("""
+<div class="promo">
+🔥 Booking Sekarang & Dapatkan Potongan Hingga <b>20%</b> 🔥
+</div>
+""", unsafe_allow_html=True)
+
+# =========================
+# MENU
 # =========================
 menu = st.selectbox(
     "📌 Pilih Layanan",
@@ -121,11 +144,10 @@ menu = st.selectbox(
 )
 
 # =========================
-# TEMPLATE LINK WA
+# WA LINK
 # =========================
 def wa_link(pesan):
-    encoded = urllib.parse.quote(pesan)
-    return f"https://wa.me/{WA_NUMBER}?text={encoded}"
+    return f"https://wa.me/{WA_NUMBER}?text={urllib.parse.quote(pesan)}"
 
 # =========================
 # WEDDING
@@ -134,24 +156,30 @@ if menu == "💍 Paket Wedding & Pembiayaan":
     st.markdown(f"""
     <div class="card">
         <h3>Paket Wedding Silver</h3>
+        <div class="price">Rp 350.000.000</div>
         <ul>
             <li>Dekorasi & venue standar</li>
             <li>Katering 300 pax</li>
             <li>Dokumentasi</li>
-            <li>Cicilan pembiayaan</li>
+            <li>Opsi cicilan / pembiayaan</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Silver')}">Konsultasi Sekarang</a>
+        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Silver (Rp 350 Juta)')}">
+        Booking Sekarang
+        </a>
     </div>
 
     <div class="card">
         <h3>Paket Wedding Gold</h3>
+        <div class="price">Rp 550.000.000</div>
         <ul>
-            <li>WO profesional</li>
+            <li>WO profesional full day</li>
             <li>Dekorasi premium</li>
             <li>Katering 500 pax</li>
-            <li>Pembiayaan & modal keluarga</li>
+            <li>Pembiayaan & modal awal keluarga</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Gold')}">Ajukan Pembiayaan</a>
+        <a class="cta" href="{wa_link('Halo, saya tertarik Paket Wedding Gold (Rp 550 Juta)')}">
+        Ajukan Pembiayaan
+        </a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -167,7 +195,9 @@ elif menu == "💑 Konseling Pernikahan":
             <li>Komunikasi pasangan</li>
             <li>Visi rumah tangga</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Pra Nikah')}">Jadwalkan Sesi</a>
+        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Pra Nikah')}">
+        Jadwalkan Sesi
+        </a>
     </div>
 
     <div class="card">
@@ -177,7 +207,9 @@ elif menu == "💑 Konseling Pernikahan":
             <li>Penguatan hubungan</li>
             <li>Pendampingan keluarga</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Pasca Nikah')}">Mulai Konseling</a>
+        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Pasca Nikah')}">
+        Mulai Konseling
+        </a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -193,7 +225,9 @@ elif menu == "👨‍👩‍👧 Konseling Parenting":
             <li>Perkembangan emosi</li>
             <li>Komunikasi efektif</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Parenting Anak')}">Konsultasi Parenting</a>
+        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Parenting Anak')}">
+        Konsultasi Parenting
+        </a>
     </div>
 
     <div class="card">
@@ -203,12 +237,14 @@ elif menu == "👨‍👩‍👧 Konseling Parenting":
             <li>Pendampingan akademik</li>
             <li>Tantangan digital</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Parenting Remaja')}">Mulai Sesi</a>
+        <a class="cta" href="{wa_link('Halo, saya ingin Konseling Parenting Remaja')}">
+        Mulai Sesi
+        </a>
     </div>
     """, unsafe_allow_html=True)
 
 # =========================
-# FORM KONSULTASI
+# FORM
 # =========================
 elif menu == "📩 Form Konsultasi":
     st.subheader("📩 Form Konsultasi Cepat")
@@ -225,10 +261,10 @@ elif menu == "📩 Form Konsultasi":
             text = f"Halo, saya {nama}. Saya tertarik {layanan}. Pesan: {pesan}"
             st.markdown(f"[📲 Klik kirim WhatsApp]({wa_link(text)})")
         else:
-            st.warning("Mohon lengkapi nama dan pesan")
+            st.warning("Mohon lengkapi data")
 
 # =========================
-# FLOATING WHATSAPP
+# FLOAT WA
 # =========================
 st.markdown(
     f"""
