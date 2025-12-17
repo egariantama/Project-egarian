@@ -18,14 +18,10 @@ zona = st.sidebar.selectbox(
     ["WIB", "WITA", "WIT"]
 )
 
-offset = {
-    "WIB": 7,
-    "WITA": 8,
-    "WIT": 9
-}[zona]
+offset = {"WIB": 7, "WITA": 8, "WIT": 9}[zona]
 
 # =========================
-# STYLE CORPORATE MANDIRI
+# STYLE RESPONSIVE CORPORATE
 # =========================
 st.markdown(
     """
@@ -33,6 +29,8 @@ st.markdown(
     body {
         background-color: #0B1E3D;
     }
+
+    /* ===== DESKTOP / TV ===== */
     .clock {
         font-size: 100px;
         font-weight: bold;
@@ -66,6 +64,27 @@ st.markdown(
         white-space: nowrap;
         overflow: hidden;
     }
+
+    /* ===== MOBILE MODE ===== */
+    @media only screen and (max-width: 768px) {
+        .clock {
+            font-size: 48px;
+            margin-top: 10px;
+        }
+        .date {
+            font-size: 18px;
+            margin-top: 0;
+        }
+        .countdown {
+            font-size: 16px;
+            padding: 0 10px;
+        }
+        .running-text {
+            font-size: 14px;
+            padding: 6px;
+        }
+    }
+
     @keyframes marquee {
         0% { transform: translateX(100%); }
         100% { transform: translateX(-100%); }
@@ -110,30 +129,26 @@ running_placeholder = st.empty()
 # LOOP JAM
 # =========================
 while True:
-    now_utc = datetime.utcnow()
-    now = now_utc + timedelta(hours=offset)
+    now = datetime.utcnow() + timedelta(hours=offset)
 
-    # Jam & Tanggal
     jam = now.strftime("%H:%M:%S")
     hari = hari_id[now.weekday()]
     tanggal = now.day
     bulan = bulan_id[now.month - 1]
     tahun = now.year
 
-    # Countdown Ramadhan
     diff = ramadhan_date - now
     if diff.total_seconds() > 0:
         days = diff.days
         hours, remainder = divmod(diff.seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
         countdown_text = (
-            f"Menuju Bulan Suci Ramadhan 1447 H : "
+            f"Menuju Ramadhan 1447 H • "
             f"{days} Hari {hours} Jam {minutes} Menit {seconds} Detik"
         )
     else:
         countdown_text = "🌙 Selamat Menunaikan Ibadah Puasa Ramadhan 🌙"
 
-    # Render
     clock_placeholder.markdown(
         f"<div class='clock'>{jam} {zona}</div>",
         unsafe_allow_html=True
