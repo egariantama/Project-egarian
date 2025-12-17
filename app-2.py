@@ -106,7 +106,6 @@ menu = st.selectbox(
     "📌 Pilih Layanan",
     [
         "💍 Paket Wedding & Pembiayaan",
-        "💳 Simulasi Kredit Wedding",
         "💰 Metode Pembayaran",
         "💑 Konseling Pernikahan",
         "👨‍👩‍👧 Konseling Parenting",
@@ -277,6 +276,7 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
 
 
