@@ -38,13 +38,20 @@ st.markdown(
         font-weight: bold;
         text-align: center;
         color: #FFD200;
-        margin-top: 30px;
+        margin-top: 20px;
     }
     .date {
         font-size: 36px;
         text-align: center;
         color: white;
         margin-top: -20px;
+    }
+    .countdown {
+        font-size: 34px;
+        text-align: center;
+        color: #FFD200;
+        margin-top: 10px;
+        font-weight: bold;
     }
     .running-text {
         position: fixed;
@@ -71,11 +78,7 @@ st.markdown(
 # =========================
 # NAMA HARI & BULAN (ID)
 # =========================
-hari_id = [
-    "Senin", "Selasa", "Rabu",
-    "Kamis", "Jumat", "Sabtu", "Minggu"
-]
-
+hari_id = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
 bulan_id = [
     "Januari", "Februari", "Maret", "April",
     "Mei", "Juni", "Juli", "Agustus",
@@ -91,10 +94,16 @@ running_text = st.sidebar.text_input(
 )
 
 # =========================
+# TARGET RAMADHAN
+# =========================
+ramadhan_date = datetime(2026, 2, 18, 0, 0, 0)
+
+# =========================
 # PLACEHOLDER
 # =========================
 clock_placeholder = st.empty()
 date_placeholder = st.empty()
+countdown_placeholder = st.empty()
 running_placeholder = st.empty()
 
 # =========================
@@ -104,12 +113,27 @@ while True:
     now_utc = datetime.utcnow()
     now = now_utc + timedelta(hours=offset)
 
+    # Jam & Tanggal
     jam = now.strftime("%H:%M:%S")
     hari = hari_id[now.weekday()]
     tanggal = now.day
     bulan = bulan_id[now.month - 1]
     tahun = now.year
 
+    # Countdown Ramadhan
+    diff = ramadhan_date - now
+    if diff.total_seconds() > 0:
+        days = diff.days
+        hours, remainder = divmod(diff.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        countdown_text = (
+            f"Menuju Bulan Suci Ramadhan 1447 H : "
+            f"{days} Hari {hours} Jam {minutes} Menit {seconds} Detik"
+        )
+    else:
+        countdown_text = "🌙 Selamat Menunaikan Ibadah Puasa Ramadhan 🌙"
+
+    # Render
     clock_placeholder.markdown(
         f"<div class='clock'>{jam} {zona}</div>",
         unsafe_allow_html=True
@@ -117,6 +141,11 @@ while True:
 
     date_placeholder.markdown(
         f"<div class='date'>{hari}, {tanggal} {bulan} {tahun}</div>",
+        unsafe_allow_html=True
+    )
+
+    countdown_placeholder.markdown(
+        f"<div class='countdown'>{countdown_text}</div>",
         unsafe_allow_html=True
     )
 
