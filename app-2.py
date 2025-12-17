@@ -204,42 +204,49 @@ elif menu == "💰 Metode Pembayaran":
 # KONSELING
 # =========================
 elif menu == "💑 Konseling Pernikahan":
-    st.subheader("💑 Konseling Pernikahan – Pilih Psikolog")
+    st.subheader("💑 Konseling Pernikahan")
+
+    psikolog = st.selectbox(
+        "Pilih Psikolog",
+        [
+            "Dr. Maya Putri, M.Psi – Pra Nikah & Komunikasi",
+            "Ahmad Fauzi, M.Psi – Pasca Nikah & Emosi",
+            "Konselor Online – Fleksibel & Privat"
+        ]
+    )
+
+    if psikolog.startswith("Dr. Maya"):
+        deskripsi = [
+            "Spesialis Pra Nikah & Komunikasi Pasangan",
+            "Pengelolaan konflik rumah tangga",
+            "Penguatan emotional bonding"
+        ]
+        pesan_wa = "Halo, saya ingin konseling pernikahan dengan Dr. Maya Putri"
+    elif psikolog.startswith("Ahmad"):
+        deskripsi = [
+            "Konseling Pasca Nikah",
+            "Masalah kepercayaan & emosi",
+            "Manajemen stres keluarga"
+        ]
+        pesan_wa = "Halo, saya ingin konseling pernikahan dengan Ahmad Fauzi"
+    else:
+        deskripsi = [
+            "Sesi via Zoom / WhatsApp Call",
+            "Cocok untuk pasangan LDR",
+            "Privasi terjamin"
+        ]
+        pesan_wa = "Halo, saya ingin konseling pernikahan online"
 
     st.markdown(f"""
     <div class="card">
-        <h3>🧠 Dr. Maya Putri, M.Psi., Psikolog</h3>
+        <h3>🧠 {psikolog}</h3>
         <ul>
-            <li>Spesialis Pra Nikah & Komunikasi Pasangan</li>
-            <li>Pengelolaan konflik rumah tangga</li>
-            <li>Penguatan emotional bonding</li>
+            <li>{deskripsi[0]}</li>
+            <li>{deskripsi[1]}</li>
+            <li>{deskripsi[2]}</li>
         </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin konseling pernikahan dengan Dr. Maya Putri')}">
-            Konsultasi dengan Dr. Maya
-        </a>
-    </div>
-
-    <div class="card">
-        <h3>🧠 Ahmad Fauzi, M.Psi., Psikolog</h3>
-        <ul>
-            <li>Konseling Pasca Nikah</li>
-            <li>Masalah kepercayaan & emosi</li>
-            <li>Manajemen stres keluarga</li>
-        </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin konseling pernikahan dengan Ahmad Rizky')}">
-            Konsultasi dengan Psikolog Ahmad
-        </a>
-    </div>
-
-    <div class="card">
-        <h3>🧠 Konselor Pernikahan (Online)</h3>
-        <ul>
-            <li>Sesi fleksibel via Zoom / WhatsApp Call</li>
-            <li>Cocok untuk pasangan LDR</li>
-            <li>Privasi terjamin</li>
-        </ul>
-        <a class="cta" href="{wa_link('Halo, saya ingin konseling pernikahan online')}">
-            Booking Sesi Online
+        <a class="cta" href="https://wa.me/{WA_NUMBER}?text={urllib.parse.quote(pesan_wa)}">
+            Konsultasi Sekarang
         </a>
     </div>
     """, unsafe_allow_html=True)
@@ -276,6 +283,7 @@ st.markdown(f"""
 💬 WhatsApp
 </a>
 """, unsafe_allow_html=True)
+
 
 
 
