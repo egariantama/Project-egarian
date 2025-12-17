@@ -1,4 +1,5 @@
 import streamlit as st
+import urllib.parse
 
 # =========================
 # KONFIGURASI HALAMAN
@@ -9,201 +10,232 @@ st.set_page_config(
 )
 
 # =========================
-# STYLE GLOBAL
+# NOMOR WHATSAPP (GANTI)
 # =========================
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #F7F9FC;
-    }
-    .header {
-        background: linear-gradient(135deg, #0B1E3D, #1E4DB7);
-        padding: 40px;
-        border-radius: 12px;
-        color: white;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    .section-title {
-        color: #0B1E3D;
-        margin-bottom: 20px;
-    }
-    .card {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-        height: 100%;
-    }
-    .cta {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 10px 16px;
-        background-color: #FFD200;
-        color: #0B1E3D;
-        font-weight: bold;
-        border-radius: 8px;
-        text-decoration: none;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+WA_NUMBER = "6281234567890"  # tanpa +
+
+# =========================
+# STYLE MOBILE-FIRST
+# =========================
+st.markdown("""
+<style>
+body {
+    background-color: #F7F9FC;
+    color: #1A1A1A;
+}
+
+/* ===== HEADER ===== */
+.header {
+    background: linear-gradient(135deg, #0B1E3D, #1E4DB7);
+    padding: 28px;
+    border-radius: 16px;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.header h1 {
+    font-size: 24px;
+}
+.header p {
+    font-size: 14px;
+    opacity: 0.95;
+}
+
+/* ===== CARD ===== */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    margin-bottom: 18px;
+}
+.card h3 {
+    color: #1E4DB7;
+    font-size: 18px;
+}
+.card li {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+/* ===== BUTTON ===== */
+.cta {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 14px;
+    padding: 12px;
+    background-color: #FFD200;
+    color: #0B1E3D;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+/* ===== WHATSAPP FLOAT ===== */
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 18px;
+    background-color: #25D366;
+    color: white;
+    padding: 14px 16px;
+    border-radius: 50px;
+    font-weight: bold;
+    text-decoration: none;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+</style>
+""", unsafe_allow_html=True)
 
 # =========================
 # HEADER
 # =========================
-st.markdown(
-    """
-    <div class="header">
-        <h1>Layanan Pernikahan & Keluarga</h1>
-        <p>Mendampingi perjalanan sakral pernikahan hingga membangun keluarga harmonis</p>
-    </div>
-    """,
-    unsafe_allow_html=True
+st.markdown("""
+<div class="header">
+    <h1>💍 Layanan Pernikahan & Keluarga</h1>
+    <p>Dari persiapan pernikahan hingga membangun keluarga harmonis</p>
+</div>
+""", unsafe_allow_html=True)
+
+# =========================
+# MENU MOBILE (SELECTBOX)
+# =========================
+menu = st.selectbox(
+    "Pilih Layanan",
+    [
+        "💍 Paket Wedding & Pembiayaan",
+        "💑 Konseling Pernikahan",
+        "👨‍👩‍👧 Konseling Parenting",
+        "📩 Form Konsultasi"
+    ]
 )
 
 # =========================
-# MENU NAVIGASI
+# WEDDING
 # =========================
-menu = st.tabs([
-    "💍 Paket Wedding & Pembiayaan",
-    "💑 Konseling Pernikahan",
-    "👨‍👩‍👧 Konseling Parenting"
-])
+if menu == "💍 Paket Wedding & Pembiayaan":
+    st.markdown("""
+    <div class="card">
+        <h3>Paket Wedding Silver</h3>
+        <ul>
+            <li>Dekorasi & venue standar</li>
+            <li>Katering 300 pax</li>
+            <li>Dokumentasi</li>
+            <li>Cicilan pembiayaan</li>
+        </ul>
+        <a class="cta" href="#">Konsultasi Sekarang</a>
+    </div>
 
-# =========================
-# TAB 1 – WEDDING
-# =========================
-with menu[0]:
-    st.markdown("<h2 class='section-title'>Penawaran Paket Wedding & Pembiayaan</h2>", unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown(
-            """
-            <div class="card">
-                <h3>Paket Wedding Silver</h3>
-                <ul>
-                    <li>Venue & dekorasi standar</li>
-                    <li>MC & dokumentasi</li>
-                    <li>Katering 300 pax</li>
-                    <li>Opsi cicilan pembiayaan</li>
-                </ul>
-                <a class="cta" href="#">Konsultasi Sekarang</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with col2:
-        st.markdown(
-            """
-            <div class="card">
-                <h3>Paket Wedding Gold</h3>
-                <ul>
-                    <li>Venue premium & dekorasi eksklusif</li>
-                    <li>Wedding Organizer profesional</li>
-                    <li>Katering 500 pax</li>
-                    <li>Pembiayaan & modal usaha keluarga</li>
-                </ul>
-                <a class="cta" href="#">Ajukan Pembiayaan</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    <div class="card">
+        <h3>Paket Wedding Gold</h3>
+        <ul>
+            <li>WO profesional</li>
+            <li>Dekorasi premium</li>
+            <li>Katering 500 pax</li>
+            <li>Pembiayaan & modal keluarga</li>
+        </ul>
+        <a class="cta" href="#">Ajukan Pembiayaan</a>
+    </div>
+    """, unsafe_allow_html=True)
 
 # =========================
-# TAB 2 – KONSELING PERNIKAHAN
+# KONSELING PERNIKAHAN
 # =========================
-with menu[1]:
-    st.markdown("<h2 class='section-title'>Konsultasi & Konseling Pernikahan</h2>", unsafe_allow_html=True)
+elif menu == "💑 Konseling Pernikahan":
+    st.markdown("""
+    <div class="card">
+        <h3>Konseling Pra Nikah</h3>
+        <ul>
+            <li>Kesiapan mental & finansial</li>
+            <li>Komunikasi pasangan</li>
+            <li>Visi rumah tangga</li>
+        </ul>
+        <a class="cta" href="#">Jadwalkan Sesi</a>
+    </div>
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown(
-            """
-            <div class="card">
-                <h3>Konseling Pra Nikah</h3>
-                <ul>
-                    <li>Kesiapan mental & finansial</li>
-                    <li>Komunikasi pasangan</li>
-                    <li>Perencanaan kehidupan rumah tangga</li>
-                </ul>
-                <a class="cta" href="#">Jadwalkan Sesi</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with col2:
-        st.markdown(
-            """
-            <div class="card">
-                <h3>Konseling Pasca Nikah</h3>
-                <ul>
-                    <li>Manajemen konflik rumah tangga</li>
-                    <li>Penguatan hubungan suami-istri</li>
-                    <li>Pendampingan masalah keluarga</li>
-                </ul>
-                <a class="cta" href="#">Konseling Sekarang</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    <div class="card">
+        <h3>Konseling Pasca Nikah</h3>
+        <ul>
+            <li>Manajemen konflik</li>
+            <li>Penguatan hubungan</li>
+            <li>Pendampingan keluarga</li>
+        </ul>
+        <a class="cta" href="#">Mulai Konseling</a>
+    </div>
+    """, unsafe_allow_html=True)
 
 # =========================
-# TAB 3 – KONSELING PARENTING
+# PARENTING
 # =========================
-with menu[2]:
-    st.markdown("<h2 class='section-title'>Konsultasi & Konseling Parenting</h2>", unsafe_allow_html=True)
+elif menu == "👨‍👩‍👧 Konseling Parenting":
+    st.markdown("""
+    <div class="card">
+        <h3>Parenting Anak Usia Dini</h3>
+        <ul>
+            <li>Pola asuh positif</li>
+            <li>Perkembangan emosi</li>
+            <li>Komunikasi efektif</li>
+        </ul>
+        <a class="cta" href="#">Konsultasi Parenting</a>
+    </div>
 
-    col1, col2 = st.columns(2)
+    <div class="card">
+        <h3>Parenting Remaja</h3>
+        <ul>
+            <li>Masalah emosi & sosial</li>
+            <li>Pendampingan akademik</li>
+            <li>Tantangan digital</li>
+        </ul>
+        <a class="cta" href="#">Mulai Sesi</a>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with col1:
-        st.markdown(
-            """
-            <div class="card">
-                <h3>Parenting Anak Usia Dini</h3>
-                <ul>
-                    <li>Pola asuh positif</li>
-                    <li>Perkembangan emosi anak</li>
-                    <li>Komunikasi efektif orang tua & anak</li>
-                </ul>
-                <a class="cta" href="#">Konsultasi Parenting</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+# =========================
+# FORM KONSULTASI
+# =========================
+elif menu == "📩 Form Konsultasi":
+    st.subheader("📩 Form Konsultasi Cepat")
 
-    with col2:
-        st.markdown(
-            """
-            <div class="card">
-                <h3>Parenting Remaja</h3>
-                <ul>
-                    <li>Pendampingan akademik</li>
-                    <li>Masalah emosi & sosial</li>
-                    <li>Tantangan digital & pergaulan</li>
-                </ul>
-                <a class="cta" href="#">Mulai Sesi</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    nama = st.text_input("Nama Lengkap")
+    layanan = st.selectbox(
+        "Pilih Layanan",
+        ["Wedding", "Konseling Pernikahan", "Konseling Parenting"]
+    )
+    pesan = st.text_area("Ceritakan kebutuhan Anda")
+
+    if st.button("Kirim via WhatsApp"):
+        text = f"""
+Halo, saya *{nama}*
+Saya tertarik dengan layanan *{layanan}*
+Pesan:
+{pesan}
+"""
+        encoded = urllib.parse.quote(text)
+        wa_url = f"https://wa.me/{WA_NUMBER}?text={encoded}"
+        st.markdown(f"[Klik untuk kirim WhatsApp]({wa_url})")
+
+# =========================
+# FLOATING WHATSAPP
+# =========================
+st.markdown(
+    f"""
+    <a class="whatsapp-float"
+       href="https://wa.me/{WA_NUMBER}"
+       target="_blank">
+       💬 WhatsApp
+    </a>
+    """,
+    unsafe_allow_html=True
+)
 
 # =========================
 # FOOTER
 # =========================
-st.markdown(
-    """
-    <hr>
-    <p style="text-align:center; color:gray;">
-    © 2025 Layanan Pernikahan & Keluarga • Konseling Profesional & Terpercaya
-    </p>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<hr>
+<p style="text-align:center; font-size:13px; color:#666;">
+© 2025 Layanan Pernikahan & Keluarga • Mobile Friendly
+</p>
+""", unsafe_allow_html=True)
