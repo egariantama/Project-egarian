@@ -109,7 +109,7 @@ bulan_id = [
 # =========================
 running_text = st.sidebar.text_input(
     "Running Text Informasi",
-    "Hai... Destia Chairany. R, ayok semangat aku sayang sama kamu, kamu cantik hari ini, kamu spesial banget buat aku"
+    "Custom Tetx"
 )
 
 # =========================
@@ -170,3 +170,4 @@ while True:
     )
 
     time.sleep(1)
+
