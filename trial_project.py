@@ -17,23 +17,36 @@ st.title("📊 Bancassurance Performance Report")
 st.caption("Nilai Pertanggungan & Fee Based Income (Rp Miliar)")
 
 # =========================
-# SIDEBAR - UPLOAD EXCEL
+# SIDEBAR - UPLOAD FILE
 # =========================
 st.sidebar.header("📤 Upload Data")
+
 uploaded_file = st.sidebar.file_uploader(
-    "Upload Excel Bancassurance",
-    type=["xlsx"]
+    "Upload file Excel (.xlsx) atau CSV",
+    type=["xlsx", "csv"]
 )
 
 if uploaded_file is None:
-    st.warning("⚠️ Silakan upload file Excel terlebih dahulu")
+    st.warning("⚠️ Silakan upload file terlebih dahulu")
     st.stop()
 
 # =========================
-# LOAD DATA
+# LOAD DATA (ROBUST)
 # =========================
-df = pd.read_excel(uploaded_file)
+try:
+    if uploaded_file.name.endswith(".csv"):
+        df = pd.read_csv(uploaded_file)
+    else:
+        # explicit engine to avoid Python 3.13 issue
+        df = pd.read_excel(uploaded_file, engine="openpyxl")
+except Exception as e:
+    st.error("❌ Gagal membaca file")
+    st.exception(e)
+    st.stop()
 
+# =========================
+# REQUIRED COLUMNS
+# =========================
 required_cols = [
     "Tipe_Kerjasama",
     "Jenis_Asuransi",
@@ -48,7 +61,7 @@ required_cols = [
 
 missing_cols = [c for c in required_cols if c not in df.columns]
 if missing_cols:
-    st.error(f"❌ Kolom berikut tidak ditemukan di Excel: {missing_cols}")
+    st.error(f"❌ Kolom berikut tidak ditemukan: {missing_cols}")
     st.stop()
 
 # =========================
@@ -63,9 +76,11 @@ numeric_cols = [
     "FBI_Nov25"
 ]
 
-df[numeric_cols] = df[numeric_cols].apply(
-    pd.to_numeric, errors="coerce"
-).fillna(0)
+df[numeric_cols] = (
+    df[numeric_cols]
+    .apply(pd.to_numeric, errors="coerce")
+    .fillna(0)
+)
 
 # =========================
 # CALCULATION
@@ -95,6 +110,7 @@ df["FBI_Growth_YoY_%"] = np.where(
 # SIDEBAR FILTER
 # =========================
 st.sidebar.header("🔎 Filter Data")
+
 tipe_filter = st.sidebar.multiselect(
     "Tipe Kerjasama",
     options=df["Tipe_Kerjasama"].unique(),
@@ -119,8 +135,8 @@ with col1:
 
 with col2:
     yoy_np_pct = (
-        filtered["NP_Growth_YoY"].sum() /
-        filtered["NP_Nov24"].sum() * 100
+        filtered["NP_Growth_YoY"].sum()
+        / filtered["NP_Nov24"].sum() * 100
         if filtered["NP_Nov24"].sum() > 0 else 0
     )
     st.metric("Growth NP YoY (%)", f"{yoy_np_pct:.1f}%")
@@ -134,8 +150,8 @@ with col3:
 
 with col4:
     yoy_fbi_pct = (
-        filtered["FBI_Growth_YoY"].sum() /
-        filtered["FBI_Nov24"].sum() * 100
+        filtered["FBI_Growth_YoY"].sum()
+        / filtered["FBI_Nov24"].sum() * 100
         if filtered["FBI_Nov24"].sum() > 0 else 0
     )
     st.metric("Growth FBI YoY (%)", f"{yoy_fbi_pct:.1f}%")
@@ -171,7 +187,7 @@ st.dataframe(
         "NP_Growth_YTD": "{:,.0f}",
         "NP_Growth_YTD_%": "{:.1f}%",
         "NP_Growth_YoY": "{:,.0f}",
-        "NP_Growth_YoY_%" : "{:.1f}%",
+        "NP_Growth_YoY_%": "{:.1f}%",
         "FBI_Nov24": "{:,.2f}",
         "FBI_Dec24": "{:,.2f}",
         "FBI_Nov25": "{:,.2f}",
@@ -199,11 +215,16 @@ st.dataframe(subtotal, use_container_width=True)
 # =========================
 st.subheader("🏁 Total Keseluruhan")
 
-total = filtered[numeric_cols + [
-    "NP_Growth_YTD",
-    "NP_Growth_YoY",
-    "FBI_Growth_YoY"
-]].sum().to_frame("Total").T
+total = (
+    filtered[numeric_cols + [
+        "NP_Growth_YTD",
+        "NP_Growth_YoY",
+        "FBI_Growth_YoY"
+    ]]
+    .sum()
+    .to_frame("Total")
+    .T
+)
 
 st.dataframe(total, use_container_width=True)
 
