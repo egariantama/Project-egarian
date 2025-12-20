@@ -6,150 +6,237 @@ import numpy as np
 # PAGE CONFIG
 # =========================
 st.set_page_config(
-    page_title="Bancassurance Digital Dashboard",
-    page_icon="📊",
+    page_title="Bancassurance Performance Report",
     layout="wide"
 )
 
 # =========================
-# STYLE CSS
+# TITLE
 # =========================
-st.markdown("""
-<style>
-h1, h2, h3 {
-    font-family: "Segoe UI", sans-serif;
-}
-.metric-title {
-    font-size: 14px;
-    color: #6c757d;
-}
-.metric-value {
-    font-size: 24px;
-    font-weight: bold;
-}
-.card {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 10px;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
-}
-.sidebar .sidebar-content {
-    background-color: #0d47a1;
-    color: white;
-}
-</style>
-""", unsafe_allow_html=True)
+st.title("📊 Bancassurance Performance Report")
+st.caption("Nilai Pertanggungan & Fee Based Income (Rp Miliar)")
 
 # =========================
-# HEADER
+# SIDEBAR - UPLOAD FILE
 # =========================
-st.title("📊 Bancassurance Digital Dashboard")
-st.write("Laporan Nilai Pertanggungan & Fee Based Income")
-
-# =========================
-# SIDEBAR MENU
-# =========================
-menu = st.sidebar.selectbox(
-    "📌 Menu",
-    ["Dashboard", "Detail Performance", "Subtotal", "Growth Chart"]
-)
+st.sidebar.header("📤 Upload Data")
 
 uploaded_file = st.sidebar.file_uploader(
-    "📤 Upload Data (CSV)",
-    type=["csv"]
+    "Upload file Excel (.xlsx) atau CSV",
+    type=["xlsx", "csv"]
 )
 
 if uploaded_file is None:
-    st.sidebar.warning("Upload file CSV dari Excel terlebih dahulu")
+    st.warning("⚠️ Silakan upload file terlebih dahulu")
     st.stop()
 
 # =========================
-# READ DATA
+# LOAD DATA (ROBUST)
 # =========================
 try:
-    df = pd.read_csv(uploaded_file)
+    if uploaded_file.name.endswith(".csv"):
+        df = pd.read_csv(uploaded_file)
+    else:
+        # explicit engine to avoid Python 3.13 issue
+        df = pd.read_excel(uploaded_file, engine="openpyxl")
 except Exception as e:
-    st.error("❌ Tidak bisa membaca file CSV")
+    st.error("❌ Gagal membaca file")
+    st.exception(e)
     st.stop()
 
+# =========================
+# REQUIRED COLUMNS
+# =========================
 required_cols = [
-    "Tipe_Kerjasama","Jenis_Asuransi","Asuradur",
-    "NP_Nov24","NP_Dec24","NP_Nov25",
-    "FBI_Nov24","FBI_Dec24","FBI_Nov25"
+    "Tipe_Kerjasama",
+    "Jenis_Asuransi",
+    "Asuradur",
+    "NP_Nov24",
+    "NP_Dec24",
+    "NP_Nov25",
+    "FBI_Nov24",
+    "FBI_Dec24",
+    "FBI_Nov25"
 ]
 
-missing = [c for c in required_cols if c not in df.columns]
-if missing:
-    st.error(f"Kolom tidak lengkap: {missing}")
+missing_cols = [c for c in required_cols if c not in df.columns]
+if missing_cols:
+    st.error(f"❌ Kolom berikut tidak ditemukan: {missing_cols}")
     st.stop()
 
-df[required_cols[3:]] = df[required_cols[3:]].apply(pd.to_numeric, errors="coerce").fillna(0)
+# =========================
+# DATA PREPARATION
+# =========================
+numeric_cols = [
+    "NP_Nov24",
+    "NP_Dec24",
+    "NP_Nov25",
+    "FBI_Nov24",
+    "FBI_Dec24",
+    "FBI_Nov25"
+]
+
+df[numeric_cols] = (
+    df[numeric_cols]
+    .apply(pd.to_numeric, errors="coerce")
+    .fillna(0)
+)
 
 # =========================
-# CALCULATIONS
+# CALCULATION
 # =========================
 df["NP_Growth_YTD"] = df["NP_Nov25"] - df["NP_Dec24"]
-df["NP_Growth_YTD_%"] = np.where(df["NP_Dec24"] > 0, df["NP_Growth_YTD"] / df["NP_Dec24"] * 100, 0)
+df["NP_Growth_YTD_%"] = np.where(
+    df["NP_Dec24"] > 0,
+    df["NP_Growth_YTD"] / df["NP_Dec24"] * 100,
+    0
+)
 
 df["NP_Growth_YoY"] = df["NP_Nov25"] - df["NP_Nov24"]
-df["NP_Growth_YoY_%"] = np.where(df["NP_Nov24"] > 0, df["NP_Growth_YoY"] / df["NP_Nov24"] * 100, 0)
+df["NP_Growth_YoY_%"] = np.where(
+    df["NP_Nov24"] > 0,
+    df["NP_Growth_YoY"] / df["NP_Nov24"] * 100,
+    0
+)
 
 df["FBI_Growth_YoY"] = df["FBI_Nov25"] - df["FBI_Nov24"]
-df["FBI_Growth_YoY_%"] = np.where(df["FBI_Nov24"] > 0, df["FBI_Growth_YoY"] / df["FBI_Nov24"] * 100, 0)
+df["FBI_Growth_YoY_%"] = np.where(
+    df["FBI_Nov24"] > 0,
+    df["FBI_Growth_YoY"] / df["FBI_Nov24"] * 100,
+    0
+)
 
 # =========================
-# FILTER
+# SIDEBAR FILTER
 # =========================
-st.sidebar.markdown("---")
+st.sidebar.header("🔎 Filter Data")
+
 tipe_filter = st.sidebar.multiselect(
-    "Filter Tipe Kerjasama",
-    df["Tipe_Kerjasama"].unique(),
+    "Tipe Kerjasama",
+    options=df["Tipe_Kerjasama"].unique(),
     default=df["Tipe_Kerjasama"].unique()
 )
-df = df[df["Tipe_Kerjasama"].isin(tipe_filter)]
+
+filtered = df[df["Tipe_Kerjasama"].isin(tipe_filter)]
 
 # =========================
-# DASHBOARD
+# EXECUTIVE SUMMARY
 # =========================
-if menu == "Dashboard":
-    st.subheader("📌 Summary Metrics")
+st.subheader("📌 Executive Summary")
 
-    col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns(4)
 
-    with col1:
-        st.markdown("<div class='card'><div class='metric-title'>Total NP Nov-25</div><div class='metric-value'>Rp {:,.0f}</div></div>".format(df["NP_Nov25"].sum()), unsafe_allow_html=True)
-    with col2:
-        st.markdown("<div class='card'><div class='metric-title'>Growth NP YoY (%)</div><div class='metric-value'>{:.1f}%</div></div>".format(df["NP_Growth_YoY_%"].mean()), unsafe_allow_html=True)
-    with col3:
-        st.markdown("<div class='card'><div class='metric-title'>Total FBI Nov-25</div><div class='metric-value'>Rp {:,.2f}</div></div>".format(df["FBI_Nov25"].sum()), unsafe_allow_html=True)
-    with col4:
-        st.markdown("<div class='card'><div class='metric-title'>Growth FBI YoY (%)</div><div class='metric-value'>{:.1f}%</div></div>".format(df["FBI_Growth_YoY_%"].mean()), unsafe_allow_html=True)
+with col1:
+    st.metric(
+        "Total NP Nov-25",
+        f"{filtered['NP_Nov25'].sum():,.0f}",
+        f"{filtered['NP_Growth_YoY'].sum():,.0f}"
+    )
+
+with col2:
+    yoy_np_pct = (
+        filtered["NP_Growth_YoY"].sum()
+        / filtered["NP_Nov24"].sum() * 100
+        if filtered["NP_Nov24"].sum() > 0 else 0
+    )
+    st.metric("Growth NP YoY (%)", f"{yoy_np_pct:.1f}%")
+
+with col3:
+    st.metric(
+        "Total FBI Nov-25",
+        f"{filtered['FBI_Nov25'].sum():,.2f}",
+        f"{filtered['FBI_Growth_YoY'].sum():,.2f}"
+    )
+
+with col4:
+    yoy_fbi_pct = (
+        filtered["FBI_Growth_YoY"].sum()
+        / filtered["FBI_Nov24"].sum() * 100
+        if filtered["FBI_Nov24"].sum() > 0 else 0
+    )
+    st.metric("Growth FBI YoY (%)", f"{yoy_fbi_pct:.1f}%")
 
 # =========================
-# DETAIL PERFORMANCE
-elif menu == "Detail Performance":
-    st.subheader("📋 Detail Performance")
-    disp_cols = [
-        "Tipe_Kerjasama","Jenis_Asuransi","Asuradur",
-        "NP_Nov24","NP_Dec24","NP_Nov25",
-        "NP_Growth_YTD","NP_Growth_YTD_%","NP_Growth_YoY","NP_Growth_YoY_%",
-        "FBI_Nov24","FBI_Dec24","FBI_Nov25","FBI_Growth_YoY","FBI_Growth_YoY_%"
-    ]
-    st.dataframe(df[disp_cols].style.format({
-        "NP_Nov24":"{:,.0f}","NP_Nov25":"{:,.0f}","NP_Growth_YTD":"{:,.0f}",
-        "NP_Growth_YTD_%":"{:.1f}%","NP_Growth_YoY_%":"{:.1f}%"
-    }), use_container_width=True)
+# DETAIL TABLE
+# =========================
+st.subheader("📋 Detail Performance")
+
+display_cols = [
+    "Tipe_Kerjasama",
+    "Jenis_Asuransi",
+    "Asuradur",
+    "NP_Nov24",
+    "NP_Dec24",
+    "NP_Nov25",
+    "NP_Growth_YTD",
+    "NP_Growth_YTD_%",
+    "NP_Growth_YoY",
+    "NP_Growth_YoY_%",
+    "FBI_Nov24",
+    "FBI_Dec24",
+    "FBI_Nov25",
+    "FBI_Growth_YoY",
+    "FBI_Growth_YoY_%"
+]
+
+st.dataframe(
+    filtered[display_cols].style.format({
+        "NP_Nov24": "{:,.0f}",
+        "NP_Dec24": "{:,.0f}",
+        "NP_Nov25": "{:,.0f}",
+        "NP_Growth_YTD": "{:,.0f}",
+        "NP_Growth_YTD_%": "{:.1f}%",
+        "NP_Growth_YoY": "{:,.0f}",
+        "NP_Growth_YoY_%": "{:.1f}%",
+        "FBI_Nov24": "{:,.2f}",
+        "FBI_Dec24": "{:,.2f}",
+        "FBI_Nov25": "{:,.2f}",
+        "FBI_Growth_YoY": "{:,.2f}",
+        "FBI_Growth_YoY_%": "{:.1f}%"
+    }),
+    use_container_width=True
+)
 
 # =========================
 # SUBTOTAL
-elif menu == "Subtotal":
-    st.subheader("📌 Subtotal per Tipe Kerjasama")
-    st.dataframe(df.groupby("Tipe_Kerjasama", as_index=False).sum(numeric_only=True), use_container_width=True)
+# =========================
+st.subheader("📌 Subtotal per Tipe Kerjasama")
+
+subtotal = (
+    filtered
+    .groupby("Tipe_Kerjasama", as_index=False)
+    .sum(numeric_only=True)
+)
+
+st.dataframe(subtotal, use_container_width=True)
+
+# =========================
+# TOTAL
+# =========================
+st.subheader("🏁 Total Keseluruhan")
+
+total = (
+    filtered[numeric_cols + [
+        "NP_Growth_YTD",
+        "NP_Growth_YoY",
+        "FBI_Growth_YoY"
+    ]]
+    .sum()
+    .to_frame("Total")
+    .T
+)
+
+st.dataframe(total, use_container_width=True)
 
 # =========================
 # CHART
-elif menu == "Growth Chart":
-    st.subheader("📈 Growth YoY Chart")
+# =========================
+st.subheader("📈 Growth YoY Comparison")
 
-    chart_data = df.groupby("Jenis_Asuransi")[["NP_Growth_YoY","FBI_Growth_YoY"]].sum()
-    st.bar_chart(chart_data)
+chart_data = (
+    filtered
+    .groupby("Jenis_Asuransi")[["NP_Growth_YoY", "FBI_Growth_YoY"]]
+    .sum()
+)
+
+st.bar_chart(chart_data)
