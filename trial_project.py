@@ -5,7 +5,7 @@ import os
 from fpdf import FPDF
 
 # =========================
-# PAGE CONFIG (MOBILE FIRST)
+# PAGE CONFIG
 # =========================
 st.set_page_config(
     page_title="Bancassurance Performance Report",
@@ -14,31 +14,33 @@ st.set_page_config(
 )
 
 DATA_PATH = "data/bancassurance.csv"
+ADMIN_KEY = "MANDIRI2025"   # 🔐 ganti sesuai kebijakan internal
 
 # =========================
 # BRANDING BANK MANDIRI
 # =========================
 st.markdown("""
 <style>
-/* Global */
+/* ===== GLOBAL ===== */
 body, .stApp {
     background-color: #ffffff;
     color: #1f2937;
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Header */
+/* ===== HEADER ===== */
 h1, h2, h3 {
     color: #003d79;
+    font-weight: 700;
 }
 
-/* Metric Card */
+/* ===== METRIC CARD ===== */
 .metric-card {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    padding: 16px;
-    border-radius: 14px;
-    margin-bottom: 12px;
+    border: 2px solid #e5e7eb;
+    padding: 18px;
+    border-radius: 16px;
+    margin-bottom: 14px;
 }
 
 .metric-label {
@@ -47,27 +49,42 @@ h1, h2, h3 {
 }
 
 .metric-value {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 800;
     color: #003d79;
 }
 
-/* Growth Color */
-.positive { color: #1b5e20; }
-.negative { color: #b71c1c; }
+/* ===== GROWTH ===== */
+.positive { color: #1b5e20; font-weight: 700; }
+.negative { color: #b71c1c; font-weight: 700; }
 .neutral  { color: #6b7280; }
 
-/* Button */
+/* ===== PRIMARY BUTTON ===== */
 .stButton > button {
-    background-color: #f9b233;
-    color: #003d79;
-    border-radius: 10px;
-    font-weight: bold;
+    width: 100%;
+    background-color: #003d79;
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 700;
     border: none;
+    font-size: 15px;
 }
 
 .stButton > button:hover {
-    background-color: #f4a900;
+    background-color: #002855;
+}
+
+/* ===== SECONDARY BUTTON ===== */
+.secondary-btn button {
+    background-color: #f9b233 !important;
+    color: #003d79 !important;
+}
+
+/* ===== EXPANDER ===== */
+details summary {
+    font-weight: 700;
+    color: #003d79;
 }
 
 /* Hide footer */
@@ -82,21 +99,39 @@ st.title("📊 Bancassurance Performance Report")
 st.caption("Monitoring Nilai Pertanggungan & Fee Based Income")
 
 # =========================
-# ADMIN UPLOAD (TANPA LOGIN)
+# ADMIN ACCESS
 # =========================
-with st.expander("📤 Upload / Update Data (CSV dari Excel)"):
-    uploaded_file = st.file_uploader("Upload File CSV", type=["csv"])
-    if uploaded_file:
-        df_upload = pd.read_csv(uploaded_file)
-        os.makedirs("data", exist_ok=True)
-        df_upload.to_csv(DATA_PATH, index=False)
-        st.success("✅ Data berhasil diperbarui")
+st.markdown("### 🔐 Admin Access")
+admin_input = st.text_input(
+    "Masukkan Admin Key (hanya untuk upload data)",
+    type="password",
+    placeholder="Admin Only"
+)
+
+is_admin = admin_input == ADMIN_KEY
+
+# =========================
+# ADMIN UPLOAD (PROTECTED)
+# =========================
+if is_admin:
+    with st.expander("📤 Upload / Update Data Bancassurance (CSV)"):
+        uploaded_file = st.file_uploader(
+            "Upload File CSV dari Excel",
+            type=["csv"]
+        )
+        if uploaded_file:
+            df_upload = pd.read_csv(uploaded_file)
+            os.makedirs("data", exist_ok=True)
+            df_upload.to_csv(DATA_PATH, index=False)
+            st.success("✅ Data berhasil diperbarui oleh Admin")
+else:
+    st.info("ℹ️ Upload data hanya dapat dilakukan oleh Admin")
 
 # =========================
 # LOAD DATA
 # =========================
 if not os.path.exists(DATA_PATH):
-    st.info("📌 Data belum tersedia. Silakan upload file CSV.")
+    st.warning("📌 Data belum tersedia. Menunggu Admin upload data.")
     st.stop()
 
 df = pd.read_csv(DATA_PATH)
@@ -158,18 +193,16 @@ def growth_class(val):
     return "neutral"
 
 # =========================
-# TABS (MOBILE FRIENDLY)
+# TABS
 # =========================
-tab1, tab2, tab3 = st.tabs([
-    "📊 Summary",
-    "📋 Detail",
-    "📈 Chart"
-])
+tab1, tab2, tab3 = st.tabs(["📊 Summary", "📋 Detail", "📈 Chart"])
 
 # =========================
 # SUMMARY
 # =========================
 with tab1:
+    st.markdown("### 📌 Executive Summary")
+
     total_np = df["NP_Nov25"].sum()
     total_fbi = df["FBI_Nov25"].sum()
     np_growth = df["NP_Growth_YoY_%"].mean()
@@ -177,7 +210,7 @@ with tab1:
 
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-label">Total NP Nov-25</div>
+        <div class="metric-label">Total Nilai Pertanggungan (Nov-25)</div>
         <div class="metric-value">Rp {total_np:,.0f}</div>
     </div>
 
@@ -187,7 +220,7 @@ with tab1:
     </div>
 
     <div class="metric-card">
-        <div class="metric-label">Total FBI Nov-25</div>
+        <div class="metric-label">Total Fee Based Income (Nov-25)</div>
         <div class="metric-value">Rp {total_fbi:,.2f}</div>
     </div>
 
@@ -201,7 +234,7 @@ with tab1:
 # DETAIL
 # =========================
 with tab2:
-    st.subheader("📋 Detail Bancassurance Performance")
+    st.markdown("### 📋 Detail Bancassurance Performance")
 
     display_cols = [
         "Tipe_Kerjasama","Jenis_Asuransi","Asuradur",
@@ -225,13 +258,12 @@ with tab2:
 # CHART
 # =========================
 with tab3:
-    st.subheader("📈 Growth YoY Comparison")
+    st.markdown("### 📈 Growth YoY Comparison")
 
     chart_data = (
         df.groupby("Jenis_Asuransi")[["NP_Growth_YoY","FBI_Growth_YoY"]]
         .sum()
     )
-
     st.bar_chart(chart_data)
 
 # =========================
