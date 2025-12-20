@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import os
+from fpdf import FPDF
 
 # =========================
-# PAGE CONFIG (MOBILE FIRST)
+# CONFIG
 # =========================
 st.set_page_config(
     page_title="Bancassurance Performance App",
@@ -11,64 +13,80 @@ st.set_page_config(
     layout="centered"
 )
 
-# =========================
-# SESSION STATE
-# =========================
-if "role" not in st.session_state:
-    st.session_state.role = None
+DATA_PATH = "data/bancassurance.csv"
 
-if "data" not in st.session_state:
-    st.session_state.data = None
+USERS = {
+    "admin": {"password": "admin123", "role": "Admin"},
+    "user": {"password": "user123", "role": "User"}
+}
 
 # =========================
-# SIMPLE LOGIN
+# BRANDING (MANDIRI STYLE)
+# =========================
+st.markdown("""
+<style>
+body { background-color: #f5f7fa; }
+h1, h2, h3 { color: #003d79; }
+
+.metric-card {
+    background: white;
+    padding: 16px;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+}
+
+.label { font-size: 14px; color: #6c757d; }
+.value { font-size: 22px; font-weight: bold; }
+
+.positive { color: #2e7d32; }
+.negative { color: #c62828; }
+.neutral { color: #6c757d; }
+
+footer { visibility: hidden; }
+</style>
+""", unsafe_allow_html=True)
+
+# =========================
+# LOGIN
 # =========================
 st.sidebar.title("🔐 Login")
 
-role = st.sidebar.selectbox(
-    "Pilih Role",
-    ["User", "Admin"]
-)
+username = st.sidebar.text_input("Username")
+password = st.sidebar.text_input("Password", type="password")
 
-if role == "Admin":
-    password = st.sidebar.text_input("Password Admin", type="password")
-    if password == "admin123":   # 👉 ganti password sesuai kebijakan
-        st.session_state.role = "Admin"
-        st.sidebar.success("Login sebagai Admin")
-    else:
-        st.sidebar.warning("Password Admin salah")
-        st.stop()
-else:
-    st.session_state.role = "User"
+if username not in USERS or USERS[username]["password"] != password:
+    st.sidebar.warning("Login gagal")
+    st.stop()
+
+role = USERS[username]["role"]
+st.sidebar.success(f"Login sebagai {role}")
 
 # =========================
 # HEADER
 # =========================
 st.title("📊 Bancassurance Performance Report")
-st.caption("Digital Monitoring Nilai Pertanggungan & Fee Based Income")
+st.caption("Executive Monitoring Nilai Pertanggungan & Fee Based Income")
 
 # =========================
-# ADMIN UPLOAD
+# ADMIN UPLOAD (PERSISTENT)
 # =========================
-if st.session_state.role == "Admin":
-    uploaded_file = st.file_uploader(
-        "📤 Upload Data Bancassurance (CSV)",
-        type=["csv"]
-    )
-
+if role == "Admin":
+    uploaded_file = st.file_uploader("📤 Upload Data Bancassurance (CSV)", type=["csv"])
     if uploaded_file:
-        df = pd.read_csv(uploaded_file)
-        st.session_state.data = df
-        st.success("✅ Data berhasil di-upload")
+        df_upload = pd.read_csv(uploaded_file)
+        os.makedirs("data", exist_ok=True)
+        df_upload.to_csv(DATA_PATH, index=False)
+        st.success("✅ Data berhasil disimpan")
 
 # =========================
-# DATA AVAILABILITY CHECK
+# LOAD DATA
 # =========================
-if st.session_state.data is None:
-    st.info("📌 Data belum tersedia. Menunggu Admin upload data.")
+if not os.path.exists(DATA_PATH):
+    st.info("📌 Data belum tersedia. Menunggu Admin upload.")
     st.stop()
 
-df = st.session_state.data.copy()
+df = pd.read_csv(DATA_PATH)
 
 # =========================
 # VALIDATION
@@ -97,7 +115,7 @@ df["FBI_Growth_YoY"] = df["FBI_Nov25"] - df["FBI_Nov24"]
 df["FBI_Growth_YoY_%"] = np.where(df["FBI_Nov24"] > 0, df["FBI_Growth_YoY"] / df["FBI_Nov24"] * 100, 0)
 
 # =========================
-# FILTER (MOBILE FRIENDLY)
+# FILTER
 # =========================
 with st.expander("🔎 Filter Data"):
     tipe = st.multiselect(
@@ -105,42 +123,61 @@ with st.expander("🔎 Filter Data"):
         df["Tipe_Kerjasama"].unique(),
         default=df["Tipe_Kerjasama"].unique()
     )
-
 df = df[df["Tipe_Kerjasama"].isin(tipe)]
 
 # =========================
-# MOBILE MENU (TABS)
+# HELPER
 # =========================
-tab1, tab2, tab3 = st.tabs([
-    "📊 Summary",
-    "📋 Detail",
-    "📈 Chart"
-])
+def growth_class(val):
+    if val > 0:
+        return "positive"
+    elif val < 0:
+        return "negative"
+    return "neutral"
 
 # =========================
-# SUMMARY TAB
+# TABS (MOBILE FRIENDLY)
+# =========================
+tab1, tab2, tab3 = st.tabs(["📊 Summary", "📋 Detail", "📈 Chart"])
+
+# =========================
+# SUMMARY
 # =========================
 with tab1:
-    st.subheader("📌 Executive Summary")
+    total_np = df["NP_Nov25"].sum()
+    total_fbi = df["FBI_Nov25"].sum()
+    np_growth = df["NP_Growth_YoY_%"].mean()
+    fbi_growth = df["FBI_Growth_YoY_%"].mean()
 
-    st.metric("Total NP Nov-25", f"Rp {df['NP_Nov25'].sum():,.0f}")
-    st.metric("Growth NP YoY", f"{df['NP_Growth_YoY_%'].mean():.1f}%")
-
-    st.metric("Total FBI Nov-25", f"Rp {df['FBI_Nov25'].sum():,.2f}")
-    st.metric("Growth FBI YoY", f"{df['FBI_Growth_YoY_%'].mean():.1f}%")
+    st.markdown(f"""
+    <div class="metric-card">
+        <div class="label">Total NP Nov-25</div>
+        <div class="value">Rp {total_np:,.0f}</div>
+    </div>
+    <div class="metric-card">
+        <div class="label">Growth NP YoY</div>
+        <div class="value {growth_class(np_growth)}">{np_growth:.1f}%</div>
+    </div>
+    <div class="metric-card">
+        <div class="label">Total FBI Nov-25</div>
+        <div class="value">Rp {total_fbi:,.2f}</div>
+    </div>
+    <div class="metric-card">
+        <div class="label">Growth FBI YoY</div>
+        <div class="value {growth_class(fbi_growth)}">{fbi_growth:.1f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # =========================
-# DETAIL TAB
+# DETAIL
 # =========================
 with tab2:
     st.subheader("📋 Bancassurance Performance Detail")
-
     display_cols = [
         "Tipe_Kerjasama","Jenis_Asuransi","Asuradur",
         "NP_Nov25","NP_Growth_YoY","NP_Growth_YoY_%",
         "FBI_Nov25","FBI_Growth_YoY","FBI_Growth_YoY_%"
     ]
-
     st.dataframe(
         df[display_cols].style.format({
             "NP_Nov25":"{:,.0f}",
@@ -154,14 +191,37 @@ with tab2:
     )
 
 # =========================
-# CHART TAB
+# CHART
 # =========================
 with tab3:
     st.subheader("📈 Growth YoY Comparison")
+    chart_data = df.groupby("Jenis_Asuransi")[["NP_Growth_YoY","FBI_Growth_YoY"]].sum()
+    st.bar_chart(chart_data)
 
-    chart = (
-        df.groupby("Jenis_Asuransi")[["NP_Growth_YoY","FBI_Growth_YoY"]]
-        .sum()
-    )
+# =========================
+# EXPORT PDF
+# =========================
+def generate_pdf(df):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, "Bancassurance Performance Report", ln=True)
 
-    st.bar_chart(chart)
+    pdf.set_font("Arial", size=11)
+    pdf.ln(5)
+    pdf.cell(0, 8, f"Total NP Nov-25 : Rp {df['NP_Nov25'].sum():,.0f}", ln=True)
+    pdf.cell(0, 8, f"Total FBI Nov-25 : Rp {df['FBI_Nov25'].sum():,.2f}", ln=True)
+
+    path = "data/Bancassurance_Report.pdf"
+    pdf.output(path)
+    return path
+
+st.markdown("---")
+if st.button("📥 Export PDF Laporan Pimpinan"):
+    pdf_path = generate_pdf(df)
+    with open(pdf_path, "rb") as f:
+        st.download_button(
+            "⬇️ Download PDF",
+            f,
+            file_name="Bancassurance_Performance_Report.pdf"
+        )
