@@ -5,85 +5,98 @@ import os
 from fpdf import FPDF
 
 # =========================
-# CONFIG
+# PAGE CONFIG (MOBILE FIRST)
 # =========================
 st.set_page_config(
-    page_title="Bancassurance Performance App",
+    page_title="Bancassurance Performance Report",
     page_icon="📊",
     layout="centered"
 )
 
 DATA_PATH = "data/bancassurance.csv"
 
-USERS = {
-    "admin": {"password": "admin123", "role": "Admin"},
-    "user": {"password": "user123", "role": "User"}
-}
-
 # =========================
-# BRANDING (MANDIRI STYLE)
+# BRANDING BANK MANDIRI
 # =========================
 st.markdown("""
 <style>
-body { background-color: #f5f7fa; }
-h1, h2, h3 { color: #003d79; }
+/* Global */
+body, .stApp {
+    background-color: #ffffff;
+    color: #1f2937;
+    font-family: 'Segoe UI', sans-serif;
+}
 
+/* Header */
+h1, h2, h3 {
+    color: #003d79;
+}
+
+/* Metric Card */
 .metric-card {
-    background: white;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     padding: 16px;
     border-radius: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     margin-bottom: 12px;
 }
 
-.label { font-size: 14px; color: #6c757d; }
-.value { font-size: 22px; font-weight: bold; }
+.metric-label {
+    font-size: 14px;
+    color: #6b7280;
+}
 
-.positive { color: #2e7d32; }
-.negative { color: #c62828; }
-.neutral { color: #6c757d; }
+.metric-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #003d79;
+}
 
+/* Growth Color */
+.positive { color: #1b5e20; }
+.negative { color: #b71c1c; }
+.neutral  { color: #6b7280; }
+
+/* Button */
+.stButton > button {
+    background-color: #f9b233;
+    color: #003d79;
+    border-radius: 10px;
+    font-weight: bold;
+    border: none;
+}
+
+.stButton > button:hover {
+    background-color: #f4a900;
+}
+
+/* Hide footer */
 footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
 # =========================
-# LOGIN
-# =========================
-st.sidebar.title("🔐 Login")
-
-username = st.sidebar.text_input("Username")
-password = st.sidebar.text_input("Password", type="password")
-
-if username not in USERS or USERS[username]["password"] != password:
-    st.sidebar.warning("Login gagal")
-    st.stop()
-
-role = USERS[username]["role"]
-st.sidebar.success(f"Login sebagai {role}")
-
-# =========================
 # HEADER
 # =========================
 st.title("📊 Bancassurance Performance Report")
-st.caption("Executive Monitoring Nilai Pertanggungan & Fee Based Income")
+st.caption("Monitoring Nilai Pertanggungan & Fee Based Income")
 
 # =========================
-# ADMIN UPLOAD (PERSISTENT)
+# ADMIN UPLOAD (TANPA LOGIN)
 # =========================
-if role == "Admin":
-    uploaded_file = st.file_uploader("📤 Upload Data Bancassurance (CSV)", type=["csv"])
+with st.expander("📤 Upload / Update Data (CSV dari Excel)"):
+    uploaded_file = st.file_uploader("Upload File CSV", type=["csv"])
     if uploaded_file:
         df_upload = pd.read_csv(uploaded_file)
         os.makedirs("data", exist_ok=True)
         df_upload.to_csv(DATA_PATH, index=False)
-        st.success("✅ Data berhasil disimpan")
+        st.success("✅ Data berhasil diperbarui")
 
 # =========================
 # LOAD DATA
 # =========================
 if not os.path.exists(DATA_PATH):
-    st.info("📌 Data belum tersedia. Menunggu Admin upload.")
+    st.info("📌 Data belum tersedia. Silakan upload file CSV.")
     st.stop()
 
 df = pd.read_csv(DATA_PATH)
@@ -109,10 +122,18 @@ df[num_cols] = df[num_cols].apply(pd.to_numeric, errors="coerce").fillna(0)
 # CALCULATION
 # =========================
 df["NP_Growth_YoY"] = df["NP_Nov25"] - df["NP_Nov24"]
-df["NP_Growth_YoY_%"] = np.where(df["NP_Nov24"] > 0, df["NP_Growth_YoY"] / df["NP_Nov24"] * 100, 0)
+df["NP_Growth_YoY_%"] = np.where(
+    df["NP_Nov24"] > 0,
+    df["NP_Growth_YoY"] / df["NP_Nov24"] * 100,
+    0
+)
 
 df["FBI_Growth_YoY"] = df["FBI_Nov25"] - df["FBI_Nov24"]
-df["FBI_Growth_YoY_%"] = np.where(df["FBI_Nov24"] > 0, df["FBI_Growth_YoY"] / df["FBI_Nov24"] * 100, 0)
+df["FBI_Growth_YoY_%"] = np.where(
+    df["FBI_Nov24"] > 0,
+    df["FBI_Growth_YoY"] / df["FBI_Nov24"] * 100,
+    0
+)
 
 # =========================
 # FILTER
@@ -123,6 +144,7 @@ with st.expander("🔎 Filter Data"):
         df["Tipe_Kerjasama"].unique(),
         default=df["Tipe_Kerjasama"].unique()
     )
+
 df = df[df["Tipe_Kerjasama"].isin(tipe)]
 
 # =========================
@@ -138,7 +160,11 @@ def growth_class(val):
 # =========================
 # TABS (MOBILE FRIENDLY)
 # =========================
-tab1, tab2, tab3 = st.tabs(["📊 Summary", "📋 Detail", "📈 Chart"])
+tab1, tab2, tab3 = st.tabs([
+    "📊 Summary",
+    "📋 Detail",
+    "📈 Chart"
+])
 
 # =========================
 # SUMMARY
@@ -151,20 +177,23 @@ with tab1:
 
     st.markdown(f"""
     <div class="metric-card">
-        <div class="label">Total NP Nov-25</div>
-        <div class="value">Rp {total_np:,.0f}</div>
+        <div class="metric-label">Total NP Nov-25</div>
+        <div class="metric-value">Rp {total_np:,.0f}</div>
     </div>
+
     <div class="metric-card">
-        <div class="label">Growth NP YoY</div>
-        <div class="value {growth_class(np_growth)}">{np_growth:.1f}%</div>
+        <div class="metric-label">Growth NP YoY</div>
+        <div class="metric-value {growth_class(np_growth)}">{np_growth:.1f}%</div>
     </div>
+
     <div class="metric-card">
-        <div class="label">Total FBI Nov-25</div>
-        <div class="value">Rp {total_fbi:,.2f}</div>
+        <div class="metric-label">Total FBI Nov-25</div>
+        <div class="metric-value">Rp {total_fbi:,.2f}</div>
     </div>
+
     <div class="metric-card">
-        <div class="label">Growth FBI YoY</div>
-        <div class="value {growth_class(fbi_growth)}">{fbi_growth:.1f}%</div>
+        <div class="metric-label">Growth FBI YoY</div>
+        <div class="metric-value {growth_class(fbi_growth)}">{fbi_growth:.1f}%</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -172,12 +201,14 @@ with tab1:
 # DETAIL
 # =========================
 with tab2:
-    st.subheader("📋 Bancassurance Performance Detail")
+    st.subheader("📋 Detail Bancassurance Performance")
+
     display_cols = [
         "Tipe_Kerjasama","Jenis_Asuransi","Asuradur",
         "NP_Nov25","NP_Growth_YoY","NP_Growth_YoY_%",
         "FBI_Nov25","FBI_Growth_YoY","FBI_Growth_YoY_%"
     ]
+
     st.dataframe(
         df[display_cols].style.format({
             "NP_Nov25":"{:,.0f}",
@@ -195,7 +226,12 @@ with tab2:
 # =========================
 with tab3:
     st.subheader("📈 Growth YoY Comparison")
-    chart_data = df.groupby("Jenis_Asuransi")[["NP_Growth_YoY","FBI_Growth_YoY"]].sum()
+
+    chart_data = (
+        df.groupby("Jenis_Asuransi")[["NP_Growth_YoY","FBI_Growth_YoY"]]
+        .sum()
+    )
+
     st.bar_chart(chart_data)
 
 # =========================
@@ -208,7 +244,7 @@ def generate_pdf(df):
     pdf.cell(0, 10, "Bancassurance Performance Report", ln=True)
 
     pdf.set_font("Arial", size=11)
-    pdf.ln(5)
+    pdf.ln(4)
     pdf.cell(0, 8, f"Total NP Nov-25 : Rp {df['NP_Nov25'].sum():,.0f}", ln=True)
     pdf.cell(0, 8, f"Total FBI Nov-25 : Rp {df['FBI_Nov25'].sum():,.2f}", ln=True)
 
