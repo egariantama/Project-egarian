@@ -11,13 +11,13 @@ st.set_page_config(
 )
 
 # =========================
-# HEADER
+# TITLE
 # =========================
 st.title("📊 Bancassurance Performance Report")
 st.caption("Nilai Pertanggungan & Fee Based Income (Rp Miliar)")
 
 # =========================
-# UPLOAD EXCEL
+# SIDEBAR - UPLOAD EXCEL
 # =========================
 st.sidebar.header("📤 Upload Data")
 uploaded_file = st.sidebar.file_uploader(
@@ -35,9 +35,15 @@ if uploaded_file is None:
 df = pd.read_excel(uploaded_file)
 
 required_cols = [
-    "Tipe_Kerjasama", "Jenis_Asuransi", "Asuradur",
-    "NP_Nov24", "NP_Dec24", "NP_Nov25",
-    "FBI_Nov24", "FBI_Dec24", "FBI_Nov25"
+    "Tipe_Kerjasama",
+    "Jenis_Asuransi",
+    "Asuradur",
+    "NP_Nov24",
+    "NP_Dec24",
+    "NP_Nov25",
+    "FBI_Nov24",
+    "FBI_Dec24",
+    "FBI_Nov25"
 ]
 
 missing_cols = [c for c in required_cols if c not in df.columns]
@@ -46,10 +52,20 @@ if missing_cols:
     st.stop()
 
 # =========================
-# DATA PREP
+# DATA PREPARATION
 # =========================
-num_cols = required_cols[3:]
-df[num_cols] = df[num_cols].apply(pd.to_numeric, errors="coerce").fillna(0)
+numeric_cols = [
+    "NP_Nov24",
+    "NP_Dec24",
+    "NP_Nov25",
+    "FBI_Nov24",
+    "FBI_Dec24",
+    "FBI_Nov25"
+]
+
+df[numeric_cols] = df[numeric_cols].apply(
+    pd.to_numeric, errors="coerce"
+).fillna(0)
 
 # =========================
 # CALCULATION
@@ -78,17 +94,17 @@ df["FBI_Growth_YoY_%"] = np.where(
 # =========================
 # SIDEBAR FILTER
 # =========================
-st.sidebar.header("🔎 Filter")
+st.sidebar.header("🔎 Filter Data")
 tipe_filter = st.sidebar.multiselect(
     "Tipe Kerjasama",
-    df["Tipe_Kerjasama"].unique(),
+    options=df["Tipe_Kerjasama"].unique(),
     default=df["Tipe_Kerjasama"].unique()
 )
 
 filtered = df[df["Tipe_Kerjasama"].isin(tipe_filter)]
 
 # =========================
-# KPI SUMMARY
+# EXECUTIVE SUMMARY
 # =========================
 st.subheader("📌 Executive Summary")
 
@@ -102,11 +118,12 @@ with col1:
     )
 
 with col2:
-    st.metric(
-        "Growth NP YoY (%)",
-        f"{(filtered['NP_Growth_YoY'].sum() / filtered['NP_Nov24'].sum() * 100):.1f}%"
-        if filtered["NP_Nov24"].sum() > 0 else "0%"
+    yoy_np_pct = (
+        filtered["NP_Growth_YoY"].sum() /
+        filtered["NP_Nov24"].sum() * 100
+        if filtered["NP_Nov24"].sum() > 0 else 0
     )
+    st.metric("Growth NP YoY (%)", f"{yoy_np_pct:.1f}%")
 
 with col3:
     st.metric(
@@ -116,11 +133,12 @@ with col3:
     )
 
 with col4:
-    st.metric(
-        "Growth FBI YoY (%)",
-        f"{(filtered['FBI_Growth_YoY'].sum() / filtered['FBI_Nov24'].sum() * 100):.1f}%"
-        if filtered["FBI_Nov24"].sum() > 0 else "0%"
+    yoy_fbi_pct = (
+        filtered["FBI_Growth_YoY"].sum() /
+        filtered["FBI_Nov24"].sum() * 100
+        if filtered["FBI_Nov24"].sum() > 0 else 0
     )
+    st.metric("Growth FBI YoY (%)", f"{yoy_fbi_pct:.1f}%")
 
 # =========================
 # DETAIL TABLE
@@ -128,9 +146,76 @@ with col4:
 st.subheader("📋 Detail Performance")
 
 display_cols = [
-    "Tipe_Kerjasama", "Jenis_Asuransi", "Asuradur",
-    "NP_Nov24", "NP_Dec24", "NP_Nov25",
-    "NP_Growth_YTD", "NP_Growth_YTD_%",
-    "NP_Growth_YoY", "NP_Growth_YoY_%",
-    "FBI_Nov24", "FBI_Dec24", "FBI_Nov25",
+    "Tipe_Kerjasama",
+    "Jenis_Asuransi",
+    "Asuradur",
+    "NP_Nov24",
+    "NP_Dec24",
+    "NP_Nov25",
+    "NP_Growth_YTD",
+    "NP_Growth_YTD_%",
+    "NP_Growth_YoY",
+    "NP_Growth_YoY_%",
+    "FBI_Nov24",
+    "FBI_Dec24",
+    "FBI_Nov25",
     "FBI_Growth_YoY",
+    "FBI_Growth_YoY_%"
+]
+
+st.dataframe(
+    filtered[display_cols].style.format({
+        "NP_Nov24": "{:,.0f}",
+        "NP_Dec24": "{:,.0f}",
+        "NP_Nov25": "{:,.0f}",
+        "NP_Growth_YTD": "{:,.0f}",
+        "NP_Growth_YTD_%": "{:.1f}%",
+        "NP_Growth_YoY": "{:,.0f}",
+        "NP_Growth_YoY_%" : "{:.1f}%",
+        "FBI_Nov24": "{:,.2f}",
+        "FBI_Dec24": "{:,.2f}",
+        "FBI_Nov25": "{:,.2f}",
+        "FBI_Growth_YoY": "{:,.2f}",
+        "FBI_Growth_YoY_%": "{:.1f}%"
+    }),
+    use_container_width=True
+)
+
+# =========================
+# SUBTOTAL
+# =========================
+st.subheader("📌 Subtotal per Tipe Kerjasama")
+
+subtotal = (
+    filtered
+    .groupby("Tipe_Kerjasama", as_index=False)
+    .sum(numeric_only=True)
+)
+
+st.dataframe(subtotal, use_container_width=True)
+
+# =========================
+# TOTAL
+# =========================
+st.subheader("🏁 Total Keseluruhan")
+
+total = filtered[numeric_cols + [
+    "NP_Growth_YTD",
+    "NP_Growth_YoY",
+    "FBI_Growth_YoY"
+]].sum().to_frame("Total").T
+
+st.dataframe(total, use_container_width=True)
+
+# =========================
+# CHART
+# =========================
+st.subheader("📈 Growth YoY Comparison")
+
+chart_data = (
+    filtered
+    .groupby("Jenis_Asuransi")[["NP_Growth_YoY", "FBI_Growth_YoY"]]
+    .sum()
+)
+
+st.bar_chart(chart_data)
