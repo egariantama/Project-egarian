@@ -7,5 +7,6 @@ plotly>=5.20
 requests>=2.31
 openpyxl>=3.1
 matplotlib>=3.8
+fpdf
 reportlab
 seaborn
