@@ -187,9 +187,14 @@ with tab_input:
         points[opp] += po
 
         hasil = "Menang" if pj > po else "Kalah"
-        win += hasil=="Menang"
-        lose += hasil=="Kalah"
-        jlm_results.append([i+1, opp, score, hasil])
+
+# === POIN JLM SESUAI RULE ===
+poin_jlm = pj
+
+win += hasil == "Menang"
+lose += hasil == "Kalah"
+
+jlm_results.append([i+1, opp, score, poin_jlm, hasil])
 
     # ===== REALTIME UPDATE =====
     st.session_state.points = points
