@@ -6,7 +6,6 @@ import base64
 # ==================================================
 # PAGE CONFIG (MOBILE FRIENDLY)
 # ==================================================
-# ===== HEADER DENGAN LOGO =====
 def load_logo(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
