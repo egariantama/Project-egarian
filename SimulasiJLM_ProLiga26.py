@@ -234,6 +234,38 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =======================
+   STICKY TAB HEADER
+   ======================= */
+
+/* Container tab */
+div[data-baseweb="tab-list"] {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: #ffffff;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Space agar konten tidak ketutup */
+div[data-baseweb="tab-panel"] {
+    padding-top: 12px;
+}
+
+/* Mobile refinement */
+@media (max-width: 768px) {
+    div[data-baseweb="tab-list"] {
+        top: 0;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
