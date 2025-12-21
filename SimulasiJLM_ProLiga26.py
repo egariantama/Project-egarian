@@ -136,11 +136,15 @@ with tab_home:
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
-    if st.session_state.jlm_results:
-        df = pd.DataFrame(
-    st.session_state.jlm_results,
-    columns=["No","Lawan","Skor","Poin","Hasil"]
-)
+    data = st.session_state.jlm_results
+
+# Jika data lama (tanpa kolom Poin)
+if len(data[0]) == 4:
+    df = pd.DataFrame(data, columns=["No","Lawan","Skor","Hasil"])
+    df.insert(3, "Poin", "")
+else:
+    df = pd.DataFrame(data, columns=["No","Lawan","Skor","Poin","Hasil"])
+
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📋 Detail Pertandingan JLM")
         st.dataframe(df.set_index("No"), use_container_width=True)
