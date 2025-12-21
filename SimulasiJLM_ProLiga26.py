@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # ==================================================
-# SESSION STATE – WAJIB PALING ATAS
+# SESSION STATE
 # ==================================================
 DEFAULT_STATE = {
     "simulated": False,
@@ -28,23 +28,63 @@ for k, v in DEFAULT_STATE.items():
         st.session_state[k] = v
 
 # ==================================================
-# GLOBAL CSS
+# GLOBAL CSS (FIX TAB & LABEL)
 # ==================================================
 st.markdown("""
 <style>
-html, body, .stApp { background:#fff; color:#111; font-family:-apple-system; }
-.card {
-    background:white; border-radius:18px; padding:18px;
-    margin-bottom:18px; box-shadow:0 6px 18px rgba(0,0,0,.08);
+html, body, .stApp {
+    background:#ffffff;
+    color:#111111;
+    font-family:-apple-system, BlinkMacSystemFont, sans-serif;
 }
+
+/* ===== TAB FIX ===== */
+button[data-baseweb="tab"] {
+    color:#7209b7 !important;
+    font-weight:700;
+    font-size:0.95rem;
+}
+button[data-baseweb="tab"][aria-selected="true"] {
+    border-bottom:3px solid #f72585 !important;
+    color:#f72585 !important;
+}
+
+/* ===== LABEL FIX ===== */
+label, span {
+    color:#111111 !important;
+    font-weight:600 !important;
+}
+
+/* ===== CARD ===== */
+.card {
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+/* ===== STAT ===== */
 .stat-box {
     background:linear-gradient(135deg,#f72585,#7209b7);
-    color:white; border-radius:16px; padding:16px; text-align:center;
+    color:white;
+    border-radius:16px;
+    padding:16px;
+    text-align:center;
 }
-.stat-value { font-size:1.8rem; font-weight:800; }
+.stat-value {
+    font-size:1.8rem;
+    font-weight:800;
+}
+
+/* ===== BUTTON ===== */
 .stButton>button {
     background:linear-gradient(90deg,#f72585,#7209b7);
-    color:white; border-radius:18px; padding:14px; font-weight:700; width:100%;
+    color:white;
+    border-radius:18px;
+    padding:14px;
+    font-weight:700;
+    width:100%;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -119,10 +159,7 @@ with tab_home:
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📋 Detail Pertandingan JLM")
-        st.dataframe(
-            df.set_index("No"),
-            use_container_width=True
-        )
+        st.dataframe(df.set_index("No"), use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
@@ -152,6 +189,7 @@ with tab_input:
             score_options,
             key=f"match_{i}"
         )
+
         if score=="— Pilih Skor —":
             valid=False
             continue
@@ -204,8 +242,13 @@ with tab_klasemen:
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
-        st.dataframe(
-            df.rename_axis("Peringkat"),
-            use_container_width=True
-        )
+        st.dataframe(df.rename_axis("Peringkat"), use_container_width=True)
+
+        rank = df.index[df["Tim"]=="Jakarta Livin Mandiri"][0]
+
+        if rank <= 4:
+            st.success(f"✅ Jakarta Livin Mandiri LOLOS FINAL FOUR (Peringkat {rank})")
+        else:
+            st.error(f"❌ Jakarta Livin Mandiri TIDAK LOLOS FINAL FOUR (Peringkat {rank})")
+
         st.markdown("</div>", unsafe_allow_html=True)
