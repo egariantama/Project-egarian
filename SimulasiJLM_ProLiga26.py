@@ -6,11 +6,6 @@ import base64
 # ==================================================
 # PAGE CONFIG (MOBILE FRIENDLY)
 # ==================================================
-st.set_page_config(
-    page_title="Proliga Putri 2026",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
 def load_logo(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
