@@ -19,19 +19,17 @@ def load_logo(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-logo_base64 = load_logo("logo_jlm.png")
+logo_jlm = load_logo("logo_jlm.png")
 
 # ==================================================
-# HEADER RESPONSIVE
+# HEADER DENGAN SATU LOGO
 # ==================================================
-# Gunakan columns agar selalu menempel kiri dan proporsional
-col1, col2 = st.columns([1,5], gap="small")
-
-with col1:
-    st.image("logo_jlm.png", width=60)
-
-with col2:
-    st.markdown("""
+st.markdown(f"""
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+    <!-- Logo JLM -->
+    <img src="data:image/png;base64,{logo_jlm}" style="height:60px;">
+    
+    <!-- Teks Header -->
     <div style="display:flex; flex-direction:column; justify-content:center;">
         <div style="font-size:2rem; font-weight:800; line-height:1.2;">
             Proliga Putri 2026
@@ -40,7 +38,8 @@ with col2:
             Simulasi Musim | Jakarta Livin Mandiri
         </div>
     </div>
-    """, unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # SESSION STATE (AMAN & WAJIB)
