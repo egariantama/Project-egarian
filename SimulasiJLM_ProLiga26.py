@@ -11,30 +11,59 @@ st.set_page_config(
 )
 
 # ======================
-# STYLE MOBILE (PINK – UNGU – PUTIH)
+# STYLE MOBILE APP (PUTIH – PINK – UNGU)
 # ======================
 st.markdown("""
 <style>
+/* Background */
 body {
     background-color: #ffffff;
 }
+
+/* Title */
 h1, h2, h3 {
-    color: #7b2cbf;
+    color: #6a00f4;
 }
+
+/* Card style */
+.card {
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Selectbox */
 .stSelectbox label {
     font-weight: 600;
+    color: #6a00f4;
 }
+
+/* Button */
 .stButton>button {
-    background-color: #f72585;
+    background: linear-gradient(90deg, #f72585, #7209b7);
     color: white;
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 14px;
+    padding: 12px;
+    font-weight: 600;
+    width: 100%;
+}
+
+/* Divider */
+hr {
+    border: none;
+    height: 1px;
+    background-color: #e5e5e5;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🏐 Simulasi Proliga Putri 2026")
-st.subheader("Jakarta Livin Mandiri (JLM)")
+# ======================
+# HEADER
+# ======================
+st.title("🏐 Proliga Putri 2026")
+st.caption("Simulasi Musim | Jakarta Livin Mandiri")
 
 # ======================
 # DATA TIM & KEKUATAN
@@ -80,12 +109,13 @@ def auto_simulate(team_a, team_b):
     return random.choice(choices)
 
 # ======================
-# INPUT MANUAL JLM
+# INPUT HASIL JLM (CARD)
 # ======================
-st.markdown("### 🎯 Input Hasil Pertandingan JLM")
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.subheader("🎯 Hasil Pertandingan JLM")
 
-jlm_results = []
 points = {team: 0 for team in teams}
+jlm_results = []
 
 jlm_matches = [
     "Sumut Falcons", "Sumut Falcons",
@@ -98,7 +128,7 @@ jlm_matches = [
 
 for idx, opponent in enumerate(jlm_matches):
     score = st.selectbox(
-        f"JLM vs {opponent} (Match {idx+1})",
+        f"Match {idx+1} vs {opponent}",
         score_options,
         index=3
     )
@@ -113,10 +143,7 @@ for idx, opponent in enumerate(jlm_matches):
         "Poin JLM": p_jlm
     })
 
-df_jlm = pd.DataFrame(jlm_results)
-
-st.markdown("### 📊 Rekap Hasil JLM")
-st.dataframe(df_jlm, use_container_width=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ======================
 # AUTO SIMULASI MATCH LAIN
@@ -136,27 +163,31 @@ for i in range(len(teams)):
             points[team_b] += pb
 
 # ======================
-# KLASMEN AKHIR
+# KLASMEN
 # ======================
 standings = (
     pd.DataFrame(points.items(), columns=["Tim", "Poin"])
     .sort_values("Poin", ascending=False)
     .reset_index(drop=True)
 )
-
 standings.index += 1
 
-st.markdown("### 🏆 Klasemen Akhir Proliga 2026")
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.subheader("🏆 Klasemen Akhir")
 st.dataframe(standings, use_container_width=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ======================
-# STATUS TARGET 4 BESAR
+# STATUS TARGET
 # ======================
 jlm_rank = standings[standings["Tim"] == "Jakarta Livin Mandiri"].index[0] + 1
 
-st.markdown("### 🎯 Target: Final Four")
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.subheader("🎯 Target Final Four")
 
 if jlm_rank <= 4:
-    st.success(f"✅ JLM LOLOS FINAL FOUR (Peringkat {jlm_rank})")
+    st.success(f"✅ JLM LOLOS FINAL FOUR — Peringkat {jlm_rank}")
 else:
-    st.error(f"❌ JLM TIDAK LOLOS (Peringkat {jlm_rank})")
+    st.error(f"❌ JLM TIDAK LOLOS — Peringkat {jlm_rank}")
+
+st.markdown("</div>", unsafe_allow_html=True)
