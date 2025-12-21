@@ -6,30 +6,6 @@ import base64
 # ==================================================
 # PAGE CONFIG (MOBILE FRIENDLY)
 # ==================================================
-st.set_page_config(
-    page_title="Simulasi JLM Proliga 2026",
-    layout="wide"
-)
-
-# ==================================================
-# LOAD LOGO
-# ==================================================
-def load_logo(path):
-    with open(path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-logo_base64 = load_logo("logo_jlm.png")
-
-# ==================================================
-# HEADER RESPONSIVE
-# ==================================================
-# Gunakan columns agar selalu menempel kiri dan proporsional
-col1, col2 = st.columns([1,5], gap="small")
-
-with col1:
-    st.image("logo_jlm.png", width=60)
-
-with col2:
     st.markdown("""
     <div style="display:flex; flex-direction:column; justify-content:center;">
         <div style="font-size:2rem; font-weight:800; line-height:1.2;">
