@@ -138,9 +138,9 @@ with tab_home:
 
     if st.session_state.jlm_results:
         df = pd.DataFrame(
-            st.session_state.jlm_results,
-            columns=["No","Lawan","Skor","Hasil"]
-        )
+    st.session_state.jlm_results,
+    columns=["No","Lawan","Skor","Poin","Hasil"]
+)
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📋 Detail Pertandingan JLM")
         st.dataframe(df.set_index("No"), use_container_width=True)
