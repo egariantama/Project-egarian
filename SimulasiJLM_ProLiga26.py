@@ -149,6 +149,32 @@ div[data-baseweb="menu"] div:hover {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* ===== FORCE TEXT COLOR SELECTBOX (FINAL FIX) ===== */
+
+div[data-baseweb="select"] * {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+}
+
+/* arrow dropdown */
+div[data-baseweb="select"] svg {
+    fill: #ffffff !important;
+}
+
+/* dropdown menu item */
+div[data-baseweb="menu"] * {
+    color: #111111 !important;
+    font-weight: 600 !important;
+}
+
+/* hover item */
+div[data-baseweb="menu"] div:hover * {
+    color: #ffffff !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
