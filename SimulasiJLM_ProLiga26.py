@@ -86,6 +86,35 @@ label, span, div[data-baseweb="select"] * {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* ===== FIX WARNA FONT SCORE SELECTBOX ===== */
+
+/* teks score yang dipilih */
+div[data-baseweb="select"] span {
+    color: #111111 !important;
+    font-weight: 700 !important;
+}
+
+/* dropdown item */
+div[data-baseweb="menu"] span {
+    color: #111111 !important;
+    font-weight: 600 !important;
+}
+
+/* placeholder */
+div[data-baseweb="select"] input {
+    color: #111111 !important;
+    font-weight: 600 !important;
+}
+
+/* hover item */
+div[data-baseweb="menu"] div:hover {
+    background-color: #f72585 !important;
+    color: white !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
