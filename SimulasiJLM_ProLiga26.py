@@ -13,44 +13,31 @@ st.set_page_config(
 )
 
 # ==================================================
+# SESSION STATE SAFE INIT (ANTI ERROR)
+# ==================================================
+st.session_state.setdefault("simulated", False)
+st.session_state.setdefault("points", {})
+st.session_state.setdefault("win", 0)
+st.session_state.setdefault("lose", 0)
+st.session_state.setdefault("match_results", [])
+
+# ==================================================
 # GLOBAL CSS
 # ==================================================
 st.markdown("""
 <style>
 html, body, .stApp {
-    background-color: #ffffff !important;
-    color: #111111 !important;
+    background-color: #ffffff;
+    color: #111111;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
-
-/* TAB */
-button[data-baseweb="tab"] {
-    color: #7209b7 !important;
-    font-weight: 700;
-}
-button[aria-selected="true"] {
-    border-bottom: 3px solid #f72585 !important;
-}
-
-/* LABEL */
-label { color: #111 !important; font-weight: 600; }
-
-/* CARD */
 .card {
     background: white;
     border-radius: 18px;
     padding: 18px;
     margin-bottom: 18px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    animation: fadeUp 0.5s ease;
 }
-
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* STAT */
 .stat-box {
     background: linear-gradient(135deg, #f72585, #7209b7);
     color: white;
@@ -62,8 +49,6 @@ label { color: #111 !important; font-weight: 600; }
     font-size: 1.9rem;
     font-weight: 800;
 }
-
-/* BUTTON */
 .stButton > button {
     background: linear-gradient(90deg, #f72585, #7209b7);
     color: white;
@@ -108,18 +93,7 @@ score_points = {
 }
 
 # ==================================================
-# SESSION STATE INIT
-# ==================================================
-if "initialized" not in st.session_state:
-    st.session_state.initialized = True
-    st.session_state.simulated = False
-    st.session_state.points = {t: 0 for t in teams}
-    st.session_state.win = 0
-    st.session_state.lose = 0
-    st.session_state.match_results = []  # <-- DETAIL MATCH JLM
-
-# ==================================================
-# AUTO SIMULATION (NON JLM)
+# AUTO SIMULATION
 # ==================================================
 def auto_simulate(a, b):
     diff = teams_strength[a] - teams_strength[b]
@@ -128,9 +102,9 @@ def auto_simulate(a, b):
     elif diff == 1:
         pool = ["3-1", "3-2", "2-3"]
     elif diff == 0:
-        pool = ["3-2", "2-3", "3-1", "1-3"]
+        pool = ["3-2", "2-3"]
     else:
-        pool = ["0-3", "1-3", "2-3"]
+        pool = ["0-3", "1-3"]
     return random.choice(pool)
 
 # ==================================================
@@ -148,53 +122,36 @@ with tab_home:
     st.subheader("📊 Ringkasan Jakarta Livin Mandiri")
 
     c1, c2 = st.columns(2)
-    with c1:
-        st.markdown(f"""
-        <div class="stat-box">
-            <div>Menang</div>
-            <div class="stat-value">{st.session_state.win}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c2:
-        st.markdown(f"""
-        <div class="stat-box">
-            <div>Kalah</div>
-            <div class="stat-value">{st.session_state.lose}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
+    c1.markdown(
+        f"<div class='stat-box'><div>Menang</div><div class='stat-value'>{st.session_state.win}</div></div>",
+        unsafe_allow_html=True
+    )
+    c2.markdown(
+        f"<div class='stat-box'><div>Kalah</div><div class='stat-value'>{st.session_state.lose}</div></div>",
+        unsafe_allow_html=True
+    )
     st.markdown("</div>", unsafe_allow_html=True)
 
     if st.session_state.simulated:
-        df_detail = pd.DataFrame(
+        df = pd.DataFrame(
             st.session_state.match_results,
             columns=["Lawan", "Skor", "Hasil"]
         )
-
-        win_df = df_detail[df_detail["Hasil"] == "Menang"]
-        lose_df = df_detail[df_detail["Hasil"] == "Kalah"]
 
         col1, col2 = st.columns(2)
 
         with col1:
             st.markdown("<div class='card'>", unsafe_allow_html=True)
             st.subheader("✅ Menang vs")
-            if win_df.empty:
-                st.write("—")
-            else:
-                for _, r in win_df.iterrows():
-                    st.write(f"• {r['Lawan']} ({r['Skor']})")
+            for _, r in df[df["Hasil"] == "Menang"].iterrows():
+                st.write(f"• {r['Lawan']} ({r['Skor']})")
             st.markdown("</div>", unsafe_allow_html=True)
 
         with col2:
             st.markdown("<div class='card'>", unsafe_allow_html=True)
             st.subheader("❌ Kalah vs")
-            if lose_df.empty:
-                st.write("—")
-            else:
-                for _, r in lose_df.iterrows():
-                    st.write(f"• {r['Lawan']} ({r['Skor']})")
+            for _, r in df[df["Hasil"] == "Kalah"].iterrows():
+                st.write(f"• {r['Lawan']} ({r['Skor']})")
             st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
@@ -205,9 +162,9 @@ with tab_input:
     st.subheader("✍️ Input Hasil Jakarta Livin Mandiri")
 
     points = {t: 0 for t in teams}
-    win, lose = 0, 0
-    valid = True
     match_results = []
+    win = lose = 0
+    valid = True
 
     jlm_matches = [
         "Sumut Falcons","Sumut Falcons",
@@ -219,12 +176,7 @@ with tab_input:
     ]
 
     for i, opp in enumerate(jlm_matches):
-        score = st.selectbox(
-            f"Match {i+1} vs {opp}",
-            score_options,
-            key=f"jlm_{i}"
-        )
-
+        score = st.selectbox(f"Match {i+1} vs {opp}", score_options, key=f"m{i}")
         if score == "— Pilih Skor —":
             valid = False
             continue
@@ -242,21 +194,15 @@ with tab_input:
 
     if st.button("🚀 Simulasikan Musim"):
         if not valid:
-            st.warning("⚠️ Lengkapi semua skor terlebih dahulu")
+            st.warning("Lengkapi semua skor")
         else:
-            with st.spinner("Mensimulasikan liga..."):
-                time.sleep(1)
-
-                for i in range(len(teams)):
-                    for j in range(i + 1, len(teams)):
-                        a, b = teams[i], teams[j]
-                        if "Jakarta Livin Mandiri" in (a, b):
-                            continue
-                        for _ in range(2):
-                            s = auto_simulate(a, b)
-                            pa, pb = score_points[s]
-                            points[a] += pa
-                            points[b] += pb
+            for a in teams:
+                for b in teams:
+                    if a != b and "Jakarta Livin Mandiri" not in (a, b):
+                        s = auto_simulate(a, b)
+                        pa, pb = score_points[s]
+                        points[a] += pa
+                        points[b] += pb
 
             st.session_state.points = points
             st.session_state.win = win
@@ -272,30 +218,14 @@ with tab_input:
 # ==================================================
 with tab_klasemen:
     if not st.session_state.simulated:
-        st.info("Silakan lakukan simulasi terlebih dahulu")
+        st.info("Silakan simulasi terlebih dahulu")
     else:
-        df = (
-            pd.DataFrame(
-                st.session_state.points.items(),
-                columns=["Tim", "Poin"]
-            )
-            .sort_values("Poin", ascending=False)
-            .reset_index(drop=True)
-        )
+        df = pd.DataFrame(
+            st.session_state.points.items(),
+            columns=["Tim", "Poin"]
+        ).sort_values("Poin", ascending=False).reset_index(drop=True)
 
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("🏆 Klasemen Akhir")
         st.dataframe(
-            df.assign(Peringkat=df.index + 1)[["Peringkat", "Tim", "Poin"]],
+            df.assign(Peringkat=df.index + 1),
             use_container_width=True
         )
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        rank = df.index[df["Tim"] == "Jakarta Livin Mandiri"][0] + 1
-
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        if rank <= 4:
-            st.success(f"✅ JLM LOLOS FINAL FOUR (Peringkat {rank})")
-        else:
-            st.error(f"❌ JLM TIDAK LOLOS FINAL FOUR (Peringkat {rank})")
-        st.markdown("</div>", unsafe_allow_html=True)
