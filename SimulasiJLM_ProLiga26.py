@@ -59,7 +59,7 @@ if "jlm_results" not in st.session_state:
     st.session_state.jlm_results = []
 
 # =========================
-# AUTO SIMULATOR (NON JLM)
+# AUTO SIMULATOR
 # =========================
 def auto_simulate(a, b):
     diff = teams_strength[a] - teams_strength[b]
@@ -87,7 +87,7 @@ tab_home, tab_input, tab_table = st.tabs(
 # INPUT TAB
 # =========================
 with tab_input:
-    st.subheader("✍️ Input 12 Pertandingan Jakarta Livin Mandiri")
+    st.subheader("✍️ Input Pertandingan Jakarta Livin Mandiri")
 
     user_scores = []
     valid = True
@@ -109,19 +109,18 @@ with tab_input:
             points = {t: 0 for t in teams}
             jlm_results = []
 
-            # JLM MATCHES
+            # MATCH JLM
             for opp, score in user_scores:
                 pj, po = score_points[score]
                 points["Jakarta Livin Mandiri"] += pj
                 points[opp] += po
-                result = "Menang" if pj > po else "Kalah"
                 jlm_results.append({
                     "Lawan": opp,
                     "Skor": score,
-                    "Hasil": result
+                    "Hasil": "Menang" if pj > po else "Kalah"
                 })
 
-            # NON JLM MATCHES
+            # MATCH NON JLM
             for i in range(len(teams)):
                 for j in range(i + 1, len(teams)):
                     a, b = teams[i], teams[j]
@@ -140,36 +139,34 @@ with tab_input:
             st.success("Simulasi berhasil ✅")
 
 # =========================
-# HOME TAB (RAPI)
+# HOME TAB
 # =========================
 with tab_home:
     if not st.session_state.simulated:
-        st.info("Silakan input hasil pertandingan JLM terlebih dahulu")
+        st.info("Silakan input dan jalankan simulasi terlebih dahulu")
     else:
-        df_jlm = pd.DataFrame(st.session_state.jlm_results)
+        df_jlm = pd.DataFrame(
+            st.session_state.jlm_results,
+            columns=["Lawan", "Skor", "Hasil"]
+        )
 
         wins_df = df_jlm[df_jlm["Hasil"] == "Menang"]
         losses_df = df_jlm[df_jlm["Hasil"] == "Kalah"]
 
         st.subheader("📊 Ringkasan Jakarta Livin Mandiri")
+
         c1, c2 = st.columns(2)
         c1.metric("Menang", len(wins_df))
         c2.metric("Kalah", len(losses_df))
 
         st.markdown("### 🟢 Detail Kemenangan")
-        st.dataframe(
-            wins_df[["Lawan", "Skor"]],
-            use_container_width=True
-        )
+        st.dataframe(wins_df[["Lawan", "Skor"]], use_container_width=True)
 
         st.markdown("### 🔴 Detail Kekalahan")
-        st.dataframe(
-            losses_df[["Lawan", "Skor"]],
-            use_container_width=True
-        )
+        st.dataframe(losses_df[["Lawan", "Skor"]], use_container_width=True)
 
 # =========================
-# KLASMEN TAB (RAPI & FIX)
+# KLASMEN TAB
 # =========================
 with tab_table:
     if not st.session_state.simulated:
@@ -193,9 +190,10 @@ with tab_table:
         st.subheader("🏆 Klasemen Akhir")
         st.dataframe(klasemen, use_container_width=True)
 
-        rank = klasemen[
-            klasemen["Tim"] == "Jakarta Livin Mandiri"
-        ]["Peringkat"].values[0]
+        rank = klasemen.loc[
+            klasemen["Tim"] == "Jakarta Livin Mandiri",
+            "Peringkat"
+        ].values[0]
 
         if rank <= 4:
             st.success(f"✅ JLM LOLOS FINAL FOUR (Peringkat {rank})")
