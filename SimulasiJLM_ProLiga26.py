@@ -13,86 +13,55 @@ st.set_page_config(
 )
 
 # ==================================================
-# GLOBAL CSS (FORCED LIGHT + UI FIX + ANIMATION)
+# GLOBAL CSS
 # ==================================================
 st.markdown("""
 <style>
 html, body, .stApp {
     background-color: #ffffff !important;
-    color: #111111 !important;
+    color: #111 !important;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* TAB */
 button[data-baseweb="tab"] {
     color: #7209b7 !important;
-    font-weight: 700 !important;
+    font-weight: 700;
 }
 button[aria-selected="true"] {
     border-bottom: 3px solid #f72585 !important;
 }
 
-/* HEADINGS */
-h1 { color: #7209b7 !important; }
-h2, h3 { color: #b5179e !important; }
-
 /* LABEL */
-label {
-    color: #111111 !important;
-    font-weight: 600 !important;
-}
+label { color: #111 !important; font-weight: 600; }
 
 /* CARD */
 .card {
-    background-color: #ffffff;
+    background: white;
     border-radius: 18px;
     padding: 18px;
     margin-bottom: 18px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    animation: fadeUp 0.5s ease-in-out;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
-/* ANIMATION */
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* STAT BOX */
+/* STAT */
 .stat-box {
     background: linear-gradient(135deg, #f72585, #7209b7);
     color: white;
     border-radius: 16px;
-    padding: 18px;
+    padding: 16px;
     text-align: center;
 }
-.stat-title {
-    font-size: 0.85rem;
-    opacity: 0.9;
-}
-.stat-value {
-    font-size: 1.9rem;
-    font-weight: 800;
-}
+.stat-value { font-size: 1.9rem; font-weight: 800; }
 
 /* BUTTON */
 .stButton > button {
-    background: linear-gradient(90deg, #f72585, #7209b7) !important;
-    color: white !important;
+    background: linear-gradient(90deg, #f72585, #7209b7);
+    color: white;
     border-radius: 18px;
     padding: 14px;
     font-weight: 700;
     width: 100%;
-    transition: all 0.2s ease;
-}
-.stButton > button:hover {
-    transform: scale(1.03);
-    box-shadow: 0 10px 25px rgba(114,9,183,0.35);
-}
-
-/* DATAFRAME */
-[data-testid="stDataFrame"] * {
-    color: #111111 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -104,7 +73,7 @@ st.title("🏐 Proliga Putri 2026")
 st.caption("Simulasi Musim | Jakarta Livin Mandiri")
 
 # ==================================================
-# DATA TIM
+# DATA
 # ==================================================
 teams_strength = {
     "Jakarta Pertamina Enduro": 5,
@@ -121,23 +90,28 @@ teams = list(teams_strength.keys())
 score_options = ["— Pilih Skor —", "3-0", "3-1", "3-2", "2-3", "1-3", "0-3"]
 
 score_points = {
-    "3-0": (3, 0), "3-1": (3, 0), "3-2": (2, 1),
-    "2-3": (1, 2), "1-3": (0, 3), "0-3": (0, 3)
+    "3-0": (3, 0),
+    "3-1": (3, 0),
+    "3-2": (2, 1),
+    "2-3": (1, 2),
+    "1-3": (0, 3),
+    "0-3": (0, 3),
 }
 
 # ==================================================
 # SESSION STATE INIT
 # ==================================================
-if "simulated" not in st.session_state:
+if "initialized" not in st.session_state:
+    st.session_state.initialized = True
     st.session_state.simulated = False
     st.session_state.points = {t: 0 for t in teams}
-    st.session_state.results = []
     st.session_state.win = 0
     st.session_state.lose = 0
+    st.session_state.results = []
     st.session_state.match_scores = {}
 
 # ==================================================
-# AUTO SIMULATOR (NON JLM)
+# AUTO SIMULATION (NON JLM)
 # ==================================================
 def auto_simulate(a, b):
     diff = teams_strength[a] - teams_strength[b]
@@ -146,7 +120,7 @@ def auto_simulate(a, b):
     elif diff == 1:
         pool = ["3-1", "3-2", "2-3"]
     elif diff == 0:
-        pool = list(score_points.keys())
+        pool = ["3-2", "2-3", "3-1", "1-3"]
     else:
         pool = ["0-3", "1-3", "2-3"]
     return random.choice(pool)
@@ -167,7 +141,7 @@ with tab_home:
     with c1:
         st.markdown(f"""
         <div class="stat-box">
-            <div class="stat-title">Menang</div>
+            <div>Menang</div>
             <div class="stat-value">{st.session_state.win}</div>
         </div>
         """, unsafe_allow_html=True)
@@ -175,22 +149,12 @@ with tab_home:
     with c2:
         st.markdown(f"""
         <div class="stat-box">
-            <div class="stat-title">Kalah</div>
+            <div>Kalah</div>
             <div class="stat-value">{st.session_state.lose}</div>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
-
-    if st.session_state.simulated:
-        df_detail = pd.DataFrame(
-            st.session_state.results,
-            columns=["Lawan", "Skor", "Hasil"]
-        )
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("📋 Detail Pertandingan JLM")
-        st.dataframe(df_detail, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
 # INPUT
@@ -198,6 +162,12 @@ with tab_home:
 with tab_input:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("✍️ Input Hasil Jakarta Livin Mandiri")
+
+    # RESET
+    points = {t: 0 for t in teams}
+    win, lose = 0, 0
+    results = []
+    valid = True
 
     jlm_matches = [
         "Sumut Falcons","Sumut Falcons",
@@ -207,8 +177,6 @@ with tab_input:
         "Jakarta Pertamina Enduro","Jakarta Pertamina Enduro",
         "Jakarta Popsivo Polwan","Jakarta Popsivo Polwan"
     ]
-
-    valid = True
 
     for i, opp in enumerate(jlm_matches):
         score = st.selectbox(
@@ -220,6 +188,18 @@ with tab_input:
 
         if score == "— Pilih Skor —":
             valid = False
+            continue
+
+        pj, po = score_points[score]
+        points["Jakarta Livin Mandiri"] += pj
+        points[opp] += po
+
+        if pj > po:
+            win += 1
+            results.append([opp, score, "Menang"])
+        else:
+            lose += 1
+            results.append([opp, score, "Kalah"])
 
     if st.button("🚀 Simulasikan Musim"):
         if not valid:
@@ -228,28 +208,8 @@ with tab_input:
             with st.spinner("Mensimulasikan liga..."):
                 time.sleep(1)
 
-                points = {t: 0 for t in teams}
-                win, lose = 0, 0
-                results = []
-
-                # JLM MATCH
-                for i, opp in enumerate(jlm_matches):
-                    score = st.session_state.match_scores[i]
-                    pj, po = score_points[score]
-
-                    points["Jakarta Livin Mandiri"] += pj
-                    points[opp] += po
-
-                    if pj > po:
-                        win += 1
-                        results.append([opp, score, "Menang"])
-                    else:
-                        lose += 1
-                        results.append([opp, score, "Kalah"])
-
-                # NON JLM MATCH
                 for i in range(len(teams)):
-                    for j in range(i+1, len(teams)):
+                    for j in range(i + 1, len(teams)):
                         a, b = teams[i], teams[j]
                         if "Jakarta Livin Mandiri" in [a, b]:
                             continue
@@ -259,12 +219,11 @@ with tab_input:
                             points[a] += pa
                             points[b] += pb
 
-                st.session_state.points = points
-                st.session_state.results = results
-                st.session_state.win = win
-                st.session_state.lose = lose
-                st.session_state.simulated = True
-
+            st.session_state.points = points
+            st.session_state.win = win
+            st.session_state.lose = lose
+            st.session_state.results = results
+            st.session_state.simulated = True
             st.success("Simulasi selesai 🎉")
 
     st.markdown("</div>", unsafe_allow_html=True)
