@@ -115,6 +115,40 @@ div[data-baseweb="menu"] div:hover {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* ===== FIX FINAL TEKS SCORE YANG SUDAH DIPILIH ===== */
+
+/* container nilai terpilih */
+div[data-baseweb="select"] > div {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+}
+
+/* angka skor (3-2, 3-1, dll) */
+div[data-baseweb="select"] span {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+}
+
+/* icon panah */
+div[data-baseweb="select"] svg {
+    fill: #ffffff !important;
+}
+
+/* dropdown list item */
+div[data-baseweb="menu"] span {
+    color: #111111 !important;
+    font-weight: 600 !important;
+}
+
+/* hover dropdown */
+div[data-baseweb="menu"] div:hover {
+    background-color: #f72585 !important;
+    color: #ffffff !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
