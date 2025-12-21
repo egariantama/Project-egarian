@@ -47,12 +47,16 @@ jlm_matches = [
 ]
 
 # =========================
-# SESSION STATE INIT
+# SESSION STATE (WAJIB DI ATAS)
 # =========================
 if "simulated" not in st.session_state:
     st.session_state.simulated = False
+
+if "points" not in st.session_state:
     st.session_state.points = {t: 0 for t in teams}
-    st.session_state.jlm_results = []
+
+if "jlm_results" not in st.session_state:
+    st.session_state.jlm_results = []   # <-- INI YANG TADI HILANG
 
 # =========================
 # AUTO SIMULATOR (NON JLM)
@@ -105,7 +109,7 @@ with tab_input:
             points = {t: 0 for t in teams}
             jlm_results = []
 
-            # JLM Matches
+            # JLM MATCHES
             for opp, score in user_scores:
                 pj, po = score_points[score]
                 points["Jakarta Livin Mandiri"] += pj
@@ -113,9 +117,9 @@ with tab_input:
                 result = "Menang" if pj > po else "Kalah"
                 jlm_results.append((opp, score, result))
 
-            # Non-JLM Matches
+            # NON JLM MATCHES
             for i in range(len(teams)):
-                for j in range(i+1, len(teams)):
+                for j in range(i + 1, len(teams)):
                     a, b = teams[i], teams[j]
                     if "Jakarta Livin Mandiri" in (a, b):
                         continue
