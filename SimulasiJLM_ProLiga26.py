@@ -3,7 +3,7 @@ import pandas as pd
 import random
 
 # ==================================================
-# PAGE CONFIG (MOBILE FRIENDLY)
+# PAGE CONFIG
 # ==================================================
 st.set_page_config(
     page_title="Proliga Putri 2026",
@@ -12,15 +12,14 @@ st.set_page_config(
 )
 
 # ==================================================
-# SESSION STATE (AMAN & WAJIB)
+# SESSION STATE
 # ==================================================
 DEFAULT_STATE = {
     "simulated": False,
     "points": {},
     "win": 0,
     "lose": 0,
-    "jlm_results": [],
-    "active_tab": "🏠 Home"
+    "jlm_results": []
 }
 
 for k, v in DEFAULT_STATE.items():
@@ -105,10 +104,14 @@ score_points = {
 # ==================================================
 def auto_simulate(a,b):
     diff = teams_strength[a] - teams_strength[b]
-    if diff >= 2: pool=["3-0","3-1","3-2"]
-    elif diff == 1: pool=["3-1","3-2","2-3"]
-    elif diff == 0: pool=["3-2","2-3","3-1","1-3"]
-    else: pool=["0-3","1-3","2-3"]
+    if diff >= 2:
+        pool=["3-0","3-1","3-2"]
+    elif diff == 1:
+        pool=["3-1","3-2","2-3"]
+    elif diff == 0:
+        pool=["3-2","2-3","3-1","1-3"]
+    else:
+        pool=["0-3","1-3","2-3"]
     return random.choice(pool)
 
 # ==================================================
@@ -119,7 +122,7 @@ tab_home, tab_input, tab_klasemen = st.tabs(
 )
 
 # ==================================================
-# HOME (REALTIME + AMAN MIGRASI DATA)
+# HOME (REALTIME)
 # ==================================================
 with tab_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -137,15 +140,10 @@ with tab_home:
     st.markdown("</div>", unsafe_allow_html=True)
 
     if st.session_state.jlm_results:
-        data = st.session_state.jlm_results
-
-        # === MIGRASI AMAN (4 kolom → 5 kolom) ===
-        if len(data[0]) == 4:
-            df = pd.DataFrame(data, columns=["No","Lawan","Skor","Hasil"])
-            df.insert(3, "Poin", "")
-        else:
-            df = pd.DataFrame(data, columns=["No","Lawan","Skor","Poin","Hasil"])
-
+        df = pd.DataFrame(
+            st.session_state.jlm_results,
+            columns=["No","Lawan","Skor","Poin","Hasil"]
+        )
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📋 Detail Pertandingan JLM")
         st.dataframe(df.set_index("No"), use_container_width=True)
@@ -159,7 +157,8 @@ with tab_input:
     st.subheader("✍️ Input Hasil Jakarta Livin Mandiri")
 
     points = {t:0 for t in teams}
-    win = lose = 0
+    win = 0
+    lose = 0
     jlm_results = []
     valid = True
 
@@ -178,23 +177,34 @@ with tab_input:
             score_options,
             key=f"match_{i}"
         )
-        if score=="— Pilih Skor —":
-            valid=False
+
+        if score == "— Pilih Skor —":
+            valid = False
             continue
 
-        pj,po = score_points[score]
+        pj, po = score_points[score]
         points["Jakarta Livin Mandiri"] += pj
         points[opp] += po
 
         hasil = "Menang" if pj > po else "Kalah"
+        poin_jlm = pj
 
-# === POIN JLM SESUAI RULE ===
-poin_jlm = pj
+        if hasil == "Menang":
+            win += 1
+        else:
+            lose += 1
 
-win += hasil == "Menang"
-lose += hasil == "Kalah"
+        # poin JLM sesuai rules
+        if score in ["3-0", "3-1"]:
+            poin_jlm = 3
+        elif score == "3-2":
+            poin_jlm = 2
+        elif score == "2-3":
+            poin_jlm = 1
+        else:
+            poin_jlm = 0
 
-jlm_results.append([i+1, opp, score, poin_jlm, hasil])
+        jlm_results.append([i+1, opp, score, poin_jlm, hasil])
 
     # ===== REALTIME UPDATE =====
     st.session_state.points = points
@@ -207,14 +217,15 @@ jlm_results.append([i+1, opp, score, poin_jlm, hasil])
             st.warning("Lengkapi semua skor")
         else:
             for i in range(len(teams)):
-                for j in range(i+1,len(teams)):
-                    a,b = teams[i],teams[j]
-                    if "Jakarta Livin Mandiri" in (a,b): continue
+                for j in range(i+1, len(teams)):
+                    a, b = teams[i], teams[j]
+                    if "Jakarta Livin Mandiri" in (a, b):
+                        continue
                     for _ in range(2):
-                        s = auto_simulate(a,b)
-                        pa,pb = score_points[s]
-                        points[a]+=pa
-                        points[b]+=pb
+                        s = auto_simulate(a, b)
+                        pa, pb = score_points[s]
+                        points[a] += pa
+                        points[b] += pb
 
             st.session_state.points = points
             st.session_state.simulated = True
@@ -223,7 +234,7 @@ jlm_results.append([i+1, opp, score, poin_jlm, hasil])
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# KLASMEN (RAPI + REALTIME + HIGHLIGHT HIJAU)
+# KLASMEN (REALTIME + RAPI + HIGHLIGHT)
 # ==================================================
 with tab_klasemen:
     if not st.session_state.points:
@@ -234,52 +245,28 @@ with tab_klasemen:
             columns=["Tim", "Poin"]
         ).sort_values("Poin", ascending=False).reset_index(drop=True)
 
-        # Kolom peringkat (BUKAN index)
-        df.insert(0, "Peringkat", range(1, len(df) + 1))
+        df.insert(0, "Peringkat", df.index + 1)
 
-        def style_row(row):
-            style = []
-            for col in row.index:
-                s = "padding:10px;"
-
-                if col in ["Peringkat", "Poin"]:
-                    s += "text-align:center;"
-                else:
-                    s += "text-align:left;"
-
-                if row["Tim"] == "Jakarta Livin Mandiri":
-                    s += "background-color:#dcfce7;font-weight:700;"
-
-                style.append(s)
-            return style
-
-        styled_df = (
-            df.style
-            .apply(style_row, axis=1)
-            .set_table_styles([
-                {
-                    "selector": "th",
-                    "props": [
-                        ("text-align", "center"),
-                        ("font-weight", "700"),
-                        ("background-color", "#f9fafb"),
-                        ("padding", "12px"),
-                        ("border-bottom", "2px solid #e5e7eb")
-                    ]
-                }
-            ])
-        )
+        def highlight_jlm(row):
+            if row["Tim"] == "Jakarta Livin Mandiri":
+                return [
+                    "background-color:#c8f7c5;font-weight:800;text-align:center",
+                    "background-color:#c8f7c5;font-weight:800",
+                    "background-color:#c8f7c5;font-weight:800"
+                ]
+            return ["text-align:center", "", ""]
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
 
         st.dataframe(
-            styled_df,
-            use_container_width=True,
-            hide_index=True
+            df.style
+              .apply(highlight_jlm, axis=1)
+              .set_properties(subset=["Peringkat"], **{"text-align": "center"}),
+            use_container_width=True
         )
 
-        rank = df.loc[df["Tim"] == "Jakarta Livin Mandiri", "Peringkat"].values[0]
+        rank = df[df["Tim"] == "Jakarta Livin Mandiri"]["Peringkat"].values[0]
 
         if rank <= 4:
             st.success(f"✅ Jakarta Livin Mandiri LOLOS FINAL FOUR (Peringkat {rank})")
