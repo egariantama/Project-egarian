@@ -31,12 +31,11 @@ st.markdown(f"""
     
     <!-- Teks Header -->
     <div style="display:flex; flex-direction:column; justify-content:center;">
-        <div style="font-size:2rem; font-weight:800; line-height:1.2;">
-            Proliga Putri 2026
-        </div>
-        <div style="font-size:0.95rem; color:#666; line-height:1;">
-            Simulasi Musim | Jakarta Livin Mandiri
-        </div>
+    <div style="font-size:2rem; font-weight:800; line-height:1.2;">
+        Proliga Putri 2026
+    </div>
+    <div style="font-size:0.95rem; color:#666; line-height:1;">
+        Simulasi Musim | Jakarta Livin Mandiri
     </div>
 </div>
 """, unsafe_allow_html=True)
