@@ -1,34 +1,46 @@
 import streamlit as st
 import pandas as pd
 import random
+import streamlit as st
 import base64
 
 # ==================================================
 # PAGE CONFIG (MOBILE FRIENDLY)
 # ==================================================
 st.set_page_config(
-    page_title="Proliga Putri 2026",
-    layout="centered"
+    page_title="Simulasi JLM Proliga 2026",
+    layout="wide"
 )
-    def load_logo(path):
+
+# ==================================================
+# LOAD LOGO
+# ==================================================
+def load_logo(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
 logo_base64 = load_logo("logo_jlm.png")
 
-st.markdown(f"""
-<div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;">
-    <img src="data:image/png;base64,{logo_base64}" style="height:52px;">
-    <div>
-        <div style="font-size:2rem; font-weight:800;">
+# ==================================================
+# HEADER RESPONSIVE
+# ==================================================
+# Gunakan columns agar selalu menempel kiri dan proporsional
+col1, col2 = st.columns([1,5], gap="small")
+
+with col1:
+    st.image("logo_jlm.png", width=60)
+
+with col2:
+    st.markdown("""
+    <div style="display:flex; flex-direction:column; justify-content:center;">
+        <div style="font-size:2rem; font-weight:800; line-height:1.2;">
             Proliga Putri 2026
         </div>
-        <div style="font-size:0.95rem; color:#666;">
+        <div style="font-size:0.95rem; color:#666; line-height:1;">
             Simulasi Musim | Jakarta Livin Mandiri
         </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # ==================================================
 # SESSION STATE (AMAN & WAJIB)
