@@ -100,22 +100,28 @@ with tab_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("📊 Ringkasan Jakarta Livin Mandiri")
 
-    c1,c2 = st.columns(2)
-    c1.markdown(f"<div class='stat-box'><div>Menang</div><div class='stat-value'>{st.session_state.win}</div></div>", unsafe_allow_html=True)
-    c2.markdown(f"<div class='stat-box'><div>Kalah</div><div class='stat-value'>{st.session_state.lose}</div></div>", unsafe_allow_html=True)
-
+    c1, c2 = st.columns(2)
+    c1.markdown(
+        f"<div class='stat-box'><div>Menang</div><div class='stat-value'>{st.session_state.win}</div></div>",
+        unsafe_allow_html=True
+    )
+    c2.markdown(
+        f"<div class='stat-box'><div>Kalah</div><div class='stat-value'>{st.session_state.lose}</div></div>",
+        unsafe_allow_html=True
+    )
     st.markdown("</div>", unsafe_allow_html=True)
 
     if st.session_state.jlm_results:
         clean_results = [
-    r if len(r) == 5 else r + [0] * (5 - len(r))
-    for r in st.session_state.jlm_results
-]
+            r if len(r) == 5 else r + [0] * (5 - len(r))
+            for r in st.session_state.jlm_results
+        ]
 
-df = pd.DataFrame(
-    clean_results,
-    columns=["No","Lawan","Skor","Poin","Hasil"]
-)
+        df = pd.DataFrame(
+            clean_results,
+            columns=["No", "Lawan", "Skor", "Poin", "Hasil"]
+        )
+
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📋 Detail Pertandingan JLM")
         st.dataframe(df.set_index("No"), use_container_width=True)
