@@ -1,41 +1,27 @@
 import streamlit as st
 import pandas as pd
 import random
-import streamlit as st
 import base64
 
 # ==================================================
 # PAGE CONFIG (MOBILE FRIENDLY)
 # ==================================================
-st.set_page_config(
-    page_title="Simulasi JLM Proliga 2026",
-    layout="wide"
-)
-
-# ==================================================
-# LOAD LOGO
-# ==================================================
 def load_logo(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-logo_jlm = load_logo("logo_jlm.png")
+logo_base64 = load_logo("logo_jlm.png")
 
-# ==================================================
-# HEADER DENGAN SATU LOGO
-# ==================================================
 st.markdown(f"""
-<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-    <!-- Logo JLM -->
-    <img src="data:image/png;base64,{logo_jlm}" style="height:60px;">
-    
-    <!-- Teks Header -->
-    <div style="display:flex; flex-direction:column; justify-content:center;">
-    <div style="font-size:2rem; font-weight:800; line-height:1.2;">
-        Proliga Putri 2026
-    </div>
-    <div style="font-size:0.95rem; color:#666; line-height:1;">
-        Simulasi Musim | Jakarta Livin Mandiri
+<div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;">
+    <img src="data:image/png;base64,{logo_base64}" style="height:20px;">
+    <div>
+        <div style="font-size:2rem; font-weight:800;">
+            Proliga Putri 2026
+        </div>
+        <div style="font-size:0.95rem; color:#666;">
+            Simulasi Musim | Jakarta Livin Mandiri
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
