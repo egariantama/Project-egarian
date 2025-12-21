@@ -107,10 +107,15 @@ with tab_home:
     st.markdown("</div>", unsafe_allow_html=True)
 
     if st.session_state.jlm_results:
-        df = pd.DataFrame(
-            st.session_state.jlm_results,
-            columns=["No","Lawan","Skor","Poin","Hasil"]
-        )
+        clean_results = [
+    r if len(r) == 5 else r + [0] * (5 - len(r))
+    for r in st.session_state.jlm_results
+]
+
+df = pd.DataFrame(
+    clean_results,
+    columns=["No","Lawan","Skor","Poin","Hasil"]
+)
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📋 Detail Pertandingan JLM")
         st.dataframe(df.set_index("No"), use_container_width=True)
