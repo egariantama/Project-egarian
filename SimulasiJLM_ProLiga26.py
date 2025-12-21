@@ -21,7 +21,6 @@ st.markdown(f"""
         </div>
         <div style="font-size:0.95rem; color:#666;">
             Simulasi Musim | Jakarta Livin Mandiri
-</div>
 """, unsafe_allow_html=True)
 
 # ==================================================
