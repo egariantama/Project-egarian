@@ -12,19 +12,25 @@ st.set_page_config(
 )
 
 # ==================================================
-# FORCE LIGHT THEME + FIX METRIC VISIBILITY
+# GLOBAL CSS FIX (ANTI TEXT INVISIBLE)
 # ==================================================
 st.markdown("""
 <style>
-.stApp, html, body {
+/* BASE */
+html, body, .stApp {
     background-color: #ffffff !important;
-    color: #1f1f1f !important;
+    color: #1a1a1a !important;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* TITLE */
+/* TITLES */
 h1 { color: #7209b7 !important; }
-h2, h3 { color: #b5179e !important; }
+h2, h3, h4 { color: #b5179e !important; }
+
+/* GENERAL TEXT */
+.stMarkdown, .stText, label, span, p {
+    color: #1a1a1a !important;
+}
 
 /* CARD */
 .card {
@@ -38,28 +44,40 @@ h2, h3 { color: #b5179e !important; }
 /* BUTTON */
 .stButton > button {
     background: linear-gradient(90deg, #f72585, #7209b7) !important;
-    color: white !important;
+    color: #ffffff !important;
     border-radius: 16px;
     padding: 14px;
     font-weight: 600;
     width: 100%;
 }
 
-/* METRIC FIX */
+/* METRIC FIX (INI KUNCI) */
 [data-testid="metric-container"] {
-    background-color: #f8f8f8 !important;
+    background-color: #f5f5f5 !important;
     border-radius: 14px;
     padding: 14px;
 }
-[data-testid="metric-container"] label,
-[data-testid="metric-container"] div {
-    color: #1f1f1f !important;
+.stMetricLabel {
+    color: #333333 !important;
+    font-weight: 600 !important;
+}
+.stMetricValue {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* SELECTBOX LABEL */
+.stSelectbox label {
+    color: #333333 !important;
     font-weight: 600;
 }
 
 /* DATAFRAME */
+[data-testid="stDataFrame"] {
+    background-color: #ffffff !important;
+}
 [data-testid="stDataFrame"] * {
-    color: #1f1f1f !important;
+    color: #1a1a1a !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -98,7 +116,7 @@ if "points" not in st.session_state:
     st.session_state.points = {team: 0 for team in teams}
     st.session_state.win = 0
     st.session_state.lose = 0
-    st.session_state.results = []  # DETAIL MATCH JLM
+    st.session_state.results = []
     st.session_state.simulated = False
 
 # ==================================================
@@ -135,14 +153,13 @@ with tab_home:
     st.markdown("</div>", unsafe_allow_html=True)
 
     if st.session_state.simulated:
-        df_result = pd.DataFrame(
+        df = pd.DataFrame(
             st.session_state.results,
             columns=["Lawan", "Skor", "Hasil"]
         )
-
         st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("📋 Detail Hasil JLM")
-        st.dataframe(df_result, use_container_width=True)
+        st.subheader("📋 Detail Pertandingan JLM")
+        st.dataframe(df, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
     else:
         st.info("Belum ada data hasil pertandingan")
@@ -225,12 +242,10 @@ with tab_klasemen:
         st.dataframe(standings, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-        rank = standings[standings["Tim"]=="Jakarta Livin Mandiri"].index[0] + 1
+        rank = standings[standings["Tim"] == "Jakarta Livin Mandiri"].index[0] + 1
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🎯 Status Final Four")
-        if rank <= 4:
-            st.success(f"✅ JLM LOLOS FINAL FOUR (Peringkat {rank})")
-        else:
-            st.error(f"❌ JLM TIDAK LOLOS (Peringkat {rank})")
+        st.success(f"✅ LOLOS FINAL FOUR (Peringkat {rank})") if rank <= 4 else \
+        st.error(f"❌ TIDAK LOLOS (Peringkat {rank})")
         st.markdown("</div>", unsafe_allow_html=True)
