@@ -356,8 +356,6 @@ document.addEventListener("touchend", function(e) {
 # ==================================================
 # HEADER
 # ==================================================
-st.title("🏐 Proliga Putri 2026")
-st.caption("Simulasi Musim | Jakarta Livin Mandiri")
 
 # ==================================================
 # DATA
