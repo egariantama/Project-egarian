@@ -13,8 +13,8 @@ def load_logo(path):
 logo_base64 = load_logo("logo_jlm.png")
 
 st.markdown(f"""
-<div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-    <img src="data:image/png;base64,{logo_base64}" style="height:52px;">
+<div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;">
+    <img src="data:image/png;base64,{logo_base64}" style="height:20px;">
     <div>
         <div style="font-size:2rem; font-weight:800;">
             Proliga Putri 2026
