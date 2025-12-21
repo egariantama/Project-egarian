@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import random
-import streamlit as st
 import base64
 
 # ==================================================
@@ -19,18 +18,21 @@ def load_logo(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-logo_base64 = load_logo("logo_jlm.png")
+logo_jlm = load_logo("logo_jlm.png")
+logo_livin = load_logo("logo_livin.png")  # Logo Jakarta Livin
 
 # ==================================================
-# HEADER RESPONSIVE
+# HEADER RESPONSIVE DENGAN DUA LOGO
 # ==================================================
-# Gunakan columns agar selalu menempel kiri dan proporsional
-col1, col2 = st.columns([1,5], gap="small")
+col1, col2, col3 = st.columns([1,1,6], gap="small")
 
 with col1:
     st.image("logo_jlm.png", width=60)
 
 with col2:
+    st.image("logo_livin.png", width=60)
+
+with col3:
     st.markdown("""
     <div style="display:flex; flex-direction:column; justify-content:center;">
         <div style="font-size:2rem; font-weight:800; line-height:1.2;">
