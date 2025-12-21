@@ -308,6 +308,35 @@ button[data-baseweb="tab"]:not([aria-selected="true"]) {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<script>
+let startX = null;
+
+document.addEventListener("touchstart", function(e) {
+    startX = e.touches[0].clientX;
+}, false);
+
+document.addEventListener("touchend", function(e) {
+    if (startX === null) return;
+
+    let endX = e.changedTouches[0].clientX;
+    let diffX = startX - endX;
+    let tabs = document.querySelectorAll('button[data-baseweb="tab"]');
+    let activeIndex = [...tabs].findIndex(t => t.getAttribute("aria-selected") === "true");
+
+    if (Math.abs(diffX) > 60) {
+        if (diffX > 0 && activeIndex < tabs.length - 1) {
+            tabs[activeIndex + 1].click();
+        }
+        if (diffX < 0 && activeIndex > 0) {
+            tabs[activeIndex - 1].click();
+        }
+    }
+
+    startX = null;
+}, false);
+</script>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
