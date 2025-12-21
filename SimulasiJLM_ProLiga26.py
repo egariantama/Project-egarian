@@ -266,6 +266,48 @@ div[data-baseweb="tab-panel"] {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* ======================
+   ROUNDED PILL TABS
+   ====================== */
+div[data-baseweb="tab-list"] {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 22px;
+    background: #f5f5f7;
+}
+
+button[data-baseweb="tab"] {
+    background: transparent !important;
+    border-radius: 18px !important;
+    padding: 8px 16px !important;
+    font-weight: 700 !important;
+    transition: all 0.25s ease;
+}
+
+/* Active tab */
+button[data-baseweb="tab"][aria-selected="true"] {
+    background: linear-gradient(135deg,#f72585,#7209b7) !important;
+    color: white !important;
+    box-shadow: 0 6px 16px rgba(114,9,183,.35);
+}
+
+/* Non-active */
+button[data-baseweb="tab"]:not([aria-selected="true"]) {
+    color: #7209b7 !important;
+}
+
+/* Mobile spacing */
+@media (max-width: 768px) {
+    button[data-baseweb="tab"] {
+        padding: 8px 12px !important;
+        font-size: 0.85rem;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
