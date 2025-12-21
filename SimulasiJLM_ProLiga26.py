@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # ==================================================
-# GLOBAL CSS (LIGHT MODE + TEXT FIX)
+# GLOBAL CSS (LIGHT MODE)
 # ==================================================
 st.markdown("""
 <style>
@@ -25,10 +25,6 @@ html, body, .stApp {
 h1 { color: #7209b7 !important; }
 h2, h3 { color: #b5179e !important; }
 
-.stMarkdown, label, span, p {
-    color: #1a1a1a !important;
-}
-
 /* CARD */
 .card {
     background-color: #ffffff;
@@ -38,35 +34,32 @@ h2, h3 { color: #b5179e !important; }
     box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
 
+/* STAT BOX (REPLACEMENT FOR METRIC) */
+.stat-box {
+    background-color: #f5f5f5;
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+}
+.stat-title {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 600;
+}
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #000;
+}
+
 /* BUTTON */
 .stButton > button {
     background: linear-gradient(90deg, #f72585, #7209b7) !important;
-    color: #ffffff !important;
+    color: white !important;
     border-radius: 16px;
     padding: 14px;
     font-weight: 600;
     width: 100%;
-}
-
-/* METRIC */
-[data-testid="metric-container"] {
-    background-color: #f5f5f5 !important;
-    border-radius: 14px;
-    padding: 14px;
-}
-.stMetricLabel {
-    color: #333333 !important;
-    font-weight: 600 !important;
-}
-.stMetricValue {
-    color: #000000 !important;
-    font-weight: 700 !important;
-}
-
-/* SELECTBOX */
-.stSelectbox label {
-    color: #333333 !important;
-    font-weight: 600;
 }
 
 /* DATAFRAME */
@@ -112,6 +105,7 @@ if "points" not in st.session_state:
     st.session_state.lose = 0
     st.session_state.results = []
     st.session_state.simulated = False
+    st.session_state.active_tab = "home"
 
 # ==================================================
 # SIMULATOR
@@ -140,9 +134,22 @@ with tab_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("📊 Ringkasan Jakarta Livin Mandiri")
 
-    col1, col2 = st.columns(2)
-    col1.metric("Menang", st.session_state.win)
-    col2.metric("Kalah", st.session_state.lose)
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown(f"""
+        <div class="stat-box">
+            <div class="stat-title">Menang</div>
+            <div class="stat-value">{st.session_state.win}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c2:
+        st.markdown(f"""
+        <div class="stat-box">
+            <div class="stat-title">Kalah</div>
+            <div class="stat-value">{st.session_state.lose}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -155,8 +162,6 @@ with tab_home:
         st.subheader("📋 Detail Pertandingan JLM")
         st.dataframe(df, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
-    else:
-        st.info("Belum ada data hasil pertandingan")
 
 # ==================================================
 # INPUT
@@ -214,8 +219,9 @@ with tab_input:
         st.session_state.lose = lose
         st.session_state.results = results
         st.session_state.simulated = True
+        st.session_state.active_tab = "klasemen"
 
-    st.markdown("</div>", unsafe_allow_html=True)
+        st.success("Simulasi selesai, cek klasemen 👇")
 
 # ==================================================
 # KLASMEN
