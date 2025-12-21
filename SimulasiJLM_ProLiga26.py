@@ -175,6 +175,65 @@ div[data-baseweb="menu"] div:hover * {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =======================
+   MOBILE OPTIMIZATION
+   ======================= */
+@media (max-width: 768px) {
+
+    /* HEADER */
+    h1 {
+        font-size: 1.6rem !important;
+        line-height: 1.2 !important;
+    }
+    h2, h3 {
+        font-size: 1.15rem !important;
+    }
+
+    /* CARD */
+    .card {
+        padding: 14px !important;
+        border-radius: 16px !important;
+        margin-bottom: 14px !important;
+    }
+
+    /* STAT BOX */
+    .stat-box {
+        padding: 14px !important;
+        border-radius: 18px !important;
+        min-height: unset !important;
+    }
+
+    .stat-box div:first-child {
+        font-size: 0.9rem !important;
+        opacity: 0.9;
+    }
+
+    .stat-value {
+        font-size: 1.6rem !important;
+        margin-top: 4px;
+    }
+
+    /* REMOVE EXCESS SPACE */
+    .element-container:has(.stat-box) {
+        margin-bottom: 8px !important;
+    }
+
+    /* TABLE */
+    .stDataFrame {
+        font-size: 0.85rem !important;
+    }
+
+    /* BUTTON */
+    .stButton>button {
+        padding: 12px !important;
+        font-size: 0.95rem !important;
+        border-radius: 16px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
