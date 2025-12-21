@@ -1,10 +1,9 @@
 import streamlit as st
 import pandas as pd
 import random
-import time
 
 # ==================================================
-# PAGE CONFIG
+# PAGE CONFIG (MOBILE OPTIMIZED)
 # ==================================================
 st.set_page_config(
     page_title="Proliga Putri 2026",
@@ -20,7 +19,8 @@ DEFAULT_STATE = {
     "points": {},
     "win": 0,
     "lose": 0,
-    "jlm_results": []
+    "jlm_results": [],
+    "active_tab": "🏠 Home"
 }
 
 for k, v in DEFAULT_STATE.items():
@@ -28,56 +28,50 @@ for k, v in DEFAULT_STATE.items():
         st.session_state[k] = v
 
 # ==================================================
-# GLOBAL CSS (FIX TAB & LABEL)
+# GLOBAL CSS (MOBILE APP FEEL)
 # ==================================================
 st.markdown("""
 <style>
 html, body, .stApp {
     background:#ffffff;
-    color:#111111;
+    color:#111;
     font-family:-apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ===== TAB FIX ===== */
+/* TAB */
 button[data-baseweb="tab"] {
     color:#7209b7 !important;
     font-weight:700;
-    font-size:0.95rem;
+    font-size:0.9rem;
 }
 button[data-baseweb="tab"][aria-selected="true"] {
     border-bottom:3px solid #f72585 !important;
     color:#f72585 !important;
 }
 
-/* ===== LABEL FIX ===== */
-label, span {
-    color:#111111 !important;
-    font-weight:600 !important;
-}
-
-/* ===== CARD ===== */
+/* CARD */
 .card {
     background:white;
     border-radius:18px;
-    padding:18px;
-    margin-bottom:18px;
+    padding:16px;
+    margin-bottom:16px;
     box-shadow:0 6px 18px rgba(0,0,0,.08);
 }
 
-/* ===== STAT ===== */
+/* STAT */
 .stat-box {
     background:linear-gradient(135deg,#f72585,#7209b7);
     color:white;
     border-radius:16px;
-    padding:16px;
+    padding:14px;
     text-align:center;
 }
 .stat-value {
-    font-size:1.8rem;
+    font-size:1.6rem;
     font-weight:800;
 }
 
-/* ===== BUTTON ===== */
+/* BUTTON */
 .stButton>button {
     background:linear-gradient(90deg,#f72585,#7209b7);
     color:white;
@@ -85,6 +79,12 @@ label, span {
     padding:14px;
     font-weight:700;
     width:100%;
+}
+
+/* TABLE HIGHLIGHT */
+.highlight {
+    background-color:#ffe6f0 !important;
+    font-weight:700;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -127,6 +127,27 @@ def auto_simulate(a,b):
     return random.choice(pool)
 
 # ==================================================
+# FINAL FOUR PROBABILITY
+# ==================================================
+def calc_probability(iterations=300):
+    lolos = 0
+    for _ in range(iterations):
+        pts = {t:0 for t in teams}
+        for i in range(len(teams)):
+            for j in range(i+1,len(teams)):
+                a,b = teams[i],teams[j]
+                for _ in range(2):
+                    s = auto_simulate(a,b)
+                    pa,pb = score_points[s]
+                    pts[a]+=pa
+                    pts[b]+=pb
+        df = sorted(pts.items(), key=lambda x: x[1], reverse=True)
+        top4 = [t[0] for t in df[:4]]
+        if "Jakarta Livin Mandiri" in top4:
+            lolos += 1
+    return round(lolos/iterations*100,1)
+
+# ==================================================
 # TABS
 # ==================================================
 tab_home, tab_input, tab_klasemen = st.tabs(
@@ -138,43 +159,27 @@ tab_home, tab_input, tab_klasemen = st.tabs(
 # ==================================================
 with tab_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("📊 Ringkasan Jakarta Livin Mandiri")
+    st.subheader("📊 Ringkasan JLM")
 
     c1,c2 = st.columns(2)
-    c1.markdown(
-        f"<div class='stat-box'><div>Menang</div><div class='stat-value'>{st.session_state.win}</div></div>",
-        unsafe_allow_html=True
-    )
-    c2.markdown(
-        f"<div class='stat-box'><div>Kalah</div><div class='stat-value'>{st.session_state.lose}</div></div>",
-        unsafe_allow_html=True
-    )
+    c1.markdown(f"<div class='stat-box'><div>Menang</div><div class='stat-value'>{st.session_state.win}</div></div>", unsafe_allow_html=True)
+    c2.markdown(f"<div class='stat-box'><div>Kalah</div><div class='stat-value'>{st.session_state.lose}</div></div>", unsafe_allow_html=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
-
-    if st.session_state.simulated and st.session_state.jlm_results:
-        df = pd.DataFrame(
-            st.session_state.jlm_results,
-            columns=["No","Lawan","Skor","Hasil"]
-        )
-
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("📋 Detail Pertandingan JLM")
-        st.dataframe(df.set_index("No"), use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
 # INPUT
 # ==================================================
 with tab_input:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("✍️ Input Hasil Jakarta Livin Mandiri")
+    st.subheader("✍️ Input Hasil JLM")
 
     points = {t:0 for t in teams}
     win = lose = 0
     jlm_results = []
     valid = True
 
-    jlm_matches = [
+    opponents = [
         "Sumut Falcons","Sumut Falcons",
         "Bandung BJB Tandamata","Bandung BJB Tandamata",
         "Jakarta Electric PLN","Jakarta Electric PLN",
@@ -183,13 +188,8 @@ with tab_input:
         "Jakarta Popsivo Polwan","Jakarta Popsivo Polwan"
     ]
 
-    for i, opp in enumerate(jlm_matches):
-        score = st.selectbox(
-            f"Match {i+1} vs {opp}",
-            score_options,
-            key=f"match_{i}"
-        )
-
+    for i, opp in enumerate(opponents):
+        score = st.selectbox(f"Match {i+1} vs {opp}", score_options, key=f"m{i}")
         if score=="— Pilih Skor —":
             valid=False
             continue
@@ -197,16 +197,13 @@ with tab_input:
         pj,po = score_points[score]
         points["Jakarta Livin Mandiri"]+=pj
         points[opp]+=po
-
         hasil = "Menang" if pj>po else "Kalah"
         win += hasil=="Menang"
         lose += hasil=="Kalah"
         jlm_results.append([i+1,opp,score,hasil])
 
     if st.button("🚀 Simulasikan Musim"):
-        if not valid:
-            st.warning("Lengkapi semua skor")
-        else:
+        if valid:
             for i in range(len(teams)):
                 for j in range(i+1,len(teams)):
                     a,b = teams[i],teams[j]
@@ -222,7 +219,8 @@ with tab_input:
             st.session_state.lose = lose
             st.session_state.jlm_results = jlm_results
             st.session_state.simulated = True
-            st.success("Simulasi selesai")
+            st.session_state.active_tab = "🏆 Klasemen"
+            st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -233,22 +231,24 @@ with tab_klasemen:
     if not st.session_state.simulated:
         st.info("Silakan lakukan simulasi")
     else:
-        df = pd.DataFrame(
-            st.session_state.points.items(),
-            columns=["Tim","Poin"]
-        ).sort_values("Poin",ascending=False).reset_index(drop=True)
-
+        df = pd.DataFrame(st.session_state.points.items(), columns=["Tim","Poin"])\
+               .sort_values("Poin", ascending=False).reset_index(drop=True)
         df.index += 1
+
+        def highlight(row):
+            return ["background-color:#ffe6f0" if row["Tim"]=="Jakarta Livin Mandiri" else "" for _ in row]
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
-        st.dataframe(df.rename_axis("Peringkat"), use_container_width=True)
+        st.dataframe(df.style.apply(highlight, axis=1), use_container_width=True)
 
         rank = df.index[df["Tim"]=="Jakarta Livin Mandiri"][0]
+        prob = calc_probability()
 
         if rank <= 4:
-            st.success(f"✅ Jakarta Livin Mandiri LOLOS FINAL FOUR (Peringkat {rank})")
+            st.success(f"✅ JLM LOLOS FINAL FOUR (Peringkat {rank})")
         else:
-            st.error(f"❌ Jakarta Livin Mandiri TIDAK LOLOS FINAL FOUR (Peringkat {rank})")
+            st.error(f"❌ JLM TIDAK LOLOS FINAL FOUR (Peringkat {rank})")
 
+        st.info(f"📈 Probabilitas Lolos Final Four: **{prob}%**")
         st.markdown("</div>", unsafe_allow_html=True)
