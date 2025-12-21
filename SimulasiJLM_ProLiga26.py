@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import random
-import time
 
 # =========================
 # PAGE CONFIG
@@ -47,7 +46,7 @@ jlm_matches = [
 ]
 
 # =========================
-# SESSION STATE (AMAN)
+# SESSION STATE
 # =========================
 if "simulated" not in st.session_state:
     st.session_state.simulated = False
@@ -150,8 +149,11 @@ with tab_home:
             columns=["Lawan", "Skor", "Hasil"]
         )
 
-        wins_df = df_jlm[df_jlm["Hasil"] == "Menang"]
-        losses_df = df_jlm[df_jlm["Hasil"] == "Kalah"]
+        wins_df = df_jlm[df_jlm["Hasil"] == "Menang"].reset_index(drop=True)
+        losses_df = df_jlm[df_jlm["Hasil"] == "Kalah"].reset_index(drop=True)
+
+        wins_df.insert(0, "No", wins_df.index + 1)
+        losses_df.insert(0, "No", losses_df.index + 1)
 
         st.subheader("📊 Ringkasan Jakarta Livin Mandiri")
 
@@ -160,10 +162,10 @@ with tab_home:
         c2.metric("Kalah", len(losses_df))
 
         st.markdown("### 🟢 Detail Kemenangan")
-        st.dataframe(wins_df[["Lawan", "Skor"]], use_container_width=True)
+        st.dataframe(wins_df[["No", "Lawan", "Skor"]], use_container_width=True)
 
         st.markdown("### 🔴 Detail Kekalahan")
-        st.dataframe(losses_df[["Lawan", "Skor"]], use_container_width=True)
+        st.dataframe(losses_df[["No", "Lawan", "Skor"]], use_container_width=True)
 
 # =========================
 # KLASMEN TAB
