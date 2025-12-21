@@ -119,7 +119,7 @@ tab_home, tab_input, tab_klasemen = st.tabs(
 )
 
 # ==================================================
-# HOME (REALTIME)
+# HOME (REALTIME + AMAN MIGRASI DATA)
 # ==================================================
 with tab_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -136,14 +136,15 @@ with tab_home:
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
-    data = st.session_state.jlm_results
+    if st.session_state.jlm_results:
+        data = st.session_state.jlm_results
 
-# Jika data lama (tanpa kolom Poin)
-if len(data[0]) == 4:
-    df = pd.DataFrame(data, columns=["No","Lawan","Skor","Hasil"])
-    df.insert(3, "Poin", "")
-else:
-    df = pd.DataFrame(data, columns=["No","Lawan","Skor","Poin","Hasil"])
+        # === MIGRASI AMAN (4 kolom → 5 kolom) ===
+        if len(data[0]) == 4:
+            df = pd.DataFrame(data, columns=["No","Lawan","Skor","Hasil"])
+            df.insert(3, "Poin", "")
+        else:
+            df = pd.DataFrame(data, columns=["No","Lawan","Skor","Poin","Hasil"])
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📋 Detail Pertandingan JLM")
