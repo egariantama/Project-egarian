@@ -213,7 +213,7 @@ with tab_input:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# KLASMEN (REALTIME + HIGHLIGHT HIJAU)
+# KLASMEN (RAPI + REALTIME + HIGHLIGHT HIJAU)
 # ==================================================
 with tab_klasemen:
     if not st.session_state.points:
@@ -221,34 +221,55 @@ with tab_klasemen:
     else:
         df = pd.DataFrame(
             st.session_state.points.items(),
-            columns=["Tim","Poin"]
+            columns=["Tim", "Poin"]
         ).sort_values("Poin", ascending=False).reset_index(drop=True)
 
-        # BUAT KOLOM PERINGKAT SENDIRI (TANPA INDEX)
-        df.insert(0, "Peringkat", range(1, len(df)+1))
+        # Kolom peringkat (BUKAN index)
+        df.insert(0, "Peringkat", range(1, len(df) + 1))
 
-        # STYLE
-        def style_table(row):
-            styles = []
+        def style_row(row):
+            style = []
             for col in row.index:
-                cell_style = ""
+                s = "padding:10px;"
+
+                if col in ["Peringkat", "Poin"]:
+                    s += "text-align:center;"
+                else:
+                    s += "text-align:left;"
+
                 if row["Tim"] == "Jakarta Livin Mandiri":
-                    cell_style += "background-color:#d1fae5;font-weight:700;"
-                if col == "Peringkat":
-                    cell_style += "text-align:center;"
-                styles.append(cell_style)
-            return styles
+                    s += "background-color:#dcfce7;font-weight:700;"
+
+                style.append(s)
+            return style
+
+        styled_df = (
+            df.style
+            .apply(style_row, axis=1)
+            .set_table_styles([
+                {
+                    "selector": "th",
+                    "props": [
+                        ("text-align", "center"),
+                        ("font-weight", "700"),
+                        ("background-color", "#f9fafb"),
+                        ("padding", "12px"),
+                        ("border-bottom", "2px solid #e5e7eb")
+                    ]
+                }
+            ])
+        )
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
 
         st.dataframe(
-            df.style.apply(style_table, axis=1),
+            styled_df,
             use_container_width=True,
-            hide_index=True  # 🔥 INI YANG MENGHILANGKAN 0,1,2
+            hide_index=True
         )
 
-        rank = df[df["Tim"]=="Jakarta Livin Mandiri"]["Peringkat"].values[0]
+        rank = df.loc[df["Tim"] == "Jakarta Livin Mandiri", "Peringkat"].values[0]
 
         if rank <= 4:
             st.success(f"✅ Jakarta Livin Mandiri LOLOS FINAL FOUR (Peringkat {rank})")
