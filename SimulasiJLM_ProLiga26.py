@@ -213,7 +213,7 @@ with tab_input:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# KLASMEN (REALTIME + HIGHLIGHT)
+# KLASMEN (REALTIME + HIGHLIGHT HIJAU)
 # ==================================================
 with tab_klasemen:
     if not st.session_state.points:
@@ -224,16 +224,28 @@ with tab_klasemen:
             columns=["Tim","Poin"]
         ).sort_values("Poin", ascending=False).reset_index(drop=True)
 
-        df.insert(0,"Peringkat",df.index+1)
+        # BUAT KOLOM PERINGKAT SENDIRI (TANPA INDEX)
+        df.insert(0, "Peringkat", range(1, len(df)+1))
 
-        def highlight_jlm(row):
-            return ["background-color:#ffe6f2;font-weight:700" if row["Tim"]=="Jakarta Livin Mandiri" else "" for _ in row]
+        # STYLE
+        def style_table(row):
+            styles = []
+            for col in row.index:
+                cell_style = ""
+                if row["Tim"] == "Jakarta Livin Mandiri":
+                    cell_style += "background-color:#d1fae5;font-weight:700;"
+                if col == "Peringkat":
+                    cell_style += "text-align:center;"
+                styles.append(cell_style)
+            return styles
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
+
         st.dataframe(
-            df.style.apply(highlight_jlm, axis=1),
-            use_container_width=True
+            df.style.apply(style_table, axis=1),
+            use_container_width=True,
+            hide_index=True  # 🔥 INI YANG MENGHILANGKAN 0,1,2
         )
 
         rank = df[df["Tim"]=="Jakarta Livin Mandiri"]["Peringkat"].values[0]
