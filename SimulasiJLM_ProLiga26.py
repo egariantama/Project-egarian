@@ -12,23 +12,20 @@ st.set_page_config(
 )
 
 # ==================================================
-# GLOBAL CSS FIX (ANTI TEXT INVISIBLE)
+# GLOBAL CSS (LIGHT MODE + TEXT FIX)
 # ==================================================
 st.markdown("""
 <style>
-/* BASE */
 html, body, .stApp {
     background-color: #ffffff !important;
     color: #1a1a1a !important;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* TITLES */
 h1 { color: #7209b7 !important; }
-h2, h3, h4 { color: #b5179e !important; }
+h2, h3 { color: #b5179e !important; }
 
-/* GENERAL TEXT */
-.stMarkdown, .stText, label, span, p {
+.stMarkdown, label, span, p {
     color: #1a1a1a !important;
 }
 
@@ -51,7 +48,7 @@ h2, h3, h4 { color: #b5179e !important; }
     width: 100%;
 }
 
-/* METRIC FIX (INI KUNCI) */
+/* METRIC */
 [data-testid="metric-container"] {
     background-color: #f5f5f5 !important;
     border-radius: 14px;
@@ -66,16 +63,13 @@ h2, h3, h4 { color: #b5179e !important; }
     font-weight: 700 !important;
 }
 
-/* SELECTBOX LABEL */
+/* SELECTBOX */
 .stSelectbox label {
     color: #333333 !important;
     font-weight: 600;
 }
 
 /* DATAFRAME */
-[data-testid="stDataFrame"] {
-    background-color: #ffffff !important;
-}
 [data-testid="stDataFrame"] * {
     color: #1a1a1a !important;
 }
@@ -246,6 +240,10 @@ with tab_klasemen:
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🎯 Status Final Four")
-        st.success(f"✅ LOLOS FINAL FOUR (Peringkat {rank})") if rank <= 4 else \
-        st.error(f"❌ TIDAK LOLOS (Peringkat {rank})")
+
+        if rank <= 4:
+            st.success(f"✅ JLM LOLOS FINAL FOUR (Peringkat {rank})")
+        else:
+            st.error(f"❌ JLM TIDAK LOLOS FINAL FOUR (Peringkat {rank})")
+
         st.markdown("</div>", unsafe_allow_html=True)
