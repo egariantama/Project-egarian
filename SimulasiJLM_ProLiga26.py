@@ -353,6 +353,31 @@ document.addEventListener("touchend", function(e) {
 }, false);
 </script>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* Perkecil jarak header ke tab */
+.block-container {
+    padding-top: 1.2rem;
+}
+
+/* Kurangi margin bawah header custom */
+.header-jlm {
+    margin-bottom: 6px !important;
+}
+
+/* Tarik tabs ke atas */
+div[data-testid="stTabs"] {
+    margin-top: -12px;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    div[data-testid="stTabs"] {
+        margin-top: -18px;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # DATA
