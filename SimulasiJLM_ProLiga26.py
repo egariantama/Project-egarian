@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import random
+import base64
 
 # ==================================================
 # PAGE CONFIG (MOBILE FRIENDLY)
@@ -10,6 +11,25 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed"
 )
+def load_logo(path):
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+logo_base64 = load_logo("logo_jlm.png")
+
+st.markdown(f"""
+<div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;">
+    <img src="data:image/png;base64,{logo_base64}" style="height:52px;">
+    <div>
+        <div style="font-size:2rem; font-weight:800;">
+            Proliga Putri 2026
+        </div>
+        <div style="font-size:0.95rem; color:#666;">
+            Simulasi Musim | Jakarta Livin Mandiri
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # SESSION STATE (AMAN & WAJIB)
