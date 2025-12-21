@@ -2,111 +2,101 @@ import streamlit as st
 import pandas as pd
 import random
 
-# ======================
+# ==================================================
 # PAGE CONFIG (MOBILE FIRST)
-# ======================
+# ==================================================
 st.set_page_config(
     page_title="Proliga Putri 2026",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# ======================
-# MOBILE FIRST WHITE UI
-# ======================
+# ==================================================
+# FORCE LIGHT THEME (ANTI DARK MODE)
+# ==================================================
 st.markdown("""
 <style>
 
-/* ===== GLOBAL ===== */
-html, body, [class*="css"]  {
+/* ROOT */
+.stApp,
+[data-testid="stAppViewContainer"],
+html, body {
     background-color: #ffffff !important;
-    color: #2b2b2b;
+    color: #2b2b2b !important;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ===== HEADER ===== */
-h1 {
-    color: #7209b7;
-    font-size: 1.8rem;
-}
-h2, h3 {
-    color: #b5179e;
+/* HEADER */
+[data-testid="stHeader"] {
+    background-color: #ffffff !important;
 }
 
-/* ===== CARD ===== */
+/* TITLES */
+h1 { color: #7209b7 !important; font-size: 1.9rem; }
+h2, h3 { color: #b5179e !important; }
+
+/* CARD */
 .card {
-    background: #ffffff;
-    border-radius: 16px;
+    background-color: #ffffff;
+    border-radius: 18px;
     padding: 16px;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
 
-/* ===== SELECTBOX ===== */
-.stSelectbox label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #7209b7;
-}
-
-/* ===== BUTTON ===== */
-.stButton>button {
-    background: linear-gradient(90deg, #f72585, #7209b7);
-    color: white;
-    border-radius: 14px;
+/* BUTTON */
+.stButton > button {
+    background: linear-gradient(90deg, #f72585, #7209b7) !important;
+    color: white !important;
+    border-radius: 16px;
     padding: 14px;
     font-weight: 600;
-    font-size: 0.95rem;
     width: 100%;
 }
 
-/* ===== DATAFRAME ===== */
+/* SELECTBOX */
+.stSelectbox label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #7209b7 !important;
+}
+
+/* DATAFRAME */
 [data-testid="stDataFrame"] {
-    background-color: white;
+    background-color: #ffffff !important;
     border-radius: 14px;
-    overflow: hidden;
 }
 [data-testid="stDataFrame"] * {
     color: #2b2b2b !important;
-    font-size: 0.85rem;
 }
 
-/* ===== METRIC ===== */
+/* METRIC */
 [data-testid="metric-container"] {
-    background-color: #f9f9f9;
+    background-color: #f8f8f8 !important;
     border-radius: 14px;
     padding: 14px;
     text-align: center;
 }
-[data-testid="metric-container"] label {
-    font-size: 0.8rem;
-}
 
-/* ===== TAB ===== */
+/* TAB */
 button[data-baseweb="tab"] {
     font-size: 0.9rem;
     padding: 10px;
+    color: #7209b7 !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ======================
+# ==================================================
 # HEADER
-# ======================
+# ==================================================
 st.title("🏐 Proliga Putri 2026")
-st.caption("Simulasi Musim • Jakarta Livin Mandiri")
+st.caption("Simulasi Musim | Jakarta Livin Mandiri")
 
-# ======================
-# TAB NAVIGATION
-# ======================
-tab_home, tab_input, tab_klasemen = st.tabs(
-    ["🏠 Home", "✍️ Input", "🏆 Klasemen"]
-)
-
-# ======================
+# ==================================================
 # DATA TIM
-# ======================
+# ==================================================
 teams_strength = {
     "Jakarta Pertamina Enduro": 5,
     "Jakarta Popsivo Polwan": 5,
@@ -120,7 +110,6 @@ teams_strength = {
 teams = list(teams_strength.keys())
 
 score_options = ["3-0", "3-1", "3-2", "2-3", "1-3", "0-3"]
-
 score_points = {
     "3-0": (3, 0),
     "3-1": (3, 0),
@@ -130,49 +119,59 @@ score_points = {
     "0-3": (0, 3)
 }
 
-# ======================
-# AUTO SIMULATION
-# ======================
+# ==================================================
+# SESSION STATE INIT
+# ==================================================
+if "points" not in st.session_state:
+    st.session_state.points = {team: 0 for team in teams}
+    st.session_state.win = 0
+    st.session_state.lose = 0
+    st.session_state.simulated = False
+
+# ==================================================
+# SIMULATOR
+# ==================================================
 def auto_simulate(a, b):
     diff = teams_strength[a] - teams_strength[b]
     if diff >= 2:
-        return random.choice(["3-0","3-1","3-2"])
+        choices = ["3-0", "3-1", "3-2"]
     elif diff == 1:
-        return random.choice(["3-1","3-2","2-3"])
+        choices = ["3-1", "3-2", "2-3"]
     elif diff == 0:
-        return random.choice(score_options)
+        choices = score_options
     else:
-        return random.choice(["0-3","1-3","2-3"])
+        choices = ["0-3", "1-3", "2-3"]
+    return random.choice(choices)
 
-# ======================
-# SESSION STATE
-# ======================
-if "points" not in st.session_state:
-    st.session_state.points = {t: 0 for t in teams}
-    st.session_state.win = 0
-    st.session_state.lose = 0
+# ==================================================
+# TABS
+# ==================================================
+tab_home, tab_input, tab_klasemen = st.tabs(["🏠 Home", "✍️ Input", "🏆 Klasemen"])
 
-# ======================
+# ==================================================
 # HOME
-# ======================
+# ==================================================
 with tab_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("📊 Ringkasan JLM")
-    st.metric("Menang", st.session_state.win)
-    st.metric("Kalah", st.session_state.lose)
+
+    col1, col2 = st.columns(2)
+    col1.metric("Menang", st.session_state.win)
+    col2.metric("Kalah", st.session_state.lose)
+
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ======================
+# ==================================================
 # INPUT
-# ======================
+# ==================================================
 with tab_input:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("✍️ Input Match Jakarta Livin Mandiri")
+    st.subheader("✍️ Input Hasil Jakarta Livin Mandiri")
 
-    points = {t: 0 for t in teams}
+    points = {team: 0 for team in teams}
     win, lose = 0, 0
 
-    opponents = [
+    jlm_matches = [
         "Sumut Falcons","Sumut Falcons",
         "Bandung BJB Tandamata","Bandung BJB Tandamata",
         "Jakarta Electric PLN","Jakarta Electric PLN",
@@ -181,12 +180,12 @@ with tab_input:
         "Jakarta Popsivo Polwan","Jakarta Popsivo Polwan"
     ]
 
-    for i, opp in enumerate(opponents):
+    for i, opp in enumerate(jlm_matches):
         score = st.selectbox(
             f"Match {i+1} vs {opp}",
             score_options,
             index=3,
-            key=f"jlm{i}"
+            key=f"jlm_{i}"
         )
         pj, po = score_points[score]
         points["Jakarta Livin Mandiri"] += pj
@@ -197,47 +196,50 @@ with tab_input:
         else:
             lose += 1
 
-    st.session_state.points = points
-    st.session_state.win = win
-    st.session_state.lose = lose
+    if st.button("🔄 Simulasikan Musim"):
+        for i in range(len(teams)):
+            for j in range(i+1, len(teams)):
+                a, b = teams[i], teams[j]
+                if "Jakarta Livin Mandiri" in [a, b]:
+                    continue
+                for _ in range(2):
+                    s = auto_simulate(a, b)
+                    pa, pb = score_points[s]
+                    points[a] += pa
+                    points[b] += pb
+
+        st.session_state.points = points
+        st.session_state.win = win
+        st.session_state.lose = lose
+        st.session_state.simulated = True
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ======================
-# SIMULATE OTHER MATCHES
-# ======================
-for i in range(len(teams)):
-    for j in range(i+1, len(teams)):
-        a, b = teams[i], teams[j]
-        if "Jakarta Livin Mandiri" in [a, b]:
-            continue
-        for _ in range(2):
-            s = auto_simulate(a, b)
-            pa, pb = score_points[s]
-            st.session_state.points[a] += pa
-            st.session_state.points[b] += pb
-
-# ======================
+# ==================================================
 # KLASMEN
-# ======================
+# ==================================================
 with tab_klasemen:
-    table = (
-        pd.DataFrame(st.session_state.points.items(), columns=["Tim", "Poin"])
-        .sort_values("Poin", ascending=False)
-        .reset_index(drop=True)
-    )
-    table.index += 1
-
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("🏆 Klasemen Akhir")
-    st.dataframe(table, use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    rank = table[table["Tim"]=="Jakarta Livin Mandiri"].index[0] + 1
-
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    if rank <= 4:
-        st.success(f"✅ JLM Lolos Final Four (Peringkat {rank})")
+    if not st.session_state.simulated:
+        st.info("Silakan input hasil JLM dan klik **Simulasikan Musim**")
     else:
-        st.error(f"❌ JLM Gagal Final Four (Peringkat {rank})")
-    st.markdown("</div>", unsafe_allow_html=True)
+        standings = (
+            pd.DataFrame(st.session_state.points.items(), columns=["Tim", "Poin"])
+            .sort_values("Poin", ascending=False)
+            .reset_index(drop=True)
+        )
+        standings.index += 1
+
+        st.markdown("<div class='card'>", unsafe_allow_html=True)
+        st.subheader("🏆 Klasemen Akhir")
+        st.dataframe(standings, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        rank = standings[standings["Tim"]=="Jakarta Livin Mandiri"].index[0] + 1
+
+        st.markdown("<div class='card'>", unsafe_allow_html=True)
+        st.subheader("🎯 Status Final Four")
+        if rank <= 4:
+            st.success(f"✅ JLM LOLOS FINAL FOUR (Peringkat {rank})")
+        else:
+            st.error(f"❌ JLM TIDAK LOLOS (Peringkat {rank})")
+        st.markdown("</div>", unsafe_allow_html=True)
