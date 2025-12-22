@@ -376,6 +376,33 @@ div[data-baseweb="tab-list"] {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   SAFE FIX HEADER ↔ TAB GAP
+   ========================= */
+
+/* Kurangi padding bawaan Streamlit (tanpa nabrak header) */
+.block-container {
+    padding-top: 0.8rem !important;
+}
+
+/* Rapatkan tab ke header dengan cara AMAN */
+div[data-baseweb="tab-list"] {
+    margin-top: 4px !important;
+}
+
+/* Mobile: sedikit lebih rapat */
+@media (max-width: 768px) {
+    .block-container {
+        padding-top: 0.6rem !important;
+    }
+    div[data-baseweb="tab-list"] {
+        margin-top: 2px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
