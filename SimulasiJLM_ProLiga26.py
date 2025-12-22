@@ -402,6 +402,42 @@ st.markdown("""
 st.markdown("""
 <style>
 /* =========================
+   SELECTBOX TEXT → HITAM
+   (ANDROID + IOS + DESKTOP)
+   ========================= */
+
+/* Nilai skor yang TERPILIH */
+div[role="combobox"] span {
+    color: #111111 !important;
+    font-weight: 700 !important;
+}
+
+/* Placeholder */
+div[role="combobox"] input {
+    color: #111111 !important;
+}
+
+/* Icon panah */
+div[role="combobox"] svg {
+    fill: #111111 !important;
+}
+
+/* Dropdown list */
+div[role="listbox"] span {
+    color: #111111 !important;
+    font-weight: 600 !important;
+}
+
+/* Hover / selected item */
+div[role="option"][aria-selected="true"] span {
+    background-color: #f72585 !important;
+    color: #ffffff !important;
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
    ANDROID FIX SELECTBOX
    TEXT PUTIH → BACKGROUND GELAP
    ========================= */
