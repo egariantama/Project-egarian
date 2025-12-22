@@ -471,6 +471,43 @@ div[role="listbox"] span {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   ANDROID FINAL FIX SELECTBOX
+   ========================= */
+
+/* Container */
+div[data-baseweb="select"] {
+    background: #f1f3f5 !important;
+    border-radius: 14px !important;
+}
+
+/* TEKS NILAI TERPILIH (INI KUNCINYA) */
+div[data-baseweb="select"] span {
+    color: #111111 !important;
+    -webkit-text-fill-color: #111111 !important;
+    font-weight: 700 !important;
+}
+
+/* Placeholder */
+div[data-baseweb="select"] input {
+    color: #111111 !important;
+    -webkit-text-fill-color: #111111 !important;
+}
+
+/* Arrow */
+div[data-baseweb="select"] svg {
+    fill: #111111 !important;
+}
+
+/* Dropdown list */
+div[data-baseweb="menu"] span {
+    color: #111111 !important;
+    font-weight: 600 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
