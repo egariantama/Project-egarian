@@ -646,11 +646,12 @@ with tab_input:
     ]
 
     for i, opp in enumerate(jlm_matches):
-        score = st.selectbox(
-            f"Match {i+1} vs {opp}",
-            score_options,
-            key=f"match_{i}"
-        )
+        score = st.radio(
+    f"Match {i+1} vs {opp}",
+    score_options,
+    key=f"match_{i}",
+    horizontal=True
+)
 
         if score == "— Pilih Skor —":
             valid = False
