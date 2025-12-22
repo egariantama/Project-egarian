@@ -508,6 +508,47 @@ div[data-baseweb="menu"] span {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   ANDROID REAL FIX SELECTBOX
+   ========================= */
+
+/* container selectbox */
+div[data-baseweb="select"] {
+    background: linear-gradient(135deg,#7209b7,#f72585) !important;
+    border-radius: 14px !important;
+}
+
+/* teks skor terpilih */
+div[data-baseweb="select"] span {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-weight: 800 !important;
+}
+
+/* placeholder */
+div[data-baseweb="select"] input {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* arrow */
+div[data-baseweb="select"] svg {
+    fill: #ffffff !important;
+}
+
+/* dropdown list */
+div[data-baseweb="menu"] {
+    background: #ffffff !important;
+}
+
+div[data-baseweb="menu"] span {
+    color: #111111 !important;
+    font-weight: 600 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
