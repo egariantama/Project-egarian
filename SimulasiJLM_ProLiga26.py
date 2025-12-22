@@ -378,6 +378,27 @@ table tr td[style*="background-color:#c7f9cc"] {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FIX BORDER TABEL KLASMEN
+   ========================= */
+.stDataFrame table {
+    border-collapse: collapse !important;
+}
+
+.stDataFrame th, 
+.stDataFrame td {
+    border-bottom: 1px solid rgba(0,0,0,0.12) !important;
+    padding: 10px 12px !important;
+}
+
+.stDataFrame th {
+    font-weight: 700 !important;
+    background-color: #f5f5f7 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
@@ -551,11 +572,12 @@ with tab_klasemen:
 
         df_show = df[["Peringkat", "Tim", "Poin"]].copy()
 
-        st.table(
-            df_show.style
-                .apply(highlight_jlm, axis=1)
-                .set_properties(subset=["Peringkat"], **{"text-align": "center"})
-        )
+        st.dataframe(
+    df[["Peringkat","Tim","Poin"]]
+    .style.apply(highlight_jlm, axis=1),
+    use_container_width=True,
+    hide_index=True
+)
 
         # ⬇️ HARUS DI SINI (SEJAJAR DENGAN st.table)
         rank = df[df["Tim"] == "Jakarta Livin Mandiri"]["Peringkat"].values[0]
