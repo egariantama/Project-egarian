@@ -352,6 +352,16 @@ document.addEventListener("touchend", function(e) {
 }, false);
 </script>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* RATA TENGAH KOLOM PERINGKAT */
+[data-testid="stDataFrame"] th:nth-child(1),
+[data-testid="stDataFrame"] td:nth-child(1) {
+    text-align: center !important;
+    font-weight: 700;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
