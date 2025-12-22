@@ -565,26 +565,33 @@ with tab_klasemen:
     else:
         df = pd.DataFrame(
             st.session_state.points.items(),
-            columns=["Tim","Poin"]
+            columns=["Tim", "Poin"]
         ).sort_values("Poin", ascending=False).reset_index(drop=True)
 
         df.insert(0, "Peringkat", df.index + 1)
 
+        # ✅ FIX INDENTASI + HIGHLIGHT KONTRAS
         def highlight_jlm(row):
-    if row["Tim"] == "Jakarta Livin Mandiri":
-        return [
-            "background-color:#d1fae5; color:#065f46; font-weight:800"
-            for _ in row
-        ]
-    else:
-        return ["" for _ in row]
+            if row["Tim"] == "Jakarta Livin Mandiri":
+                return [
+                    "background-color:#bbf7d0; color:#064e3b; font-weight:800"
+                    for _ in row
+                ]
+            else:
+                return ["" for _ in row]
 
         styled_df = (
-            df[["Peringkat","Tim","Poin"]]
+            df[["Peringkat", "Tim", "Poin"]]
             .style
             .apply(highlight_jlm, axis=1)
-            .set_properties(subset=["Peringkat","Poin"], **{"text-align":"center"})
-            .set_properties(subset=["Tim"], **{"text-align":"left"})
+            .set_properties(
+                subset=["Peringkat", "Poin"],
+                **{"text-align": "center"}
+            )
+            .set_properties(
+                subset=["Tim"],
+                **{"text-align": "left"}
+            )
         )
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -596,8 +603,8 @@ with tab_klasemen:
             hide_index=True
         )
 
-        # ✅ BARIS INI HARUS SEJAJAR DENGAN st.dataframe
-        rank = df[df["Tim"]=="Jakarta Livin Mandiri"]["Peringkat"].values[0]
+        # ✅ POSISI BENAR (SEJAJAR dataframe)
+        rank = df[df["Tim"] == "Jakarta Livin Mandiri"]["Peringkat"].values[0]
 
         if rank <= 4:
             st.success(f"✅ Jakarta Livin Mandiri LOLOS FINAL FOUR (Peringkat {rank})")
