@@ -399,30 +399,6 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
-st.markdown("""
-<style>
-/* =========================
-   FIX GAP HEADER → TAB (FINAL & AMAN)
-   ========================= */
-
-/* Hilangkan margin bawaan element pertama (HEADER) */
-.element-container:first-child {
-    margin-bottom: 0rem !important;
-}
-
-/* Rapatkan tab ke atas */
-div[data-baseweb="tab-list"] {
-    margin-top: 0.25rem !important;
-}
-
-/* Mobile: lebih rapat lagi */
-@media (max-width: 768px) {
-    div[data-baseweb="tab-list"] {
-        margin-top: 0.1rem !important;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
@@ -592,77 +568,31 @@ with tab_klasemen:
             columns=["Tim", "Poin"]
         ).sort_values("Poin", ascending=False).reset_index(drop=True)
 
-        # ===============================
-        # PERINGKAT + MEDAL
-        # ===============================
         df.insert(0, "Peringkat", df.index + 1)
 
-        def medal(rank):
-            return {
-                1: "🥇",
-                2: "🥈",
-                3: "🥉",
-                4: "🏅"
-            }.get(rank, "")
-
-        df[""] = df["Peringkat"].apply(medal)
-
-        # ===============================
-        # HIGHLIGHT JLM (AMAN & KONTRAS)
-        # ===============================
+        # ✅ FIX INDENTASI + HIGHLIGHT KONTRAS
         def highlight_jlm(row):
             if row["Tim"] == "Jakarta Livin Mandiri":
                 return [
                     "background-color:#bbf7d0; color:#064e3b; font-weight:800"
                     for _ in row
                 ]
-            return [""] * len(row)
+            else:
+                return ["" for _ in row]
 
         styled_df = (
-            df[["", "Peringkat", "Tim", "Poin"]]
+            df[["Peringkat", "Tim", "Poin"]]
             .style
             .apply(highlight_jlm, axis=1)
             .set_properties(
-                subset=["", "Peringkat", "Poin"],
-                **{
-                    "text-align": "center",
-                    "font-weight": "700"
-                }
+                subset=["Peringkat", "Poin"],
+                **{"text-align": "center"}
             )
             .set_properties(
                 subset=["Tim"],
-                **{
-                    "text-align": "left",
-                    "padding-left": "6px"
-                }
+                **{"text-align": "left"}
             )
         )
-
-        # ===============================
-        # MOBILE FRIENDLY CSS
-        # ===============================
-        st.markdown("""
-        <style>
-        @media (max-width: 768px) {
-
-            /* perkecil font tabel */
-            .stDataFrame {
-                font-size: 0.85rem;
-            }
-
-            /* rapikan header */
-            th {
-                font-size: 0.8rem !important;
-                padding: 6px !important;
-            }
-
-            /* rapikan cell */
-            td {
-                padding: 6px !important;
-            }
-        }
-        </style>
-        """, unsafe_allow_html=True)
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
@@ -673,9 +603,7 @@ with tab_klasemen:
             hide_index=True
         )
 
-        # ===============================
-        # STATUS LOLOS
-        # ===============================
+        # ✅ POSISI BENAR (SEJAJAR dataframe)
         rank = df[df["Tim"] == "Jakarta Livin Mandiri"]["Peringkat"].values[0]
 
         if rank <= 4:
