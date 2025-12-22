@@ -399,6 +399,30 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FIX GAP HEADER → TAB (FINAL & AMAN)
+   ========================= */
+
+/* Hilangkan margin bawaan element pertama (HEADER) */
+.element-container:first-child {
+    margin-bottom: 0rem !important;
+}
+
+/* Rapatkan tab ke atas */
+div[data-baseweb="tab-list"] {
+    margin-top: 0.25rem !important;
+}
+
+/* Mobile: lebih rapat lagi */
+@media (max-width: 768px) {
+    div[data-baseweb="tab-list"] {
+        margin-top: 0.1rem !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
