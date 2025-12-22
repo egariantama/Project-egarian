@@ -362,6 +362,22 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FIX WARNA TEKS TABEL KLASMEN
+   ========================= */
+table td, table th {
+    color: #111111 !important;
+}
+
+/* Tetap putih untuk baris highlight JLM */
+table tr td[style*="background-color:#c7f9cc"] {
+    color: #111111 !important;
+    font-weight: 800 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
