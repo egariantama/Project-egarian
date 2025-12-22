@@ -463,26 +463,6 @@ div[data-baseweb="tab-panel"] > div:first-child {
 }
 </style>
 """, unsafe_allow_html=True)
-st.markdown("""
-<style>
-/* =========================
-   FORCE TAB CONTENT UP
-   ========================= */
-
-/* Dorong isi tab ke atas */
-div[data-baseweb="tab-panel"] {
-    margin-top: -120px !important;
-    padding-top: 0 !important;
-}
-
-/* Mobile: lebih agresif */
-@media (max-width: 768px) {
-    div[data-baseweb="tab-panel"] {
-        margin-top: -140px !important;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
