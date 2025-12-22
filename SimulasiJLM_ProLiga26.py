@@ -531,7 +531,10 @@ with tab_klasemen:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
         st.dataframe(
-    df[["Peringkat","Tim","Poin"]],
+    df[["Peringkat","Tim","Poin"]]
+        .style
+        .apply(highlight_jlm, axis=1)
+        .set_properties(subset=["Peringkat"], **{"text-align": "center"}),
     use_container_width=True,
     hide_index=True
 )
