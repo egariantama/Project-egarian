@@ -526,7 +526,18 @@ with tab_input:
 
     if st.button("🚀 Simulasikan Musim"):
         if not valid:
-            st.warning("Lengkapi semua skor")
+            st.markdown("""
+<div style="
+    background:#fff8cc;
+    border:1px solid #ffd666;
+    border-radius:16px;
+    padding:14px;
+    font-weight:700;
+    color:#5c4b00;
+">
+⚠️ Lengkapi semua skor
+</div>
+""", unsafe_allow_html=True)
         else:
             for i in range(len(teams)):
                 for j in range(i+1, len(teams)):
