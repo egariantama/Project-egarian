@@ -517,29 +517,33 @@ with tab_klasemen:
     else:
         df = pd.DataFrame(
             st.session_state.points.items(),
-            columns=["Tim","Poin"]
+            columns=["Tim", "Poin"]
         ).sort_values("Poin", ascending=False).reset_index(drop=True)
 
         df.insert(0, "Peringkat", df.index + 1)
 
         def highlight_jlm(row):
             return [
-                "background-color:#c7f9cc;font-weight:800" if row["Tim"]=="Jakarta Livin Mandiri" else ""
+                "background-color:#c7f9cc;font-weight:800"
+                if row["Tim"] == "Jakarta Livin Mandiri"
+                else ""
                 for _ in row
             ]
 
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
+
         df_show = df[["Peringkat", "Tim", "Poin"]].copy()
-df_show["Peringkat"] = df_show["Peringkat"].astype(str)
 
-st.table(
-    df_show.style
-        .apply(highlight_jlm, axis=1)
-        .set_properties(subset=["Peringkat"], **{"text-align": "center"})
-)
+        st.table(
+            df_show.style
+                .apply(highlight_jlm, axis=1)
+                .set_properties(subset=["Peringkat"], **{"text-align": "center"})
+        )
 
-        rank = df[df["Tim"]=="Jakarta Livin Mandiri"]["Peringkat"].values[0]
+        # ⬇️ HARUS DI SINI (SEJAJAR DENGAN st.table)
+        rank = df[df["Tim"] == "Jakarta Livin Mandiri"]["Peringkat"].values[0]
+
         if rank <= 4:
             st.success(f"✅ Jakarta Livin Mandiri LOLOS FINAL FOUR (Peringkat {rank})")
         else:
