@@ -443,6 +443,26 @@ div[data-baseweb="tab-panel"] {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   REMOVE EMPTY SPACER AFTER TABS
+   ========================= */
+
+/* Hapus container kosong tepat setelah tab */
+div[data-baseweb="tab-panel"] > div:empty {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Tambahan: rapatkan konten pertama tab */
+div[data-baseweb="tab-panel"] > div:first-child {
+    margin-top: 0 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
