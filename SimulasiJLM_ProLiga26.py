@@ -399,31 +399,6 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
-st.markdown("""
-<style>
-/* ===============================
-   FIX JARAK HEADER KE TAB (FINAL)
-   =============================== */
-
-/* Hilangkan jarak besar setelah header */
-.element-container:has(.app-header),
-.element-container:has(img) {
-    margin-bottom: 0px !important;
-}
-
-/* Rapatkan tab ke atas */
-div[data-baseweb="tab-list"] {
-    margin-top: 6px !important;
-}
-
-/* Mobile: lebih rapat */
-@media (max-width: 768px) {
-    div[data-baseweb="tab-list"] {
-        margin-top: 4px !important;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
