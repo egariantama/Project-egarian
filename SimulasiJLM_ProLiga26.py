@@ -12,19 +12,16 @@ def load_logo(path):
 
 logo_base64 = load_logo("logo_jlm.png")
 
-st.markdown(f"""
-<div style="display:flex; align-items:center; gap:14px; margin-bottom:5px;">
-    <img src="data:image/png;base64,{logo_base64}" style="height:80px;">
-    <div>
-        <div style="font-size:2rem; font-weight:800;">
-            Proliga Putri 2026
-        </div>
-        <div style="font-size:0.95rem; color:#666;">
-            Simulasi Musim | Jakarta Livin Mandiri
+with st.container():
+    st.markdown(f"""
+    <div class="app-header">
+        <img src="data:image/png;base64,{logo_base64}" />
+        <div class="title-wrap">
+            <div class="title">Proliga Putri 2026</div>
+            <div class="subtitle">Simulasi Musim | Jakarta Livin Mandiri</div>
         </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # ==================================================
 # SESSION STATE (AMAN & WAJIB)
@@ -379,6 +376,50 @@ div[data-baseweb="tab-list"] {
 }
 </style>
 """, unsafe_allow_html=True)
+<style>
+/* =========================
+   FINAL HEADER FIX (REAL)
+   ========================= */
+
+/* Header layout */
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 6px !important; /* INI PENTING */
+}
+
+.app-header img {
+    height: 72px;
+}
+
+.title-wrap .title {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.title-wrap .subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* HILANGKAN JARAK STREAMLIT DEFAULT SETELAH HEADER */
+.element-container:first-child {
+    margin-bottom: 0px !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .app-header img {
+        height: 60px;
+    }
+    .title-wrap .title {
+        font-size: 1.5rem;
+    }
+}
+</style>
 
 # ==================================================
 # HEADER
