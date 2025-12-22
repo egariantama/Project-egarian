@@ -423,26 +423,6 @@ div[data-baseweb="tab-list"] {
 }
 </style>
 """, unsafe_allow_html=True)
-st.markdown("""
-<style>
-/* =========================
-   FIX GAP TAB → CONTENT (FINAL)
-   ========================= */
-
-/* Hilangkan jarak kosong sebelum konten tab */
-div[data-baseweb="tab-panel"] {
-    padding-top: 0.25rem !important;
-    margin-top: 0 !important;
-}
-
-/* Mobile: lebih rapat lagi */
-@media (max-width: 768px) {
-    div[data-baseweb="tab-panel"] {
-        padding-top: 0.1rem !important;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
