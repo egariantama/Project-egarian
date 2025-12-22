@@ -399,6 +399,42 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   ANDROID FIX SELECTBOX
+   TEXT PUTIH → BACKGROUND GELAP
+   ========================= */
+
+/* Selectbox container */
+div[role="combobox"] {
+    background: linear-gradient(135deg,#7209b7,#f72585) !important;
+    border-radius: 14px !important;
+}
+
+/* Teks skor terpilih (PUTIH, tapi KONTRAS) */
+div[role="combobox"] span {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+}
+
+/* Placeholder */
+div[role="combobox"] input {
+    color: #ffffff !important;
+}
+
+/* Arrow */
+div[role="combobox"] svg {
+    fill: #ffffff !important;
+}
+
+/* Dropdown list */
+div[role="listbox"] span {
+    color: #111111 !important;
+    font-weight: 600 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
