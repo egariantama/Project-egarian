@@ -355,30 +355,6 @@ document.addEventListener("touchend", function(e) {
 st.markdown("""
 <style>
 /* =========================
-   FIX JARAK HEADER KE TAB
-   ========================= */
-
-/* Kurangi margin bawaan sebelum tab */
-.block-container {
-    padding-top: 1rem !important;
-}
-
-/* Naikkan posisi tab mendekati header */
-div[data-baseweb="tab-list"] {
-    margin-top: -12px !important;
-}
-
-/* Mobile: lebih rapat lagi */
-@media (max-width: 768px) {
-    div[data-baseweb="tab-list"] {
-        margin-top: -18px !important;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
-st.markdown("""
-<style>
-/* =========================
    SAFE FIX HEADER ↔ TAB GAP
    ========================= */
 
