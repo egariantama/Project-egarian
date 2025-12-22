@@ -573,10 +573,11 @@ with tab_klasemen:
         def highlight_jlm(row):
     if row["Tim"] == "Jakarta Livin Mandiri":
         return [
-            "background-color:#bbf7d0; color:#14532d; font-weight:900"
+            "background-color:#d1fae5; color:#065f46; font-weight:800"
             for _ in row
         ]
-    return ["" for _ in row]
+    else:
+        return ["" for _ in row]
 
         styled_df = (
             df[["Peringkat","Tim","Poin"]]
