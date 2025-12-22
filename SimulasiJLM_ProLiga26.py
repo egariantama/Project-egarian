@@ -572,9 +572,17 @@ with tab_klasemen:
 
         df_show = df[["Peringkat", "Tim", "Poin"]].copy()
 
-        st.dataframe(
+        styled_df = (
     df[["Peringkat","Tim","Poin"]]
-    .style.apply(highlight_jlm, axis=1),
+    .style
+    .apply(highlight_jlm, axis=1)
+    .set_properties(subset=["Peringkat"], **{"text-align": "center"})
+    .set_properties(subset=["Poin"], **{"text-align": "center"})
+    .set_properties(subset=["Tim"], **{"text-align": "left"})
+)
+
+st.dataframe(
+    styled_df,
     use_container_width=True,
     hide_index=True
 )
