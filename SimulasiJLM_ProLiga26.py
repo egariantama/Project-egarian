@@ -377,16 +377,17 @@ div[data-baseweb="tab-list"] {
 </style>
 """, unsafe_allow_html=True)
 <style>
+st.markdown("""
+<style>
 /* =========================
-   FINAL HEADER FIX (REAL)
+   FINAL HEADER FIX
    ========================= */
 
-/* Header layout */
 .app-header {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 6px !important; /* INI PENTING */
+    margin-bottom: 6px !important;
 }
 
 .app-header img {
@@ -405,12 +406,12 @@ div[data-baseweb="tab-list"] {
     margin-top: 2px;
 }
 
-/* HILANGKAN JARAK STREAMLIT DEFAULT SETELAH HEADER */
+/* HILANGKAN JARAK DEFAULT STREAMLIT */
 .element-container:first-child {
     margin-bottom: 0px !important;
 }
 
-/* Mobile */
+/* MOBILE */
 @media (max-width: 768px) {
     .app-header img {
         height: 60px;
@@ -420,6 +421,7 @@ div[data-baseweb="tab-list"] {
     }
 }
 </style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # HEADER
