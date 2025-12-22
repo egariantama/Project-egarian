@@ -210,24 +210,3 @@ with tab_klasemen:
         df = pd.DataFrame(st.session_state.points.items(),columns=["Tim","Poin"]).sort_values("Poin",ascending=False)
         df.insert(0,"Peringkat",range(1,len(df)+1))
         st.dataframe(df,use_container_width=True)
-        def highlight_jlm(row):
-            return [
-                "background-color:#c7f9cc;font-weight:800" if row["Tim"]=="Jakarta Livin Mandiri" else ""
-                for _ in row
-            ]
-
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("🏆 Klasemen Akhir")
-        st.dataframe(
-            df[["Peringkat","Tim","Poin"]]
-            .style.apply(highlight_jlm, axis=1),
-            use_container_width=True
-        )
-
-        rank = df[df["Tim"]=="Jakarta Livin Mandiri"]["Peringkat"].values[0]
-        if rank <= 4:
-            st.success(f"✅ Jakarta Livin Mandiri LOLOS FINAL FOUR (Peringkat {rank})")
-        else:
-            st.error(f"❌ Jakarta Livin Mandiri TIDAK LOLOS FINAL FOUR (Peringkat {rank})")
-
-        st.markdown("</div>", unsafe_allow_html=True)
