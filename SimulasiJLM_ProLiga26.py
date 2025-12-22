@@ -25,6 +25,51 @@ st.markdown(f"""
     </div>
 </div>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   RUNNING TEXT / MARQUEE
+   ========================= */
+.marquee-wrapper {
+    width: 100%;
+    overflow: hidden;
+    margin: 16px 0 8px 0;
+}
+
+.marquee {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 18s linear infinite;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #7209b7;
+}
+
+.marquee span {
+    padding-right: 60px;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Mobile tuning */
+@media (max-width: 768px) {
+    .marquee {
+        font-size: 0.95rem;
+    }
+}
+</style>
+
+<div class="marquee-wrapper">
+    <div class="marquee">
+        <span>🏐 Proliga Putri 2026 — Jakarta Livin Mandiri</span>
+        <span>🔥 Simulasi Musim • Target Final Four</span>
+        <span>💜 Spirit Juara • #LivinFight</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # SESSION STATE (AMAN & WAJIB)
