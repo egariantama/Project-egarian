@@ -377,9 +377,32 @@ div[data-baseweb="tab-list"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ==================================================
-# HEADER
-# ==================================================
+st.markdown("""
+<style>
+/* ===============================
+   FIX JARAK HEADER ↔ TAB (AMAN)
+   =============================== */
+
+/* Hilangkan margin bawah elemen header HTML */
+.element-container:has(.app-header),
+.element-container:has(img[src^="data:image"]) {
+    margin-bottom: 0px !important;
+}
+
+/* Rapatkan tab ke atas */
+div[data-baseweb="tab-list"] {
+    margin-top: 0px !important;
+    padding-top: 6px !important;
+}
+
+/* Mobile: ekstra rapat */
+@media (max-width: 768px) {
+    div[data-baseweb="tab-list"] {
+        margin-top: -4px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # DATA
