@@ -12,19 +12,20 @@ def load_logo(path):
 
 logo_base64 = load_logo("logo_jlm.png")
 
-st.markdown(f"""
-<div style="display:flex; align-items:center; gap:14px; margin-bottom:5px;">
-    <img src="data:image/png;base64,{logo_base64}" style="height:80px;">
-    <div>
-        <div style="font-size:2rem; font-weight:800;">
-            Proliga Putri 2026
-        </div>
-        <div style="font-size:0.95rem; color:#666;">
-            Simulasi Musim | Jakarta Livin Mandiri
+with st.container():
+    st.markdown(f"""
+    <div class="app-header">
+        <img src="data:image/png;base64,{logo_base64}">
+        <div>
+            <div class="title">Proliga Putri 2026</div>
+            <div class="subtitle">Simulasi Musim | Jakarta Livin Mandiri</div>
         </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+
+    tab_home, tab_input, tab_klasemen = st.tabs(
+        ["🏠 Home","✍️ Input","🏆 Klasemen"]
+    )
 
 # ==================================================
 # SESSION STATE (AMAN & WAJIB)
@@ -373,6 +374,35 @@ div[data-baseweb="tab-list"] {
     div[data-baseweb="tab-list"] {
         margin-top: -18px !important;
     }
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+}
+
+.app-header img {
+    height: 72px;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* Rapikan tab */
+div[data-baseweb="tab-list"] {
+    margin-top: 4px !important;
 }
 </style>
 """, unsafe_allow_html=True)
