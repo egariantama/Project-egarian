@@ -521,11 +521,9 @@ with tab_klasemen:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🏆 Klasemen Akhir")
         st.dataframe(
-    df[["Peringkat","Tim","Poin"]]
-        .style
-        .apply(highlight_jlm, axis=1)
-        .hide(axis="index"),
-    use_container_width=True
+    df[["Peringkat","Tim","Poin"]],
+    use_container_width=True,
+    hide_index=True
 )
 
         rank = df[df["Tim"]=="Jakarta Livin Mandiri"]["Peringkat"].values[0]
