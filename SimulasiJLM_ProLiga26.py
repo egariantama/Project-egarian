@@ -238,6 +238,25 @@ div[data-testid="column"] {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   SPASI MENANG & KALAH
+   ========================= */
+
+/* Tambah jarak antar stat-box */
+.stat-box {
+    margin-bottom: 12px !important;
+}
+
+/* Mobile: spasi lebih halus */
+@media (max-width: 768px) {
+    .stat-box {
+        margin-bottom: 14px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # ✅ FINAL SELECTBOX FIX (ANDROID / IOS / DESKTOP)
