@@ -386,82 +386,52 @@ with tab_input:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("✍️ Input Hasil Jakarta Livin Mandiri")
 
-    points = {t: 0 for t in teams}
-    win = lose = 0
-    jlm_results = []
-    valid = True
-
-    jlm_matches = [
-        "Sumut Falcons","Sumut Falcons",
-        "Bandung BJB Tandamata","Bandung BJB Tandamata",
-        "Jakarta Electric PLN","Jakarta Electric PLN",
-        "Gresik Phonska Plus","Gresik Phonska Plus",
-        "Jakarta Pertamina Enduro","Jakarta Pertamina Enduro",
-        "Jakarta Popsivo Polwan","Jakarta Popsivo Polwan"
-    ]
-
+    # --- selectbox match (punyamu tetap) ---
     for i, opp in enumerate(jlm_matches):
         score = st.selectbox(
             f"Match {i+1} vs {opp}",
             score_options,
             key=f"match_{i}"
         )
-
-        if score == "— Pilih Skor —":
-            valid = False
-            continue
-
-        pj, po = score_points[score]
-        points["Jakarta Livin Mandiri"] += pj
-        points[opp] += po
-
-        hasil = "Menang" if pj > po else "Kalah"
-        win += hasil == "Menang"
-        lose += hasil == "Kalah"
-
-        jlm_results.append([i+1, opp, score, pj, hasil])
-
-    # 🔄 REALTIME UPDATE (tetap ada)
-    st.session_state.points = points
-    st.session_state.win = win
-    st.session_state.lose = lose
-    st.session_state.jlm_results = jlm_results
+        ...
+        ...
 
     # ===============================
-# 🚀 BUTTON SIMULASI MUSIM (FIXED)
-# ===============================
-if st.button("🚀 Simulasikan Musim"):
-    if not valid:
-        st.markdown("""
-        <div style="
-            background:linear-gradient(135deg,#fde7f3,#e9d5ff);
-            border:1px solid #d8b4fe;
-            border-radius:16px;
-            padding:14px;
-            font-weight:700;
-            color:#5b21b6;
-            text-align:center;
-            margin-top:12px;
-        ">
-        ⚠️ Lengkapi semua skor terlebih dahulu
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        # simulasi otomatis pertandingan selain JLM
-        for i in range(len(teams)):
-            for j in range(i + 1, len(teams)):
-                a, b = teams[i], teams[j]
-                if "Jakarta Livin Mandiri" in (a, b):
-                    continue
-                for _ in range(2):
-                    s = auto_simulate(a, b)
-                    pa, pb = score_points[s]
-                    points[a] += pa
-                    points[b] += pb
+    # 🚀 BUTTON SIMULASI MUSIM (HANYA DI INPUT)
+    # ===============================
+    if st.button("🚀 Simulasikan Musim"):
+        if not valid:
+            st.markdown("""
+            <div style="
+                background:linear-gradient(135deg,#fde7f3,#e9d5ff);
+                border:1px solid #d8b4fe;
+                border-radius:16px;
+                padding:14px;
+                font-weight:700;
+                color:#5b21b6;
+                text-align:center;
+                margin-top:12px;
+            ">
+            ⚠️ Lengkapi semua skor terlebih dahulu
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            for i in range(len(teams)):
+                for j in range(i + 1, len(teams)):
+                    a, b = teams[i], teams[j]
+                    if "Jakarta Livin Mandiri" in (a, b):
+                        continue
+                    for _ in range(2):
+                        s = auto_simulate(a, b)
+                        pa, pb = score_points[s]
+                        points[a] += pa
+                        points[b] += pb
 
-        st.session_state.points = points
-        st.session_state.simulated = True
-        st.success("Simulasi musim selesai 🎉")
+            st.session_state.points = points
+            st.session_state.simulated = True
+            st.success("Simulasi musim selesai 🎉")
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
 # KLASMEN
