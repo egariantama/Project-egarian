@@ -219,13 +219,13 @@ with tab_home:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# INPUT
+# INPUT (REALTIME + BUTTON SIMULASI DIKEMBALIKAN)
 # ==================================================
 with tab_input:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("✍️ Input Hasil Jakarta Livin Mandiri")
 
-    points = {t:0 for t in teams}
+    points = {t: 0 for t in teams}
     win = lose = 0
     jlm_results = []
     valid = True
@@ -257,12 +257,37 @@ with tab_input:
         hasil = "Menang" if pj > po else "Kalah"
         win += hasil == "Menang"
         lose += hasil == "Kalah"
+
         jlm_results.append([i+1, opp, score, pj, hasil])
 
+    # 🔄 REALTIME UPDATE (tetap ada)
     st.session_state.points = points
     st.session_state.win = win
     st.session_state.lose = lose
     st.session_state.jlm_results = jlm_results
+
+    # ===============================
+    # 🚀 BUTTON SIMULASI MUSIM (KEMBALI)
+    # ===============================
+    if st.button("🚀 Simulasikan Musim"):
+        if not valid:
+            st.warning("Lengkapi semua skor terlebih dahulu")
+        else:
+            # simulasi otomatis pertandingan selain JLM
+            for i in range(len(teams)):
+                for j in range(i + 1, len(teams)):
+                    a, b = teams[i], teams[j]
+                    if "Jakarta Livin Mandiri" in (a, b):
+                        continue
+                    for _ in range(2):
+                        s = auto_simulate(a, b)
+                        pa, pb = score_points[s]
+                        points[a] += pa
+                        points[b] += pb
+
+            st.session_state.points = points
+            st.session_state.simulated = True
+            st.success("Simulasi musim selesai 🎉")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
