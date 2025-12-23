@@ -51,6 +51,256 @@ for k, v in DEFAULT_STATE.items():
         st.session_state[k] = v
 
 # ==================================================
+# GLOBAL CSS (CLEAN & STABLE)
+# ==================================================
+st.markdown("""
+<style>
+html, body, .stApp {
+    background:#ffffff;
+    color:#111111;
+    font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* CARD */
+.card {
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+/* STAT */
+.stat-box {
+    background:linear-gradient(135deg,#f72585,#7209b7);
+    color:white;
+    border-radius:16px;
+    padding:16px;
+    text-align:center;
+}
+.stat-value {
+    font-size:1.8rem;
+    font-weight:800;
+}
+
+/* BUTTON */
+.stButton>button {
+    background:linear-gradient(90deg,#f72585,#7209b7);
+    color:white;
+    border-radius:18px;
+    padding:14px;
+    font-weight:700;
+    width:100%;
+}
+
+/* TAB STYLE */
+button[data-baseweb="tab"] {
+    font-weight:700;
+}
+button[data-baseweb="tab"][aria-selected="true"] {
+    background:linear-gradient(135deg,#f72585,#7209b7);
+    color:white !important;
+    border-radius:16px;
+}
+
+/* TABLE */
+.stDataFrame th {
+    background:#f5f5f7;
+    font-weight:700;
+}
+.stDataFrame td, .stDataFrame th {
+    border-bottom:1px solid rgba(0,0,0,.12);
+}
+
+/* CENTER PERINGKAT */
+[data-testid="stDataFrame"] th:nth-child(1),
+[data-testid="stDataFrame"] td:nth-child(1) {
+    text-align:center;
+    font-weight:700;
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FINAL TAB PILL FIX (LOCKED)
+   ========================= */
+
+/* TAB CONTAINER */
+div[data-baseweb="tab-list"] {
+    background: #f5f5f7 !important;
+    border-radius: 26px !important;
+    padding: 8px !important;
+    gap: 6px !important;
+}
+
+/* TAB UMUM */
+button[data-baseweb="tab"] {
+    background: transparent !important;
+    color: #7209b7 !important;
+    font-weight: 700 !important;
+
+    border-radius: 20px !important;
+    padding: 10px 18px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    opacity: 1 !important;
+    min-height: 42px !important;
+}
+
+/* TAB AKTIF */
+button[data-baseweb="tab"][aria-selected="true"] {
+    background: linear-gradient(135deg,#f72585,#7209b7) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 16px rgba(114,9,183,.35);
+}
+
+/* PAKSA TEKS & EMOJI TERLIHAT */
+button[data-baseweb="tab"] span,
+button[data-baseweb="tab"] svg {
+    color: inherit !important;
+    opacity: 1 !important;
+}
+
+/* MOBILE ANDROID */
+@media (max-width: 768px) {
+    button[data-baseweb="tab"] {
+        font-size: 0.9rem !important;
+        padding: 10px 14px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FIX LABEL MATCH TIDAK TERLIHAT
+   ========================= */
+
+/* LABEL st.selectbox */
+div[data-testid="stSelectbox"] label {
+    color: #111111 !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    opacity: 1 !important;
+    margin-bottom: 6px !important;
+    display: block !important;
+}
+
+/* MOBILE ANDROID */
+@media (max-width: 768px) {
+    div[data-testid="stSelectbox"] label {
+        font-size: 0.9rem !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FIX RINGKASAN HOME MOBILE
+   ========================= */
+
+/* Container kolom Home */
+div[data-testid="column"] {
+    display: flex;
+    flex-direction: column;
+}
+
+/* MOBILE → FORCE 2 STAT DALAM 1 BARIS */
+@media (max-width: 768px) {
+
+    /* Bungkus stat-box agar sejajar */
+    div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+    }
+
+    /* Stat box lebih ramping */
+    .stat-box {
+        flex: 1 !important;
+        padding: 12px !important;
+        border-radius: 14px !important;
+    }
+
+    .stat-box div:first-child {
+        font-size: 0.85rem !important;
+    }
+
+    .stat-value {
+        font-size: 1.4rem !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   SPASI MENANG & KALAH
+   ========================= */
+
+/* Tambah jarak antar stat-box */
+.stat-box {
+    margin-bottom: 12px !important;
+}
+
+/* Mobile: spasi lebih halus */
+@media (max-width: 768px) {
+    .stat-box {
+        margin-bottom: 14px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ==================================================
+# ✅ FINAL SELECTBOX FIX (ANDROID / IOS / DESKTOP)
+# ==================================================
+st.markdown("""
+<style>
+/* SELECTBOX FINAL FIX — JANGAN DITIMPA */
+
+div[data-baseweb="select"] {
+    background:#ffffff !important;
+    border-radius:14px !important;
+    border:1px solid #ccc !important;
+}
+
+div[data-baseweb="select"] span {
+    color:#111111 !important;
+    -webkit-text-fill-color:#111111 !important;
+    font-weight:700 !important;
+}
+
+div[data-baseweb="select"] input {
+    color:#111111 !important;
+    -webkit-text-fill-color:#111111 !important;
+}
+
+div[data-baseweb="select"] svg {
+    fill:#111111 !important;
+}
+
+div[data-baseweb="menu"] span {
+    color:#111111 !important;
+    font-weight:600 !important;
+}
+
+div[data-baseweb="menu"] div:hover {
+    background:#f72585 !important;
+}
+div[data-baseweb="menu"] div:hover span {
+    color:#ffffff !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ==================================================
 # DATA
 # ==================================================
 teams_strength = {
@@ -71,21 +321,9 @@ score_points = {
 }
 
 # ==================================================
-# JADWAL PERTANDINGAN JLM (WAJIB ADA)
-# ==================================================
-jlm_matches = [
-    "Sumut Falcons","Sumut Falcons",
-    "Bandung BJB Tandamata","Bandung BJB Tandamata",
-    "Jakarta Electric PLN","Jakarta Electric PLN",
-    "Gresik Phonska Plus","Gresik Phonska Plus",
-    "Jakarta Pertamina Enduro","Jakarta Pertamina Enduro",
-    "Jakarta Popsivo Polwan","Jakarta Popsivo Polwan"
-]
-
-# ==================================================
 # AUTO SIMULATE
 # ==================================================
-def auto_simulate(a, b):
+def auto_simulate(a,b):
     diff = teams_strength[a] - teams_strength[b]
     if diff >= 2:
         pool = ["3-0","3-1","3-2"]
@@ -105,7 +343,7 @@ tab_home, tab_input, tab_klasemen = st.tabs(
 )
 
 # ==================================================
-# HOME
+# HOME (REALTIME + DETAIL JLM DIKEMBALIKAN)
 # ==================================================
 with tab_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -122,18 +360,27 @@ with tab_home:
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
-    if st.session_state.jlm_results:
+    # ===============================
+    # DETAIL MATCH JLM (AMAN)
+    # ===============================
+    if st.session_state.jlm_results and len(st.session_state.jlm_results) > 0:
         df_jlm = pd.DataFrame(
             st.session_state.jlm_results,
-            columns=["No","Lawan","Skor","Poin","Hasil"]
+            columns=["No", "Lawan", "Skor", "Poin", "Hasil"]
         )
+
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📋 Detail Pertandingan JLM")
-        st.dataframe(df_jlm.set_index("No"), use_container_width=True)
+        st.dataframe(
+            df_jlm.set_index("No"),
+            use_container_width=True
+        )
         st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.info("Belum ada hasil pertandingan. Silakan input skor di menu Input ✍️")
 
 # ==================================================
-# INPUT (REALTIME + SIMULASI)
+# INPUT (REALTIME + BUTTON SIMULASI DIKEMBALIKAN)
 # ==================================================
 with tab_input:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -143,6 +390,15 @@ with tab_input:
     win = lose = 0
     jlm_results = []
     valid = True
+
+    jlm_matches = [
+        "Sumut Falcons","Sumut Falcons",
+        "Bandung BJB Tandamata","Bandung BJB Tandamata",
+        "Jakarta Electric PLN","Jakarta Electric PLN",
+        "Gresik Phonska Plus","Gresik Phonska Plus",
+        "Jakarta Pertamina Enduro","Jakarta Pertamina Enduro",
+        "Jakarta Popsivo Polwan","Jakarta Popsivo Polwan"
+    ]
 
     for i, opp in enumerate(jlm_matches):
         score = st.selectbox(
@@ -165,31 +421,47 @@ with tab_input:
 
         jlm_results.append([i+1, opp, score, pj, hasil])
 
+    # 🔄 REALTIME UPDATE (tetap ada)
     st.session_state.points = points
     st.session_state.win = win
     st.session_state.lose = lose
     st.session_state.jlm_results = jlm_results
 
-    if st.button("🚀 Simulasikan Musim"):
-        if not valid:
-            st.warning("Lengkapi semua skor terlebih dahulu")
-        else:
-            for i in range(len(teams)):
-                for j in range(i+1, len(teams)):
-                    a, b = teams[i], teams[j]
-                    if "Jakarta Livin Mandiri" in (a, b):
-                        continue
-                    for _ in range(2):
-                        s = auto_simulate(a, b)
-                        pa, pb = score_points[s]
-                        points[a] += pa
-                        points[b] += pb
+    # ===============================
+# 🚀 BUTTON SIMULASI MUSIM (FIXED)
+# ===============================
+if st.button("🚀 Simulasikan Musim"):
+    if not valid:
+        st.markdown("""
+        <div style="
+            background:linear-gradient(135deg,#fde7f3,#e9d5ff);
+            border:1px solid #d8b4fe;
+            border-radius:16px;
+            padding:14px;
+            font-weight:700;
+            color:#5b21b6;
+            text-align:center;
+            margin-top:12px;
+        ">
+        ⚠️ Lengkapi semua skor terlebih dahulu
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        # simulasi otomatis pertandingan selain JLM
+        for i in range(len(teams)):
+            for j in range(i + 1, len(teams)):
+                a, b = teams[i], teams[j]
+                if "Jakarta Livin Mandiri" in (a, b):
+                    continue
+                for _ in range(2):
+                    s = auto_simulate(a, b)
+                    pa, pb = score_points[s]
+                    points[a] += pa
+                    points[b] += pb
 
-            st.session_state.points = points
-            st.session_state.simulated = True
-            st.success("Simulasi musim selesai 🎉")
-
-    st.markdown("</div>", unsafe_allow_html=True)
+        st.session_state.points = points
+        st.session_state.simulated = True
+        st.success("Simulasi musim selesai 🎉")
 
 # ==================================================
 # KLASMEN
