@@ -206,17 +206,41 @@ tab_home, tab_input, tab_klasemen = st.tabs(
 )
 
 # ==================================================
-# HOME
+# HOME (REALTIME + DETAIL JLM DIKEMBALIKAN)
 # ==================================================
 with tab_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("📊 Ringkasan Jakarta Livin Mandiri")
 
     c1, c2 = st.columns(2)
-    c1.markdown(f"<div class='stat-box'><div>Menang</div><div class='stat-value'>{st.session_state.win}</div></div>", unsafe_allow_html=True)
-    c2.markdown(f"<div class='stat-box'><div>Kalah</div><div class='stat-value'>{st.session_state.lose}</div></div>", unsafe_allow_html=True)
-
+    c1.markdown(
+        f"<div class='stat-box'><div>Menang</div><div class='stat-value'>{st.session_state.win}</div></div>",
+        unsafe_allow_html=True
+    )
+    c2.markdown(
+        f"<div class='stat-box'><div>Kalah</div><div class='stat-value'>{st.session_state.lose}</div></div>",
+        unsafe_allow_html=True
+    )
     st.markdown("</div>", unsafe_allow_html=True)
+
+    # ===============================
+    # DETAIL MATCH JLM (AMAN)
+    # ===============================
+    if st.session_state.jlm_results and len(st.session_state.jlm_results) > 0:
+        df_jlm = pd.DataFrame(
+            st.session_state.jlm_results,
+            columns=["No", "Lawan", "Skor", "Poin", "Hasil"]
+        )
+
+        st.markdown("<div class='card'>", unsafe_allow_html=True)
+        st.subheader("📋 Detail Pertandingan JLM")
+        st.dataframe(
+            df_jlm.set_index("No"),
+            use_container_width=True
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.info("Belum ada hasil pertandingan. Silakan input skor di menu Input ✍️")
 
 # ==================================================
 # INPUT (REALTIME + BUTTON SIMULASI DIKEMBALIKAN)
