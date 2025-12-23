@@ -428,29 +428,40 @@ with tab_input:
     st.session_state.jlm_results = jlm_results
 
     # ===============================
-    # 🚀 BUTTON SIMULASI MUSIM (KEMBALI)
-    # ===============================
-    if st.button("🚀 Simulasikan Musim"):
-        if not valid:
-            st.warning("Lengkapi semua skor terlebih dahulu")
-        else:
-            # simulasi otomatis pertandingan selain JLM
-            for i in range(len(teams)):
-                for j in range(i + 1, len(teams)):
-                    a, b = teams[i], teams[j]
-                    if "Jakarta Livin Mandiri" in (a, b):
-                        continue
-                    for _ in range(2):
-                        s = auto_simulate(a, b)
-                        pa, pb = score_points[s]
-                        points[a] += pa
-                        points[b] += pb
+# 🚀 BUTTON SIMULASI MUSIM (FIXED)
+# ===============================
+if st.button("🚀 Simulasikan Musim"):
+    if not valid:
+        st.markdown("""
+        <div style="
+            background:linear-gradient(135deg,#fde7f3,#e9d5ff);
+            border:1px solid #d8b4fe;
+            border-radius:16px;
+            padding:14px;
+            font-weight:700;
+            color:#5b21b6;
+            text-align:center;
+            margin-top:12px;
+        ">
+        ⚠️ Lengkapi semua skor terlebih dahulu
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        # simulasi otomatis pertandingan selain JLM
+        for i in range(len(teams)):
+            for j in range(i + 1, len(teams)):
+                a, b = teams[i], teams[j]
+                if "Jakarta Livin Mandiri" in (a, b):
+                    continue
+                for _ in range(2):
+                    s = auto_simulate(a, b)
+                    pa, pb = score_points[s]
+                    points[a] += pa
+                    points[b] += pb
 
-            st.session_state.points = points
-            st.session_state.simulated = True
-            st.success("Simulasi musim selesai 🎉")
-
-    st.markdown("</div>", unsafe_allow_html=True)
+        st.session_state.points = points
+        st.session_state.simulated = True
+        st.success("Simulasi musim selesai 🎉")
 
 # ==================================================
 # KLASMEN
