@@ -120,6 +120,61 @@ button[data-baseweb="tab"][aria-selected="true"] {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FINAL TAB PILL FIX (LOCKED)
+   ========================= */
+
+/* TAB CONTAINER */
+div[data-baseweb="tab-list"] {
+    background: #f5f5f7 !important;
+    border-radius: 26px !important;
+    padding: 8px !important;
+    gap: 6px !important;
+}
+
+/* TAB UMUM */
+button[data-baseweb="tab"] {
+    background: transparent !important;
+    color: #7209b7 !important;
+    font-weight: 700 !important;
+
+    border-radius: 20px !important;
+    padding: 10px 18px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    opacity: 1 !important;
+    min-height: 42px !important;
+}
+
+/* TAB AKTIF */
+button[data-baseweb="tab"][aria-selected="true"] {
+    background: linear-gradient(135deg,#f72585,#7209b7) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 16px rgba(114,9,183,.35);
+}
+
+/* PAKSA TEKS & EMOJI TERLIHAT */
+button[data-baseweb="tab"] span,
+button[data-baseweb="tab"] svg {
+    color: inherit !important;
+    opacity: 1 !important;
+}
+
+/* MOBILE ANDROID */
+@media (max-width: 768px) {
+    button[data-baseweb="tab"] {
+        font-size: 0.9rem !important;
+        padding: 10px 14px !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # ✅ FINAL SELECTBOX FIX (ANDROID / IOS / DESKTOP)
