@@ -175,6 +175,30 @@ button[data-baseweb="tab"] svg {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FIX LABEL MATCH TIDAK TERLIHAT
+   ========================= */
+
+/* LABEL st.selectbox */
+div[data-testid="stSelectbox"] label {
+    color: #111111 !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    opacity: 1 !important;
+    margin-bottom: 6px !important;
+    display: block !important;
+}
+
+/* MOBILE ANDROID */
+@media (max-width: 768px) {
+    div[data-testid="stSelectbox"] label {
+        font-size: 0.9rem !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # ✅ FINAL SELECTBOX FIX (ANDROID / IOS / DESKTOP)
