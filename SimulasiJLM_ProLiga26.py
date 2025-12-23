@@ -199,6 +199,45 @@ div[data-testid="stSelectbox"] label {
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* =========================
+   FIX RINGKASAN HOME MOBILE
+   ========================= */
+
+/* Container kolom Home */
+div[data-testid="column"] {
+    display: flex;
+    flex-direction: column;
+}
+
+/* MOBILE → FORCE 2 STAT DALAM 1 BARIS */
+@media (max-width: 768px) {
+
+    /* Bungkus stat-box agar sejajar */
+    div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+    }
+
+    /* Stat box lebih ramping */
+    .stat-box {
+        flex: 1 !important;
+        padding: 12px !important;
+        border-radius: 14px !important;
+    }
+
+    .stat-box div:first-child {
+        font-size: 0.85rem !important;
+    }
+
+    .stat-value {
+        font-size: 1.4rem !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ==================================================
 # ✅ FINAL SELECTBOX FIX (ANDROID / IOS / DESKTOP)
