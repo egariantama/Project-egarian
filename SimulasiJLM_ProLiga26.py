@@ -393,8 +393,6 @@ with tab_input:
             score_options,
             key=f"match_{i}"
         )
-        ...
-        ...
 
     # ===============================
     # 🚀 BUTTON SIMULASI MUSIM (HANYA DI INPUT)
