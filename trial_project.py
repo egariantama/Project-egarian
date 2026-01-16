@@ -1,12 +1,76 @@
+# ==================================================
+# MOBILE MODERN FBI BANCASSURANCE
+# REAL-TIME EXCEL VERSION
+# ==================================================
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-st.set_page_config(page_title="FBI Bancassurance", layout="centered")
+# ==================================================
+# PAGE CONFIG
+# ==================================================
+st.set_page_config(
+    page_title="FBI Bancassurance",
+    page_icon="📊",
+    layout="centered"
+)
 
+# ==================================================
+# HIGH CONTRAST MOBILE STYLE
+# ==================================================
+st.markdown("""
+<style>
+html, body {
+    background-color: #F2F4F8;
+    color: #020617;
+}
+.block-container {
+    padding: 1.2rem 1rem 2rem 1rem;
+}
+.header-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+}
+.header-subtitle {
+    font-size: 0.85rem;
+    color: #475569;
+    margin-bottom: 1.4rem;
+}
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 1.4rem 0 0.6rem 0;
+}
+.card {
+    background: #FFFFFF;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+}
+.metric-title {
+    font-size: 0.8rem;
+    color: #475569;
+    font-weight: 600;
+}
+.metric-value {
+    font-size: 1.45rem;
+    font-weight: 800;
+}
+.small {
+    font-size: 0.75rem;
+    color: #64748B;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ==================================================
+# LOAD EXCEL DATA (AUTO REFRESH)
+# ==================================================
 @st.cache_data(ttl=60)
-def load_excel():
+def load_data():
     return {
         "kpi": pd.read_excel("data_fbi.xlsx", sheet_name="kpi"),
         "amfs": pd.read_excel("data_fbi.xlsx", sheet_name="amfs"),
@@ -15,36 +79,87 @@ def load_excel():
         "trend": pd.read_excel("data_fbi.xlsx", sheet_name="daily_trend")
     }
 
-data = load_excel()
+data = load_data()
 
-st.title("📊 Daily FBI Bancassurance")
-st.caption(f"as {datetime.now().strftime('%d %B %Y')}")
+# ==================================================
+# HEADER
+# ==================================================
+st.markdown('<div class="header-title">Daily FBI Bancassurance</div>', unsafe_allow_html=True)
+st.markdown(
+    f'<div class="header-subtitle">as {datetime.now().strftime("%d %B %Y")}</div>',
+    unsafe_allow_html=True
+)
 
-# ================= KPI =================
-cols = st.columns(len(data["kpi"]))
-for col, row in zip(cols, data["kpi"].itertuples()):
-    col.metric(row.metric, f"{row.value} {row.unit}")
+# ==================================================
+# KPI CARDS
+# ==================================================
+st.markdown('<div class="section-title">Key Highlights</div>', unsafe_allow_html=True)
+kpi_cols = st.columns(len(data["kpi"]))
 
-# ================= AMFS =================
-st.subheader("AMFS Snapshot")
+for col, row in zip(kpi_cols, data["kpi"].itertuples()):
+    col.markdown(f"""
+    <div class="card">
+        <div class="metric-title">{row.metric}</div>
+        <div class="metric-value">{row.value} {row.unit}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ==================================================
+# AMFS SNAPSHOT
+# ==================================================
+st.markdown('<div class="section-title">AMFS Snapshot</div>', unsafe_allow_html=True)
 for _, r in data["amfs"].iterrows():
-    st.metric(r["metric"], f"{r['value']} {r['unit']}")
+    st.markdown(f"""
+    <div class="card">
+        <div class="metric-title">{r['metric']}</div>
+        <div class="metric-value">{r['value']} {r['unit']}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-# ================= JIWA =================
-st.subheader("Rabat Jiwa")
+# ==================================================
+# RABAT JIWA
+# ==================================================
+st.markdown('<div class="section-title">Rabat Jiwa</div>', unsafe_allow_html=True)
 for _, r in data["jiwa"].iterrows():
-    st.metric(r["metric"], f"Rp {r['value']} M")
+    st.markdown(f"""
+    <div class="card">
+        <div class="metric-title">{r['metric']}</div>
+        <div class="metric-value">Rp {r['value']} M</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-# ================= KEBAKARAN =================
-st.subheader("Rabat Kebakaran")
+# ==================================================
+# RABAT KEBAKARAN
+# ==================================================
+st.markdown('<div class="section-title">Rabat Kebakaran</div>', unsafe_allow_html=True)
 for _, r in data["kebakaran"].iterrows():
-    st.metric(r["metric"], f"Rp {r['value']} M")
+    st.markdown(f"""
+    <div class="card">
+        <div class="metric-title">{r['metric']}</div>
+        <div class="metric-value">Rp {r['value']} M</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-# ================= TREND =================
-st.subheader("Daily Trend FBI")
+# ==================================================
+# DAILY TREND CHART
+# ==================================================
+st.markdown('<div class="section-title">Daily Trend FBI</div>', unsafe_allow_html=True)
+
 fig, ax = plt.subplots()
 ax.plot(data["trend"]["hk"], data["trend"]["dec25"], label="Dec '25")
 ax.plot(data["trend"]["hk"], data["trend"]["jan26"], label="Jan '26")
-ax.legend()
+ax.set_xlabel("HK")
+ax.set_ylabel("Rp M")
 ax.grid(True)
-st.pyplot(fig)
+ax.legend()
+
+st.pyplot(fig, use_container_width=True)
+
+# ==================================================
+# FOOTNOTE
+# ==================================================
+st.markdown("""
+<div class="small">
+* Data otomatis update maksimal setiap 60 detik dari file Excel.
+</div>
+""", unsafe_allow_html=True)
