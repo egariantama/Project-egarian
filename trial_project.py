@@ -1,6 +1,6 @@
 # ==================================================
 # MOBILE MODERN FBI BANCASSURANCE
-# REAL-TIME EXCEL VERSION
+# REAL-TIME EXCEL (UPLOAD SAFE VERSION)
 # ==================================================
 
 import streamlit as st
@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 # ==================================================
-# HIGH CONTRAST MOBILE STYLE
+# STYLE (HIGH CONTRAST - SAFE)
 # ==================================================
 st.markdown("""
 <style>
@@ -67,21 +67,6 @@ html, body {
 """, unsafe_allow_html=True)
 
 # ==================================================
-# LOAD EXCEL DATA (AUTO REFRESH)
-# ==================================================
-@st.cache_data(ttl=60)
-def load_data():
-    return {
-        "kpi": pd.read_excel("data_fbi.xlsx", sheet_name="kpi"),
-        "amfs": pd.read_excel("data_fbi.xlsx", sheet_name="amfs"),
-        "jiwa": pd.read_excel("data_fbi.xlsx", sheet_name="jiwa"),
-        "kebakaran": pd.read_excel("data_fbi.xlsx", sheet_name="kebakaran"),
-        "trend": pd.read_excel("data_fbi.xlsx", sheet_name="daily_trend")
-    }
-
-data = load_data()
-
-# ==================================================
 # HEADER
 # ==================================================
 st.markdown('<div class="header-title">Daily FBI Bancassurance</div>', unsafe_allow_html=True)
@@ -91,12 +76,39 @@ st.markdown(
 )
 
 # ==================================================
+# FILE UPLOADER (KEY FIX)
+# ==================================================
+uploaded_file = st.file_uploader(
+    "📂 Upload data_fbi.xlsx",
+    type=["xlsx"]
+)
+
+if uploaded_file is None:
+    st.warning("Silakan upload file Excel terlebih dahulu.")
+    st.stop()
+
+# ==================================================
+# LOAD DATA SAFELY
+# ==================================================
+@st.cache_data(ttl=60)
+def load_data(file):
+    return {
+        "kpi": pd.read_excel(file, sheet_name="kpi"),
+        "amfs": pd.read_excel(file, sheet_name="amfs"),
+        "jiwa": pd.read_excel(file, sheet_name="jiwa"),
+        "kebakaran": pd.read_excel(file, sheet_name="kebakaran"),
+        "trend": pd.read_excel(file, sheet_name="daily_trend")
+    }
+
+data = load_data(uploaded_file)
+
+# ==================================================
 # KPI CARDS
 # ==================================================
 st.markdown('<div class="section-title">Key Highlights</div>', unsafe_allow_html=True)
-kpi_cols = st.columns(len(data["kpi"]))
+cols = st.columns(len(data["kpi"]))
 
-for col, row in zip(kpi_cols, data["kpi"].itertuples()):
+for col, row in zip(cols, data["kpi"].itertuples()):
     col.markdown(f"""
     <div class="card">
         <div class="metric-title">{row.metric}</div>
@@ -105,7 +117,7 @@ for col, row in zip(kpi_cols, data["kpi"].itertuples()):
     """, unsafe_allow_html=True)
 
 # ==================================================
-# AMFS SNAPSHOT
+# AMFS
 # ==================================================
 st.markdown('<div class="section-title">AMFS Snapshot</div>', unsafe_allow_html=True)
 for _, r in data["amfs"].iterrows():
@@ -117,7 +129,7 @@ for _, r in data["amfs"].iterrows():
     """, unsafe_allow_html=True)
 
 # ==================================================
-# RABAT JIWA
+# JIWA
 # ==================================================
 st.markdown('<div class="section-title">Rabat Jiwa</div>', unsafe_allow_html=True)
 for _, r in data["jiwa"].iterrows():
@@ -129,7 +141,7 @@ for _, r in data["jiwa"].iterrows():
     """, unsafe_allow_html=True)
 
 # ==================================================
-# RABAT KEBAKARAN
+# KEBAKARAN
 # ==================================================
 st.markdown('<div class="section-title">Rabat Kebakaran</div>', unsafe_allow_html=True)
 for _, r in data["kebakaran"].iterrows():
@@ -141,7 +153,7 @@ for _, r in data["kebakaran"].iterrows():
     """, unsafe_allow_html=True)
 
 # ==================================================
-# DAILY TREND CHART
+# DAILY TREND
 # ==================================================
 st.markdown('<div class="section-title">Daily Trend FBI</div>', unsafe_allow_html=True)
 
@@ -150,8 +162,8 @@ ax.plot(data["trend"]["hk"], data["trend"]["dec25"], label="Dec '25")
 ax.plot(data["trend"]["hk"], data["trend"]["jan26"], label="Jan '26")
 ax.set_xlabel("HK")
 ax.set_ylabel("Rp M")
-ax.grid(True)
 ax.legend()
+ax.grid(True)
 
 st.pyplot(fig, use_container_width=True)
 
@@ -160,6 +172,6 @@ st.pyplot(fig, use_container_width=True)
 # ==================================================
 st.markdown("""
 <div class="small">
-* Data otomatis update maksimal setiap 60 detik dari file Excel.
+* Data akan auto-refresh setiap 60 detik setelah Excel diperbarui.
 </div>
 """, unsafe_allow_html=True)
