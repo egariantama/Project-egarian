@@ -1,295 +1,188 @@
+# ==================================================
+# DAILY MONITORING FBI BANCASSURANCE
+# ==================================================
+
 import streamlit as st
 import pandas as pd
-import numpy as np
-import os
-from fpdf import FPDF
+import matplotlib.pyplot as plt
+from datetime import datetime
 
-# =========================
+# ==================================================
 # PAGE CONFIG
-# =========================
+# ==================================================
 st.set_page_config(
-    page_title="Bancassurance Performance Report",
-    page_icon="📊",
-    layout="centered"
+    page_title="Daily Monitoring FBI Bancassurance",
+    layout="wide"
 )
 
-DATA_PATH = "data/bancassurance.csv"
-ADMIN_KEY = "MANDIRI2025"   # 🔐 ganti sesuai kebijakan internal
-
-# =========================
-# BRANDING BANK MANDIRI
-# =========================
+# ==================================================
+# STYLE
+# ==================================================
 st.markdown("""
 <style>
-/* ===== GLOBAL ===== */
-body, .stApp {
-    background-color: #ffffff;
-    color: #1f2937;
-    font-family: 'Segoe UI', sans-serif;
+.title {
+    font-size:32px;
+    font-weight:800;
 }
-
-/* ===== HEADER ===== */
-h1, h2, h3 {
-    color: #003d79;
-    font-weight: 700;
+.subtitle {
+    font-size:14px;
+    color:gray;
+    margin-bottom:20px;
 }
-
-/* ===== METRIC CARD ===== */
-.metric-card {
-    background: #ffffff;
-    border: 2px solid #e5e7eb;
-    padding: 18px;
-    border-radius: 16px;
-    margin-bottom: 14px;
+.section {
+    font-size:20px;
+    font-weight:700;
+    margin-top:30px;
 }
-
-.metric-label {
-    font-size: 14px;
-    color: #6b7280;
-}
-
-.metric-value {
-    font-size: 24px;
-    font-weight: 800;
-    color: #003d79;
-}
-
-/* ===== GROWTH ===== */
-.positive { color: #1b5e20; font-weight: 700; }
-.negative { color: #b71c1c; font-weight: 700; }
-.neutral  { color: #6b7280; }
-
-/* ===== PRIMARY BUTTON ===== */
-.stButton > button {
-    width: 100%;
-    background-color: #003d79;
-    color: #ffffff;
-    border-radius: 12px;
-    padding: 12px;
-    font-weight: 700;
-    border: none;
-    font-size: 15px;
-}
-
-.stButton > button:hover {
-    background-color: #002855;
-}
-
-/* ===== SECONDARY BUTTON ===== */
-.secondary-btn button {
-    background-color: #f9b233 !important;
-    color: #003d79 !important;
-}
-
-/* ===== EXPANDER ===== */
-details summary {
-    font-weight: 700;
-    color: #003d79;
-}
-
-/* Hide footer */
-footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
-# =========================
+# ==================================================
 # HEADER
-# =========================
-st.title("📊 Bancassurance Performance Report")
-st.caption("Monitoring Nilai Pertanggungan & Fee Based Income")
-
-# =========================
-# ADMIN ACCESS
-# =========================
-st.markdown("### 🔐 Admin Access")
-admin_input = st.text_input(
-    "Masukkan Admin Key (hanya untuk upload data)",
-    type="password",
-    placeholder="Admin Only"
+# ==================================================
+st.markdown(
+    '<div class="title">Daily Monitoring Leading & Lagging FBI Bancassurance</div>',
+    unsafe_allow_html=True
+)
+st.markdown(
+    f'<div class="subtitle">as {datetime.now().strftime("%d %B %Y")}</div>',
+    unsafe_allow_html=True
 )
 
-is_admin = admin_input == ADMIN_KEY
-
-# =========================
-# ADMIN UPLOAD (PROTECTED)
-# =========================
-if is_admin:
-    with st.expander("📤 Upload / Update Data Bancassurance (CSV)"):
-        uploaded_file = st.file_uploader(
-            "Upload File CSV dari Excel",
-            type=["csv"]
-        )
-        if uploaded_file:
-            df_upload = pd.read_csv(uploaded_file)
-            os.makedirs("data", exist_ok=True)
-            df_upload.to_csv(DATA_PATH, index=False)
-            st.success("✅ Data berhasil diperbarui oleh Admin")
-else:
-    st.info("ℹ️ Upload data hanya dapat dilakukan oleh Admin")
-
-# =========================
-# LOAD DATA
-# =========================
-if not os.path.exists(DATA_PATH):
-    st.warning("📌 Data belum tersedia. Menunggu Admin upload data.")
-    st.stop()
-
-df = pd.read_csv(DATA_PATH)
-
-# =========================
-# VALIDATION
-# =========================
-required_cols = [
-    "Tipe_Kerjasama","Jenis_Asuransi","Asuradur",
-    "NP_Nov24","NP_Dec24","NP_Nov25",
-    "FBI_Nov24","FBI_Dec24","FBI_Nov25"
-]
-
-missing = [c for c in required_cols if c not in df.columns]
-if missing:
-    st.error(f"Kolom tidak lengkap: {missing}")
-    st.stop()
-
-num_cols = required_cols[3:]
-df[num_cols] = df[num_cols].apply(pd.to_numeric, errors="coerce").fillna(0)
-
-# =========================
-# CALCULATION
-# =========================
-df["NP_Growth_YoY"] = df["NP_Nov25"] - df["NP_Nov24"]
-df["NP_Growth_YoY_%"] = np.where(
-    df["NP_Nov24"] > 0,
-    df["NP_Growth_YoY"] / df["NP_Nov24"] * 100,
-    0
-)
-
-df["FBI_Growth_YoY"] = df["FBI_Nov25"] - df["FBI_Nov24"]
-df["FBI_Growth_YoY_%"] = np.where(
-    df["FBI_Nov24"] > 0,
-    df["FBI_Growth_YoY"] / df["FBI_Nov24"] * 100,
-    0
-)
-
-# =========================
-# FILTER
-# =========================
-with st.expander("🔎 Filter Data"):
-    tipe = st.multiselect(
-        "Tipe Kerjasama",
-        df["Tipe_Kerjasama"].unique(),
-        default=df["Tipe_Kerjasama"].unique()
-    )
-
-df = df[df["Tipe_Kerjasama"].isin(tipe)]
-
-# =========================
-# HELPER
-# =========================
-def growth_class(val):
-    if val > 0:
-        return "positive"
-    elif val < 0:
-        return "negative"
-    return "neutral"
-
-# =========================
-# TABS
-# =========================
-tab1, tab2, tab3 = st.tabs(["📊 Summary", "📋 Detail", "📈 Chart"])
-
-# =========================
-# SUMMARY
-# =========================
-with tab1:
-    st.markdown("### 📌 Executive Summary")
-
-    total_np = df["NP_Nov25"].sum()
-    total_fbi = df["FBI_Nov25"].sum()
-    np_growth = df["NP_Growth_YoY_%"].mean()
-    fbi_growth = df["FBI_Growth_YoY_%"].mean()
-
-    st.markdown(f"""
-    <div class="metric-card">
-        <div class="metric-label">Total Nilai Pertanggungan (Nov-25)</div>
-        <div class="metric-value">Rp {total_np:,.0f}</div>
-    </div>
-
-    <div class="metric-card">
-        <div class="metric-label">Growth NP YoY</div>
-        <div class="metric-value {growth_class(np_growth)}">{np_growth:.1f}%</div>
-    </div>
-
-    <div class="metric-card">
-        <div class="metric-label">Total Fee Based Income (Nov-25)</div>
-        <div class="metric-value">Rp {total_fbi:,.2f}</div>
-    </div>
-
-    <div class="metric-card">
-        <div class="metric-label">Growth FBI YoY</div>
-        <div class="metric-value {growth_class(fbi_growth)}">{fbi_growth:.1f}%</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =========================
-# DETAIL
-# =========================
-with tab2:
-    st.markdown("### 📋 Detail Bancassurance Performance")
-
-    display_cols = [
-        "Tipe_Kerjasama","Jenis_Asuransi","Asuradur",
-        "NP_Nov25","NP_Growth_YoY","NP_Growth_YoY_%",
-        "FBI_Nov25","FBI_Growth_YoY","FBI_Growth_YoY_%"
+# ==================================================
+# DATA - POL FEE BANCASSURANCE (AMFS)
+# ==================================================
+amfs = pd.DataFrame({
+    "Komponen": [
+        "NAM Leads","Cabang","Outlet",
+        "CC NB","Cabang","Outlet",
+        "Conv. Rate","Cabang","Outlet",
+        "APE NB","Cabang","Outlet",
+        "Premi NB","Retail","HVC",
+        "FBI Daily","FBI Accrue"
+    ],
+    "Satuan": [
+        "Leads","Leads","Leads",
+        "Polis","Polis","Polis",
+        "%","%","%",
+        "Rp M","Rp M","Rp M",
+        "Rp M","Rp M","Rp M",
+        "Rp M","Rp M"
+    ],
+    "1–29 Dec '25": [
+        20724,19530,1194,
+        5909,5320,589,
+        29,27,49,
+        146.06,72.25,73.81,
+        419.19,136.77,282.42,
+        23.70,25.03
+    ],
+    "1–9 Dec '25": [
+        7779,7376,403,
+        1375,1246,129,
+        18,17,32,
+        30.31,13.80,16.51,
+        121.34,35.42,85.91,
+        5.85,None
+    ],
+    "1–31 Dec '25": [
+        23819,22272,1547,
+        7658,6818,840,
+        32,31,54,
+        204.12,102.46,101.65,
+        544.98,167.73,377.25,
+        29.84,None
+    ],
+    "1–12 Jan '26": [
+        7874,7518,356,
+        1168,1116,52,
+        15,15,15,
+        16.61,12.55,4.06,
+        101.41,23.14,78.28,
+        3.01,None
     ]
+})
 
-    st.dataframe(
-        df[display_cols].style.format({
-            "NP_Nov25":"{:,.0f}",
-            "NP_Growth_YoY":"{:,.0f}",
-            "NP_Growth_YoY_%":"{:.1f}%",
-            "FBI_Nov25":"{:,.2f}",
-            "FBI_Growth_YoY":"{:,.2f}",
-            "FBI_Growth_YoY_%":"{:.1f}%"
-        }),
-        use_container_width=True
-    )
+st.markdown('<div class="section">Pol Fee Bancassurance (AMFS)</div>', unsafe_allow_html=True)
+st.dataframe(amfs, use_container_width=True)
 
-# =========================
-# CHART
-# =========================
-with tab3:
-    st.markdown("### 📈 Growth YoY Comparison")
+# ==================================================
+# LAYOUT 2 COLUMNS
+# ==================================================
+col1, col2 = st.columns(2)
 
-    chart_data = (
-        df.groupby("Jenis_Asuransi")[["NP_Growth_YoY","FBI_Growth_YoY"]]
-        .sum()
-    )
-    st.bar_chart(chart_data)
+# ==================================================
+# POL FEE RABAT JIWA
+# ==================================================
+with col1:
+    jiwa = pd.DataFrame({
+        "Komponen": [
+            "Booking Asuransi","KPR","KSM","KUM",
+            "Premi*","KPR","KSM","KUM",
+            "Potensi FBI*","KPR","KSM","KUM",
+            "Progres Pembukuan"
+        ],
+        "Satuan": ["Rp M"] * 13,
+        "Nilai": [
+            5.648,1.367,2.084,2.197,
+            66.92,15.35,33.14,18.43,
+            8.23,1.45,3.87,2.92,
+            0.03
+        ]
+    })
 
-# =========================
-# EXPORT PDF
-# =========================
-def generate_pdf(df):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 14)
-    pdf.cell(0, 10, "Bancassurance Performance Report", ln=True)
+    st.markdown('<div class="section">Pol Fee Rabat Jiwa</div>', unsafe_allow_html=True)
+    st.dataframe(jiwa, use_container_width=True)
 
-    pdf.set_font("Arial", size=11)
-    pdf.ln(4)
-    pdf.cell(0, 8, f"Total NP Nov-25 : Rp {df['NP_Nov25'].sum():,.0f}", ln=True)
-    pdf.cell(0, 8, f"Total FBI Nov-25 : Rp {df['FBI_Nov25'].sum():,.2f}", ln=True)
+# ==================================================
+# POL FEE RABAT KEBAKARAN
+# ==================================================
+with col2:
+    kebakaran = pd.DataFrame({
+        "Komponen": [
+            "Booking Asuransi","KPR","KUM",
+            "Premi*","KPR","KUM",
+            "Potensi FBI*","KPR","KUM",
+            "Progres Pembukuan"
+        ],
+        "Satuan": ["Rp M"] * 10,
+        "Nilai": [
+            2.750,1.367,1.382,
+            5.14,3.28,1.86,
+            1.03,0.28,0.24,
+            0.05
+        ]
+    })
 
-    path = "data/Bancassurance_Report.pdf"
-    pdf.output(path)
-    return path
+    st.markdown('<div class="section">Pol Fee Rabat Kebakaran</div>', unsafe_allow_html=True)
+    st.dataframe(kebakaran, use_container_width=True)
 
-st.markdown("---")
-if st.button("📥 Export PDF Laporan Pimpinan"):
-    pdf_path = generate_pdf(df)
-    with open(pdf_path, "rb") as f:
-        st.download_button(
-            "⬇️ Download PDF",
-            f,
-            file_name="Bancassurance_Performance_Report.pdf"
-        )
+# ==================================================
+# DAILY TREND FBI AMFS
+# ==================================================
+st.markdown('<div class="section">Daily Trend FBI AMFS (based on Issued Date)</div>', unsafe_allow_html=True)
+
+hk = list(range(1, 24))
+dec25 = [0.4,0.5,0.7,0.6,1.0,1.8,1.4,1.3,1.5,1.2,1.0,0.8,1.1,1.9,1.6,1.8,2.0,1.7,3.5,6.2,0,0,0]
+jan26 = [0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,0.9,1.1,1.0,0.9,1.2,1.3,1.4,1.6,1.7,1.8,2.1,0,0,0,0]
+avg = [1.0] * 23
+
+fig, ax = plt.subplots()
+ax.plot(hk, dec25, label="Dec '25")
+ax.plot(hk, jan26, label="Jan '26")
+ax.plot(hk, avg, linestyle="--", label="Avg Jan–Dec '25")
+
+ax.set_xlabel("HK")
+ax.set_ylabel("Rp M")
+ax.grid(True)
+ax.legend()
+
+st.pyplot(fig)
+
+# ==================================================
+# FOOTNOTE
+# ==================================================
+st.markdown("""
+**Catatan:**  
+* Proses rekonsiliasi atas booking bulan Dec '25 seluruh asuradur diestimasi selesai pada 20 Jan '26.
+""")
