@@ -1,14 +1,13 @@
 # ==================================================
-# MOBILE MODERN – FBI BANCASSURANCE DASHBOARD
+# MOBILE MODERN – FBI BANCASSURANCE (FIXED VISIBILITY)
 # ==================================================
 
 import streamlit as st
-import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 
 # ==================================================
-# PAGE CONFIG (MOBILE FIRST)
+# PAGE CONFIG
 # ==================================================
 st.set_page_config(
     page_title="FBI Bancassurance",
@@ -17,49 +16,67 @@ st.set_page_config(
 )
 
 # ==================================================
-# GLOBAL STYLE (MOBILE MODERN)
+# STRONG HIGH-CONTRAST STYLE (SAFE FOR MOBILE)
 # ==================================================
 st.markdown("""
 <style>
-body {
-    background-color: #F5F7FA;
+/* Force light mode look */
+html, body, [class*="css"] {
+    background-color: #F2F4F8 !important;
+    color: #111827 !important;
 }
+
+/* Main container */
 .block-container {
-    padding-top: 1.2rem;
-    padding-bottom: 2rem;
+    padding: 1.2rem 1rem 2rem 1rem;
 }
+
+/* Header */
 .header-title {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
     font-weight: 800;
+    color: #0F172A;
 }
 .header-subtitle {
     font-size: 0.9rem;
-    color: #6B7280;
-    margin-bottom: 1.2rem;
+    color: #475569;
+    margin-bottom: 1.4rem;
 }
+
+/* Section title */
 .section-title {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    margin: 1.2rem 0 0.6rem 0;
+    color: #020617;
+    margin: 1.3rem 0 0.6rem 0;
 }
+
+/* Card */
 .card {
-    background: white;
-    padding: 14px;
-    border-radius: 14px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-    margin-bottom: 12px;
+    background-color: #FFFFFF;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    margin-bottom: 14px;
 }
+
+/* Metric */
 .metric-title {
-    font-size: 0.85rem;
-    color: #6B7280;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
 }
 .metric-value {
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     font-weight: 800;
+    color: #020617;
+    margin-top: 2px;
 }
+
+/* Small note */
 .small {
     font-size: 0.75rem;
-    color: #9CA3AF;
+    color: #64748B;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -67,20 +84,23 @@ body {
 # ==================================================
 # HEADER
 # ==================================================
-st.markdown('<div class="header-title">Daily FBI Bancassurance</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="header-title">Daily FBI Bancassurance</div>',
+    unsafe_allow_html=True
+)
 st.markdown(
     f'<div class="header-subtitle">as {datetime.now().strftime("%d %B %Y")}</div>',
     unsafe_allow_html=True
 )
 
 # ==================================================
-# KPI SUMMARY (TOP CARDS)
+# KPI SUMMARY
 # ==================================================
 st.markdown('<div class="section-title">Key Highlights</div>', unsafe_allow_html=True)
 
-kpi1, kpi2, kpi3 = st.columns(3)
+k1, k2, k3 = st.columns(3)
 
-with kpi1:
+with k1:
     st.markdown("""
     <div class="card">
         <div class="metric-title">FBI Daily</div>
@@ -89,7 +109,7 @@ with kpi1:
     </div>
     """, unsafe_allow_html=True)
 
-with kpi2:
+with k2:
     st.markdown("""
     <div class="card">
         <div class="metric-title">MTD FBI</div>
@@ -98,10 +118,10 @@ with kpi2:
     </div>
     """, unsafe_allow_html=True)
 
-with kpi3:
+with k3:
     st.markdown("""
     <div class="card">
-        <div class="metric-title">Conv. Rate</div>
+        <div class="metric-title">Conversion Rate</div>
         <div class="metric-value">27%</div>
         <div class="small">All Channel</div>
     </div>
@@ -133,14 +153,12 @@ for title, value, unit in amfs_cards:
 # ==================================================
 st.markdown('<div class="section-title">Rabat Jiwa</div>', unsafe_allow_html=True)
 
-jiwa_metrics = [
+for title, value in [
     ("Booking", "Rp 5,65 M"),
     ("Premi", "Rp 66,92 M"),
     ("Potensi FBI", "Rp 8,23 M"),
     ("Progress", "Rp 0,03 M")
-]
-
-for title, value in jiwa_metrics:
+]:
     st.markdown(f"""
     <div class="card">
         <div class="metric-title">{title}</div>
@@ -153,14 +171,12 @@ for title, value in jiwa_metrics:
 # ==================================================
 st.markdown('<div class="section-title">Rabat Kebakaran</div>', unsafe_allow_html=True)
 
-kebakaran_metrics = [
+for title, value in [
     ("Booking", "Rp 2,75 M"),
     ("Premi", "Rp 5,14 M"),
     ("Potensi FBI", "Rp 1,03 M"),
     ("Progress", "Rp 0,05 M")
-]
-
-for title, value in kebakaran_metrics:
+]:
     st.markdown(f"""
     <div class="card">
         <div class="metric-title">{title}</div>
@@ -181,8 +197,8 @@ fig, ax = plt.subplots()
 ax.plot(hk, dec25, label="Dec '25")
 ax.plot(hk, jan26, label="Jan '26")
 
-ax.set_ylabel("Rp M")
 ax.set_xlabel("HK")
+ax.set_ylabel("Rp M")
 ax.grid(True)
 ax.legend()
 
@@ -193,6 +209,6 @@ st.pyplot(fig, use_container_width=True)
 # ==================================================
 st.markdown("""
 <div class="small">
-* Rekonsiliasi booking Dec '25 seluruh asuradur diestimasi selesai 20 Jan '26.
+* Rekonsiliasi booking Dec '25 seluruh asuradur diestimasi selesai pada 20 Jan 2026.
 </div>
 """, unsafe_allow_html=True)
