@@ -38,7 +38,12 @@ body { background-color: #F4F6F9; }
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-.kpi { font-size: 28px; font-weight: 800; color: #003A8F; }
+.kpi {
+    font-size: 28px;
+    font-weight: 800;
+    color: #003A8F;
+}
+
 .sub { font-size: 13px; color: #6b7280; }
 
 .green { color: #16a34a; font-weight: 600; }
@@ -87,7 +92,7 @@ with st.container():
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# ADMIN UPLOAD (ADMIN ONLY)
+# ADMIN UPLOAD (ONLY ADMIN CAN SEE)
 # ==================================================
 if st.session_state.is_admin:
     with st.container():
@@ -95,7 +100,7 @@ if st.session_state.is_admin:
         st.markdown("### 📤 Upload Excel (Admin Only)")
 
         uploaded_file = st.file_uploader(
-            "Upload file fbi_asuradur.xlsx",
+            "Upload file Excel FBI Asuradur",
             type=["xlsx"]
         )
 
@@ -106,12 +111,14 @@ if st.session_state.is_admin:
 
             st.session_state.data = df
             st.success("Data berhasil diupdate")
-            st.experimental_rerun()
+
+            # 🔥 FIX UTAMA (NO ERROR)
+            st.rerun()
 
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# LOAD DATA (AFTER UPLOAD)
+# LOAD DATA
 # ==================================================
 if st.session_state.data is not None:
     data = st.session_state.data
@@ -135,7 +142,10 @@ st.markdown("<div class='sub'>Performance Overview</div>", unsafe_allow_html=Tru
 st.markdown(f"<div class='kpi'>IDR {total_fbi:,.1f} M</div>", unsafe_allow_html=True)
 st.markdown("<span class='green'>▲ 14.7% vs Last Month</span>", unsafe_allow_html=True)
 st.progress(min(achievement, 1.0))
-st.markdown(f"<div class='sub'>Achievement: {achievement*100:.1f}% of IDR {target}M</div>", unsafe_allow_html=True)
+st.markdown(
+    f"<div class='sub'>Achievement: {achievement*100:.1f}% of IDR {target}M</div>",
+    unsafe_allow_html=True
+)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
@@ -156,7 +166,14 @@ ax.pie(
 
 top = data.sort_values("FBI", ascending=False).iloc[0]
 share = top["FBI"] / total_fbi * 100
-ax.text(0, 0, f"{share:.1f}%\n{top['Asuradur']}", ha="center", va="center", fontweight="bold")
+
+ax.text(
+    0, 0,
+    f"{share:.1f}%\n{top['Asuradur']}",
+    ha="center",
+    va="center",
+    fontweight="bold"
+)
 
 st.pyplot(fig)
 st.markdown("</div>", unsafe_allow_html=True)
