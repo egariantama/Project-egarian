@@ -3,8 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # ==================================================
-# PAGE CONFIG
+# CONFIG
 # ==================================================
+ADMIN_PASSWORD = "mandiriadmin"
+
 st.set_page_config(
     page_title="Fee Income by Asuradur | Bank Mandiri",
     layout="centered",
@@ -12,7 +14,7 @@ st.set_page_config(
 )
 
 # ==================================================
-# CUSTOM CSS (MANDIRI STYLE)
+# CSS (MANDIRI STYLE)
 # ==================================================
 st.markdown("""
 <style>
@@ -54,6 +56,15 @@ body { background-color: #F4F6F9; }
 """, unsafe_allow_html=True)
 
 # ==================================================
+# SESSION STATE
+# ==================================================
+if "is_admin" not in st.session_state:
+    st.session_state.is_admin = False
+
+if "data" not in st.session_state:
+    st.session_state.data = None
+
+# ==================================================
 # HEADER
 # ==================================================
 st.markdown("""
@@ -64,29 +75,48 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==================================================
-# EXCEL UPLOADER (ANTI CRASH)
+# ADMIN LOGIN
 # ==================================================
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-uploaded_file = st.file_uploader(
-    "📤 Upload Excel FBI Asuradur",
-    type=["xlsx"]
-)
-st.markdown("</div>", unsafe_allow_html=True)
-
-@st.cache_data
-def load_data(file):
-    df = pd.read_excel(file, sheet_name="data")
-    df["FBI"] = df["FBI"].fillna(0)
-    df["Growth"] = df["Growth"].fillna(0)
-    return df
+with st.container():
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    with st.expander("🔐 Admin Access"):
+        password = st.text_input("Admin Password", type="password")
+        if password == ADMIN_PASSWORD:
+            st.session_state.is_admin = True
+            st.success("Admin access granted")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# FALLBACK DATA (IF EXCEL NOT UPLOADED)
+# ADMIN UPLOAD (ADMIN ONLY)
 # ==================================================
-if uploaded_file:
-    data = load_data(uploaded_file)
+if st.session_state.is_admin:
+    with st.container():
+        st.markdown("<div class='card'>", unsafe_allow_html=True)
+        st.markdown("### 📤 Upload Excel (Admin Only)")
+
+        uploaded_file = st.file_uploader(
+            "Upload file fbi_asuradur.xlsx",
+            type=["xlsx"]
+        )
+
+        if uploaded_file:
+            df = pd.read_excel(uploaded_file, sheet_name="data")
+            df["FBI"] = df["FBI"].fillna(0)
+            df["Growth"] = df["Growth"].fillna(0)
+
+            st.session_state.data = df
+            st.success("Data berhasil diupdate")
+            st.experimental_rerun()
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# ==================================================
+# LOAD DATA (AFTER UPLOAD)
+# ==================================================
+if st.session_state.data is not None:
+    data = st.session_state.data
 else:
-    st.warning("⚠️ Excel belum diupload. Menampilkan data contoh.")
+    st.warning("⚠️ Data belum diupdate oleh admin. Menampilkan data contoh.")
     data = pd.DataFrame({
         "Asuradur": ["Sinarmas MSIG", "Manulife", "AXA Mandiri", "Allianz", "BNI Life"],
         "FBI": [99, 95, 85.2, 63.2, 32.8],
@@ -126,8 +156,8 @@ ax.pie(
 
 top = data.sort_values("FBI", ascending=False).iloc[0]
 share = top["FBI"] / total_fbi * 100
-
 ax.text(0, 0, f"{share:.1f}%\n{top['Asuradur']}", ha="center", va="center", fontweight="bold")
+
 st.pyplot(fig)
 st.markdown("</div>", unsafe_allow_html=True)
 
