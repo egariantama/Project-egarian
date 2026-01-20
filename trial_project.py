@@ -70,6 +70,18 @@ body {
 """, unsafe_allow_html=True)
 
 # ==================================================
+# LOAD DATA FROM EXCEL
+# ==================================================
+@st.cache_data
+def load_data():
+    df = pd.read_excel("fbi_asuradur.xlsx", sheet_name="data")
+    df["FBI"] = df["FBI"].fillna(0)
+    df["Growth"] = df["Growth"].fillna(0)
+    return df
+
+data = load_data()
+
+# ==================================================
 # HEADER
 # ==================================================
 st.markdown("""
@@ -80,7 +92,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==================================================
-# FILTER (SIMPLE)
+# FILTER (DISPLAY ONLY)
 # ==================================================
 with st.container():
     st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -94,22 +106,20 @@ with st.container():
 # ==================================================
 # KPI OVERVIEW
 # ==================================================
+total_fbi = data["FBI"].sum()
+target = 420
+achievement = total_fbi / target
+
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.markdown("<div class='sub'>Performance Overview</div>", unsafe_allow_html=True)
-st.markdown("<div class='kpi'>IDR 375,800,000</div>", unsafe_allow_html=True)
+st.markdown(f"<div class='kpi'>IDR {total_fbi:,.1f} M</div>", unsafe_allow_html=True)
 st.markdown("<span class='green'>▲ 14.7% vs Last Month</span>", unsafe_allow_html=True)
-st.progress(0.893)
-st.markdown("<div class='sub'>Achievement: 89.3% of IDR 420M</div>", unsafe_allow_html=True)
+st.progress(min(achievement, 1.0))
+st.markdown(
+    f"<div class='sub'>Achievement: {achievement*100:.1f}% of IDR {target}M</div>",
+    unsafe_allow_html=True
+)
 st.markdown("</div>", unsafe_allow_html=True)
-
-# ==================================================
-# DATA
-# ==================================================
-data = pd.DataFrame({
-    "Asuradur": ["Sinarmas MSIG", "Manulife", "AXA Mandiri", "Allianz", "BNI Life"],
-    "FBI": [99, 95, 85.2, 63.2, 32.8],
-    "Growth": [18.2, 16.9, 12.4, 9.8, -7.5]
-})
 
 # ==================================================
 # DONUT CHART
@@ -122,23 +132,35 @@ colors = ["#003A8F", "#F4C430", "#00A651", "#4DA3FF", "#9CA3AF"]
 
 ax.pie(
     data["FBI"],
-    labels=None,
     startangle=90,
-    colors=colors,
+    colors=colors[:len(data)],
     wedgeprops=dict(width=0.35)
 )
-ax.text(0, 0, "26.5%\nSinarmas\nMSIG", ha='center', va='center', fontsize=12, fontweight='bold')
+
+top = data.sort_values("FBI", ascending=False).iloc[0]
+share = top["FBI"] / total_fbi * 100
+
+ax.text(
+    0, 0,
+    f"{share:.1f}%\n{top['Asuradur']}",
+    ha="center",
+    va="center",
+    fontsize=12,
+    fontweight="bold"
+)
 
 st.pyplot(fig)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# RANKING LIST
+# RANKING ASURADUR
 # ==================================================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.markdown("### Asuradur Ranking")
 
-for i, row in data.iterrows():
+ranked = data.sort_values("FBI", ascending=False).reset_index(drop=True)
+
+for i, row in ranked.iterrows():
     growth_class = "green" if row["Growth"] >= 0 else "red"
     arrow = "▲" if row["Growth"] >= 0 else "▼"
 
@@ -159,11 +181,18 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ==================================================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 
-st.markdown("⚠️ <span class='orange'><b>BNI Life perlu perhatian khusus (-7.5% MoM)</b></span>",
-            unsafe_allow_html=True)
+low_perf = ranked[ranked["Growth"] < 0]
+if not low_perf.empty:
+    for _, r in low_perf.iterrows():
+        st.markdown(
+            f"⚠️ <span class='orange'><b>{r['Asuradur']} perlu perhatian khusus ({r['Growth']}% MoM)</b></span>",
+            unsafe_allow_html=True
+        )
 
-st.markdown("✅ <span class='green'><b>Sinarmas MSIG memimpin dengan kontribusi 26.5%</b></span>",
-            unsafe_allow_html=True)
+st.markdown(
+    f"✅ <span class='green'><b>{top['Asuradur']} memimpin dengan kontribusi {share:.1f}%</b></span>",
+    unsafe_allow_html=True
+)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
