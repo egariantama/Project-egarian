@@ -1,177 +1,160 @@
-# ==================================================
-# MOBILE MODERN FBI BANCASSURANCE
-# REAL-TIME EXCEL (UPLOAD SAFE VERSION)
-# ==================================================
-
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import numpy as np
 from datetime import datetime
 
 # ==================================================
-# PAGE CONFIG
+# PAGE CONFIG (Mobile Friendly)
 # ==================================================
 st.set_page_config(
-    page_title="FBI Bancassurance",
-    page_icon="📊",
-    layout="centered"
+    page_title="Bancassurance | Fee Based Income",
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 # ==================================================
-# STYLE (HIGH CONTRAST - SAFE)
+# CUSTOM CSS
 # ==================================================
 st.markdown("""
 <style>
-html, body {
-    background-color: #F2F4F8;
-    color: #020617;
+body {
+    background-color: #F5F7FA;
 }
 .block-container {
-    padding: 1.2rem 1rem 2rem 1rem;
-}
-.header-title {
-    font-size: 1.9rem;
-    font-weight: 800;
-}
-.header-subtitle {
-    font-size: 0.85rem;
-    color: #475569;
-    margin-bottom: 1.4rem;
-}
-.section-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin: 1.4rem 0 0.6rem 0;
+    padding-top: 1rem;
 }
 .card {
-    background: #FFFFFF;
+    background: white;
     padding: 16px;
-    border-radius: 16px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-    margin-bottom: 12px;
+    border-radius: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 14px;
 }
-.metric-title {
-    font-size: 0.8rem;
-    color: #475569;
-    font-weight: 600;
-}
-.metric-value {
-    font-size: 1.45rem;
+.kpi {
+    font-size: 26px;
     font-weight: 800;
 }
-.small {
-    font-size: 0.75rem;
-    color: #64748B;
+.sub {
+    color: #6b7280;
+    font-size: 13px;
+}
+.success {
+    color: #16a34a;
+    font-weight: 600;
+}
+.danger {
+    color: #dc2626;
+    font-weight: 600;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ==================================================
+# DUMMY DATA
+# ==================================================
+data = {
+    "Month": ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
+    "Life": [210, 220, 215, 230, 245, 268],
+    "Health": [90, 92, 95, 98, 100, 103],
+    "Investment": [95, 100, 102, 108, 112, 118],
+    "General": [70, 68, 66, 65, 64, 63],
+}
+
+df = pd.DataFrame(data)
+
+# ==================================================
 # HEADER
 # ==================================================
-st.markdown('<div class="header-title">Daily FBI Bancassurance</div>', unsafe_allow_html=True)
-st.markdown(
-    f'<div class="header-subtitle">as {datetime.now().strftime("%d %B %Y")}</div>',
-    unsafe_allow_html=True
+st.markdown("""
+<div style="text-align:center; margin-bottom:10px;">
+    <h2>📊 Fee Based Income</h2>
+    <div class="sub">Bancassurance Report</div>
+</div>
+""", unsafe_allow_html=True)
+
+# ==================================================
+# FILTERS
+# ==================================================
+with st.container():
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    period = st.selectbox("📅 Period", ["April 2024", "March 2024", "YTD 2024"])
+    region = st.selectbox("📍 Region", ["All Regions", "Jakarta", "Bali Nusra", "Jawa Timur"])
+    product = st.selectbox("📦 Product", ["All Products", "Life", "Health", "Investment", "General"])
+    channel = st.selectbox("🏦 Channel", ["Branch", "Digital", "RM"])
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ==================================================
+# KPI SECTION
+# ==================================================
+total_fbi = 550.7
+growth = 12.5
+
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("<div class='sub'>Total Fee Based Income</div>", unsafe_allow_html=True)
+st.markdown(f"<div class='kpi'>IDR {total_fbi:,.1f} M</div>", unsafe_allow_html=True)
+
+if growth >= 0:
+    st.markdown(f"<div class='success'>▲ {growth}% vs Last Month</div>", unsafe_allow_html=True)
+else:
+    st.markdown(f"<div class='danger'>▼ {growth}% vs Last Month</div>", unsafe_allow_html=True)
+
+st.markdown("<br>⚠️ <b>Insight:</b> General Insurance mengalami penurunan 5% MoM", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ==================================================
+# LINE CHART
+# ==================================================
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("<b>Fee Income Trend</b>", unsafe_allow_html=True)
+
+chart_data = df.set_index("Month")
+st.line_chart(chart_data)
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ==================================================
+# DONUT CHART (Using Pie)
+# ==================================================
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("<b>Contribution by Product</b>", unsafe_allow_html=True)
+
+pie_data = pd.DataFrame({
+    "Product": ["Life", "Health", "Investment", "General"],
+    "Value": [268, 103, 118, 63]
+})
+
+st.pyplot(
+    pie_data.set_index("Product").plot.pie(
+        y="Value",
+        legend=False,
+        autopct='%1.1f%%',
+        figsize=(4,4)
+    ).figure
 )
 
-# ==================================================
-# FILE UPLOADER (KEY FIX)
-# ==================================================
-uploaded_file = st.file_uploader(
-    "📂 Upload data_fbi.xlsx",
-    type=["xlsx"]
-)
-
-if uploaded_file is None:
-    st.warning("Silakan upload file Excel terlebih dahulu.")
-    st.stop()
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# LOAD DATA SAFELY
+# PRODUCT CARDS
 # ==================================================
-@st.cache_data(ttl=60)
-def load_data(file):
-    return {
-        "kpi": pd.read_excel(file, sheet_name="kpi"),
-        "amfs": pd.read_excel(file, sheet_name="amfs"),
-        "jiwa": pd.read_excel(file, sheet_name="jiwa"),
-        "kebakaran": pd.read_excel(file, sheet_name="kebakaran"),
-        "trend": pd.read_excel(file, sheet_name="daily_trend")
-    }
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+col1, col2 = st.columns(2)
 
-data = load_data(uploaded_file)
+with col1:
+    st.metric("Life Insurance", "IDR 267.7 M", "+15.8% MoM")
+    st.metric("Investment Product", "IDR 117.9 M", "+9.2% MoM")
 
-# ==================================================
-# KPI CARDS
-# ==================================================
-st.markdown('<div class="section-title">Key Highlights</div>', unsafe_allow_html=True)
-cols = st.columns(len(data["kpi"]))
+with col2:
+    st.metric("Health Insurance", "IDR 103.3 M", "+10.3% MoM")
+    st.metric("General Insurance", "IDR 62.8 M", "-5.0% MoM")
 
-for col, row in zip(cols, data["kpi"].itertuples()):
-    col.markdown(f"""
-    <div class="card">
-        <div class="metric-title">{row.metric}</div>
-        <div class="metric-value">{row.value} {row.unit}</div>
-    </div>
-    """, unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# AMFS
-# ==================================================
-st.markdown('<div class="section-title">AMFS Snapshot</div>', unsafe_allow_html=True)
-for _, r in data["amfs"].iterrows():
-    st.markdown(f"""
-    <div class="card">
-        <div class="metric-title">{r['metric']}</div>
-        <div class="metric-value">{r['value']} {r['unit']}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# ==================================================
-# JIWA
-# ==================================================
-st.markdown('<div class="section-title">Rabat Jiwa</div>', unsafe_allow_html=True)
-for _, r in data["jiwa"].iterrows():
-    st.markdown(f"""
-    <div class="card">
-        <div class="metric-title">{r['metric']}</div>
-        <div class="metric-value">Rp {r['value']} M</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# ==================================================
-# KEBAKARAN
-# ==================================================
-st.markdown('<div class="section-title">Rabat Kebakaran</div>', unsafe_allow_html=True)
-for _, r in data["kebakaran"].iterrows():
-    st.markdown(f"""
-    <div class="card">
-        <div class="metric-title">{r['metric']}</div>
-        <div class="metric-value">Rp {r['value']} M</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# ==================================================
-# DAILY TREND
-# ==================================================
-st.markdown('<div class="section-title">Daily Trend FBI</div>', unsafe_allow_html=True)
-
-fig, ax = plt.subplots()
-ax.plot(data["trend"]["hk"], data["trend"]["dec25"], label="Dec '25")
-ax.plot(data["trend"]["hk"], data["trend"]["jan26"], label="Jan '26")
-ax.set_xlabel("HK")
-ax.set_ylabel("Rp M")
-ax.legend()
-ax.grid(True)
-
-st.pyplot(fig, use_container_width=True)
-
-# ==================================================
-# FOOTNOTE
+# FOOTER
 # ==================================================
 st.markdown("""
-<div class="small">
-* Data akan auto-refresh setiap 60 detik setelah Excel diperbarui.
+<div style="text-align:center; font-size:12px; color:#9ca3af; margin-top:12px;">
+© 2026 Bancassurance Performance Dashboard
 </div>
 """, unsafe_allow_html=True)
