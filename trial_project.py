@@ -1,42 +1,71 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
+import matplotlib.pyplot as plt
 
 # ==================================================
-# PAGE CONFIG (Mobile + Executive)
+# PAGE CONFIG
 # ==================================================
 st.set_page_config(
-    page_title="Daily FBI Bancassurance",
+    page_title="Fee Income by Asuradur | Bank Mandiri",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
 # ==================================================
-# STYLE
+# CUSTOM CSS (MANDIRI STYLE)
 # ==================================================
 st.markdown("""
 <style>
-body { background-color: #F4F6F9; }
-.block-container { padding-top: 1rem; }
+body {
+    background-color: #F4F6F9;
+}
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.header {
+    background: linear-gradient(135deg, #003A8F, #0052CC);
+    padding: 18px;
+    border-radius: 16px;
+    color: white;
+    text-align: center;
+    margin-bottom: 16px;
+}
 
 .card {
     background: white;
     padding: 16px;
-    border-radius: 14px;
+    border-radius: 16px;
     margin-bottom: 14px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 .kpi {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 800;
+    color: #003A8F;
 }
 
-.sub { color: #6b7280; font-size: 13px; }
+.sub {
+    font-size: 13px;
+    color: #6b7280;
+}
 
 .green { color: #16a34a; font-weight: 600; }
 .red { color: #dc2626; font-weight: 600; }
 .orange { color: #f59e0b; font-weight: 600; }
+
+.rank {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+.rank:last-child {
+    border-bottom: none;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -44,109 +73,97 @@ body { background-color: #F4F6F9; }
 # HEADER
 # ==================================================
 st.markdown("""
-<div style="text-align:center;">
-    <h3>📊 Daily Monitoring FBI Bancassurance</h3>
-    <div class="sub">As of 15 January 2026</div>
+<div class="header">
+    <h3>Fee Income by Asuradur</h3>
+    <div style="font-size:13px;">Bank Mandiri • January 2024</div>
 </div>
 """, unsafe_allow_html=True)
 
 # ==================================================
-# FILTER
+# FILTER (SIMPLE)
 # ==================================================
 with st.container():
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    product = st.selectbox("Produk", ["AMFS", "Rabat Jiwa", "Rabat Kebakaran"])
-    period = st.selectbox("Periode", ["Daily", "MTD"])
+    col1, col2 = st.columns(2)
+    with col1:
+        st.selectbox("📅 Period", ["January 2024"])
+    with col2:
+        st.selectbox("📍 Region", ["All Regions"])
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# LEADING INDICATOR
+# KPI OVERVIEW
 # ==================================================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### 🔵 Leading Indicator (Activity)")
-
-col1, col2, col3 = st.columns(3)
-col1.metric("NAM Leads", "12.874", "-46%")
-col2.metric("CC NB (Polis)", "2.246", "-71%")
-col3.metric("Conversion Rate", "17%", "-15%")
-
-st.markdown(
-    "<span class='red'>⚠️ Leads dan conversion turun signifikan → risiko penurunan FBI.</span>",
-    unsafe_allow_html=True
-)
+st.markdown("<div class='sub'>Performance Overview</div>", unsafe_allow_html=True)
+st.markdown("<div class='kpi'>IDR 375,800,000</div>", unsafe_allow_html=True)
+st.markdown("<span class='green'>▲ 14.7% vs Last Month</span>", unsafe_allow_html=True)
+st.progress(0.893)
+st.markdown("<div class='sub'>Achievement: 89.3% of IDR 420M</div>", unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# LAGGING INDICATOR
+# DATA
+# ==================================================
+data = pd.DataFrame({
+    "Asuradur": ["Sinarmas MSIG", "Manulife", "AXA Mandiri", "Allianz", "BNI Life"],
+    "FBI": [99, 95, 85.2, 63.2, 32.8],
+    "Growth": [18.2, 16.9, 12.4, 9.8, -7.5]
+})
+
+# ==================================================
+# DONUT CHART
 # ==================================================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### 🟢 Lagging Indicator (Output & FBI)")
+st.markdown("### Fee Income Breakdown")
 
-col1, col2 = st.columns(2)
-col1.metric("APE NB", "Rp 31,79 M")
-col2.metric("Premi NB", "Rp 59,28 M")
+fig, ax = plt.subplots(figsize=(4,4))
+colors = ["#003A8F", "#F4C430", "#00A651", "#4DA3FF", "#9CA3AF"]
 
-col3, col4 = st.columns(2)
-col3.metric("FBI Daily", "Rp 5,06 M")
-col4.metric("FBI Accrue", "Rp 11,19 M")
-
-st.markdown(
-    "<span class='orange'>📌 FBI masih terbantu backlog Desember.</span>",
-    unsafe_allow_html=True
+ax.pie(
+    data["FBI"],
+    labels=None,
+    startangle=90,
+    colors=colors,
+    wedgeprops=dict(width=0.35)
 )
+ax.text(0, 0, "26.5%\nSinarmas\nMSIG", ha='center', va='center', fontsize=12, fontweight='bold')
+
+st.pyplot(fig)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# FBI BY PRODUCT (SIMPLE)
+# RANKING LIST
 # ==================================================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### 📦 Potensi FBI by Product")
+st.markdown("### Asuradur Ranking")
 
-fbi_product = pd.DataFrame({
-    "Product": ["AMFS", "Rabat Jiwa", "Rabat Kebakaran"],
-    "Potensi FBI (Rp M)": [8.23, 0.99, 0.99]
-}).set_index("Product")
+for i, row in data.iterrows():
+    growth_class = "green" if row["Growth"] >= 0 else "red"
+    arrow = "▲" if row["Growth"] >= 0 else "▼"
 
-st.bar_chart(fbi_product)
+    st.markdown(f"""
+    <div class="rank">
+        <div><b>{i+1}. {row['Asuradur']}</b></div>
+        <div style="text-align:right;">
+            <div><b>{row['FBI']} M</b></div>
+            <div class="{growth_class}">{arrow} {row['Growth']}%</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-st.markdown(
-    "<span class='green'>✔ Kontributor utama: AMFS (>80%).</span>",
-    unsafe_allow_html=True
-)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ==================================================
-# DAILY TREND
+# INSIGHT / ALERT
 # ==================================================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### 📈 Daily FBI Trend")
 
-trend = pd.DataFrame({
-    "HK": list(range(1, 24)),
-    "Avg Jan–Dec 25": np.random.uniform(0.8, 1.6, 23),
-    "Jan 26": np.random.uniform(0.6, 2.2, 23),
-}).set_index("HK")
+st.markdown("⚠️ <span class='orange'><b>BNI Life perlu perhatian khusus (-7.5% MoM)</b></span>",
+            unsafe_allow_html=True)
 
-st.line_chart(trend)
-
-st.markdown(
-    "<span class='orange'>📉 FBI harian masih di bawah rata-rata historis.</span>",
-    unsafe_allow_html=True
-)
-st.markdown("</div>", unsafe_allow_html=True)
-
-# ==================================================
-# EXECUTIVE SUMMARY
-# ==================================================
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### 🧠 Executive Insight")
-
-st.markdown("""
-- 🔴 **Leading indicator melemah** (leads & conversion).
-- 🟡 **Lagging masih aman** karena backlog.
-- 🔵 **AMFS menjadi tumpuan utama FBI.**
-- ⚠️ Risiko penurunan FBI **1–2 minggu ke depan** bila tidak ada intervensi.
-""")
+st.markdown("✅ <span class='green'><b>Sinarmas MSIG memimpin dengan kontribusi 26.5%</b></span>",
+            unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -155,6 +172,6 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ==================================================
 st.markdown("""
 <div style="text-align:center; font-size:12px; color:#9ca3af;">
-© 2026 Bancassurance Performance Monitoring
+© 2026 Bancassurance Performance Report – Bank Mandiri
 </div>
 """, unsafe_allow_html=True)
