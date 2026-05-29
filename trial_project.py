@@ -1,194 +1,113 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Financial Health Dashboard",
+    page_title="Financial Health",
     page_icon="💰",
-    layout="wide"
+    layout="centered"
 )
 
-st.title("💰 Financial Health Dashboard")
+st.markdown("""
+<style>
 
-st.sidebar.header("Input Data")
+[data-testid="stAppViewContainer"]{
+    background:#F4F7FC;
+}
 
-income = st.sidebar.number_input(
-    "Pendapatan Bulanan",
-    min_value=0,
-    value=10000000,
-    step=500000
-)
+.block-container{
+    padding-top:1rem;
+    max-width:420px;
+}
 
-expense = st.sidebar.number_input(
-    "Pengeluaran Bulanan",
-    min_value=0,
-    value=6000000,
-    step=500000
-)
+.card{
+    background:white;
+    padding:20px;
+    border-radius:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    margin-bottom:15px;
+}
 
-debt = st.sidebar.number_input(
-    "Total Cicilan Bulanan",
-    min_value=0,
-    value=1000000,
-    step=500000
-)
+.hero{
+    background:linear-gradient(135deg,#00C6FF,#0072FF);
+    color:white;
+    padding:30px;
+    border-radius:30px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,114,255,0.3);
+}
 
-investment = st.sidebar.number_input(
-    "Investasi Bulanan",
-    min_value=0,
-    value=1000000,
-    step=500000
-)
+.metric-card{
+    background:white;
+    border-radius:20px;
+    padding:15px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
 
-emergency_fund = st.sidebar.number_input(
-    "Total Dana Darurat Saat Ini",
-    min_value=0,
-    value=10000000,
-    step=1000000
-)
+.label{
+    color:gray;
+    font-size:13px;
+}
 
-# =====================
-# Perhitungan
-# =====================
+.value{
+    font-size:22px;
+    font-weight:bold;
+}
 
-saving = income - expense
+</style>
+""", unsafe_allow_html=True)
 
-saving_ratio = (saving / income) * 100 if income else 0
-debt_ratio = (debt / income) * 100 if income else 0
-invest_ratio = (investment / income) * 100 if income else 0
+score = 82
 
-target_emergency = expense * 6
+st.markdown(f"""
+<div class="hero">
+    <h3>Financial Health Score</h3>
+    <h1>{score}</h1>
+    <p>Sangat Sehat</p>
+</div>
+""", unsafe_allow_html=True)
 
-emergency_ratio = (
-    emergency_fund / target_emergency * 100
-    if target_emergency > 0 else 0
-)
+st.write("")
 
-# =====================
-# Scoring
-# =====================
+col1,col2 = st.columns(2)
 
-saving_score = min((saving_ratio / 20) * 25, 25)
+with col1:
+    st.markdown("""
+    <div class="metric-card">
+        <div class="label">Saving Ratio</div>
+        <div class="value">28%</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-debt_score = max(25 - ((debt_ratio / 30) * 25), 0)
+with col2:
+    st.markdown("""
+    <div class="metric-card">
+        <div class="label">Debt Ratio</div>
+        <div class="value">15%</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-emergency_score = min((emergency_ratio / 100) * 25, 25)
+st.write("")
 
-invest_score = min((invest_ratio / 10) * 25, 25)
+st.markdown("""
+<div class="card">
+<h4>💡 AI Insight</h4>
 
-health_score = round(
-    saving_score +
-    debt_score +
-    emergency_score +
-    invest_score
-)
+Keuangan Anda berada pada kategori sehat.
 
-health_score = min(health_score, 100)
+Fokus berikutnya adalah meningkatkan investasi dan mempertahankan dana darurat minimal 6 bulan pengeluaran.
+</div>
+""", unsafe_allow_html=True)
 
-# =====================
-# Dashboard
-# =====================
+st.markdown("""
+<div class="card">
+<h4>🎯 Financial Goals</h4>
 
-col1, col2, col3, col4 = st.columns(4)
+✅ Dana Darurat
 
-col1.metric(
-    "Saving Ratio",
-    f"{saving_ratio:.1f}%"
-)
+✅ Investasi Rutin
 
-col2.metric(
-    "Debt Ratio",
-    f"{debt_ratio:.1f}%"
-)
+🟡 Persiapan Pensiun
 
-col3.metric(
-    "Investment Ratio",
-    f"{invest_ratio:.1f}%"
-)
-
-col4.metric(
-    "Emergency Fund",
-    f"{emergency_ratio:.0f}%"
-)
-
-st.divider()
-
-st.subheader("🏆 Financial Health Score")
-
-st.progress(health_score)
-
-st.markdown(
-    f"""
-    <h1 style='text-align:center'>
-    {health_score}/100
-    </h1>
-    """,
-    unsafe_allow_html=True
-)
-
-# =====================
-# Kategori
-# =====================
-
-if health_score >= 80:
-    category = "🟢 Sangat Sehat"
-elif health_score >= 60:
-    category = "🟡 Cukup Sehat"
-elif health_score >= 40:
-    category = "🟠 Perlu Perbaikan"
-else:
-    category = "🔴 Risiko Tinggi"
-
-st.success(f"Kategori: {category}")
-
-# =====================
-# Detail
-# =====================
-
-st.subheader("📊 Ringkasan Keuangan")
-
-st.write(
-    f"Pendapatan Bulanan : Rp {income:,.0f}"
-)
-
-st.write(
-    f"Pengeluaran Bulanan : Rp {expense:,.0f}"
-)
-
-st.write(
-    f"Sisa Dana : Rp {saving:,.0f}"
-)
-
-st.write(
-    f"Target Dana Darurat : Rp {target_emergency:,.0f}"
-)
-
-# =====================
-# Rekomendasi
-# =====================
-
-st.subheader("💡 Rekomendasi")
-
-if saving_ratio < 20:
-    st.warning(
-        "Tingkatkan tabungan minimal 20% dari pendapatan."
-    )
-
-if debt_ratio > 30:
-    st.warning(
-        "Rasio cicilan terlalu tinggi. Idealnya di bawah 30%."
-    )
-
-if emergency_ratio < 100:
-    st.warning(
-        "Dana darurat belum mencapai target 6 bulan pengeluaran."
-    )
-
-if invest_ratio < 10:
-    st.warning(
-        "Alokasi investasi masih rendah."
-    )
-
-if health_score >= 80:
-    st.balloons()
-    st.success(
-        "Kondisi keuangan sangat sehat. Fokus pada pengembangan aset dan wealth accumulation."
-    )
+🟡 Passive Income
+</div>
+""", unsafe_allow_html=True)
