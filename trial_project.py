@@ -1,230 +1,107 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# ==================================================
-# CONFIG
-# ==================================================
-ADMIN_PASSWORD = "mandiriadmin"
 
 st.set_page_config(
-    page_title="Fee Income by Asuradur | Bank Mandiri",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    page_title="Konsultasi Keuangan",
+    page_icon="💰",
+    layout="centered"
 )
 
-# ==================================================
-# CSS (MANDIRI STYLE)
-# ==================================================
-st.markdown("""
-<style>
-body { background-color: #F4F6F9; }
-.block-container { padding-top: 1rem; padding-bottom: 1rem; }
+st.title("💰 Aplikasi Konsultasi Keuangan")
+st.write("Masukkan data keuangan Anda untuk mendapatkan analisis sederhana.")
 
-.header {
-    background: linear-gradient(135deg, #003A8F, #0052CC);
-    padding: 18px;
-    border-radius: 16px;
-    color: white;
-    text-align: center;
-    margin-bottom: 16px;
-}
-
-.card {
-    background: white;
-    padding: 16px;
-    border-radius: 16px;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
-.kpi {
-    font-size: 28px;
-    font-weight: 800;
-    color: #003A8F;
-}
-
-.sub { font-size: 13px; color: #6b7280; }
-
-.green { color: #16a34a; font-weight: 600; }
-.red { color: #dc2626; font-weight: 600; }
-.orange { color: #f59e0b; font-weight: 600; }
-
-.rank {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px solid #e5e7eb;
-}
-.rank:last-child { border-bottom: none; }
-</style>
-""", unsafe_allow_html=True)
-
-# ==================================================
-# SESSION STATE
-# ==================================================
-if "is_admin" not in st.session_state:
-    st.session_state.is_admin = False
-
-if "data" not in st.session_state:
-    st.session_state.data = None
-
-# ==================================================
-# HEADER
-# ==================================================
-st.markdown("""
-<div class="header">
-    <h3>Fee Income by Asuradur</h3>
-    <div style="font-size:13px;">Bank Mandiri • January 2024</div>
-</div>
-""", unsafe_allow_html=True)
-
-# ==================================================
-# ADMIN LOGIN
-# ==================================================
-with st.container():
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    with st.expander("🔐 Admin Access"):
-        password = st.text_input("Admin Password", type="password")
-        if password == ADMIN_PASSWORD:
-            st.session_state.is_admin = True
-            st.success("Admin access granted")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ==================================================
-# ADMIN UPLOAD (ONLY ADMIN CAN SEE)
-# ==================================================
-if st.session_state.is_admin:
-    with st.container():
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.markdown("### 📤 Upload Excel (Admin Only)")
-
-        uploaded_file = st.file_uploader(
-            "Upload file Excel FBI Asuradur",
-            type=["xlsx"]
-        )
-
-        if uploaded_file:
-            df = pd.read_excel(uploaded_file, sheet_name="data")
-            df["FBI"] = df["FBI"].fillna(0)
-            df["Growth"] = df["Growth"].fillna(0)
-
-            st.session_state.data = df
-            st.success("Data berhasil diupdate")
-
-            # 🔥 FIX UTAMA (NO ERROR)
-            st.rerun()
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# ==================================================
-# LOAD DATA
-# ==================================================
-if st.session_state.data is not None:
-    data = st.session_state.data
-else:
-    st.warning("⚠️ Data belum diupdate oleh admin. Menampilkan data contoh.")
-    data = pd.DataFrame({
-        "Asuradur": ["Sinarmas MSIG", "Manulife", "AXA Mandiri", "Allianz", "BNI Life"],
-        "FBI": [99, 95, 85.2, 63.2, 32.8],
-        "Growth": [18.2, 16.9, 12.4, 9.8, -7.5]
-    })
-
-# ==================================================
-# KPI OVERVIEW
-# ==================================================
-total_fbi = data["FBI"].sum()
-target = 420
-achievement = total_fbi / target
-
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("<div class='sub'>Performance Overview</div>", unsafe_allow_html=True)
-st.markdown(f"<div class='kpi'>IDR {total_fbi:,.1f} M</div>", unsafe_allow_html=True)
-st.markdown("<span class='green'>▲ 14.7% vs Last Month</span>", unsafe_allow_html=True)
-st.progress(min(achievement, 1.0))
-st.markdown(
-    f"<div class='sub'>Achievement: {achievement*100:.1f}% of IDR {target}M</div>",
-    unsafe_allow_html=True
-)
-st.markdown("</div>", unsafe_allow_html=True)
-
-# ==================================================
-# DONUT CHART
-# ==================================================
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### Fee Income Breakdown")
-
-fig, ax = plt.subplots(figsize=(4,4))
-colors = ["#003A8F", "#F4C430", "#00A651", "#4DA3FF", "#9CA3AF"]
-
-ax.pie(
-    data["FBI"],
-    startangle=90,
-    colors=colors[:len(data)],
-    wedgeprops=dict(width=0.35)
+# Input
+pendapatan = st.number_input(
+    "Pendapatan Bulanan (Rp)",
+    min_value=0.0,
+    step=100000.0
 )
 
-top = data.sort_values("FBI", ascending=False).iloc[0]
-share = top["FBI"] / total_fbi * 100
-
-ax.text(
-    0, 0,
-    f"{share:.1f}%\n{top['Asuradur']}",
-    ha="center",
-    va="center",
-    fontweight="bold"
+pengeluaran = st.number_input(
+    "Pengeluaran Bulanan (Rp)",
+    min_value=0.0,
+    step=100000.0
 )
 
-st.pyplot(fig)
-st.markdown("</div>", unsafe_allow_html=True)
+if st.button("Analisa Keuangan"):
 
-# ==================================================
-# RANKING
-# ==================================================
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.markdown("### Asuradur Ranking")
+    sisa_dana = pendapatan - pengeluaran
 
-ranked = data.sort_values("FBI", ascending=False).reset_index(drop=True)
+    if pendapatan > 0:
+        rasio_tabungan = (sisa_dana / pendapatan) * 100
+    else:
+        rasio_tabungan = 0
 
-for i, r in ranked.iterrows():
-    arrow = "▲" if r["Growth"] >= 0 else "▼"
-    color = "green" if r["Growth"] >= 0 else "red"
+    st.subheader("📊 Hasil Analisa")
 
-    st.markdown(f"""
-    <div class="rank">
-        <div><b>{i+1}. {r['Asuradur']}</b></div>
-        <div style="text-align:right;">
-            <div><b>{r['FBI']} M</b></div>
-            <div class="{color}">{arrow} {r['Growth']}%</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("</div>", unsafe_allow_html=True)
-
-# ==================================================
-# INSIGHT
-# ==================================================
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-
-for _, r in ranked[ranked["Growth"] < 0].iterrows():
-    st.markdown(
-        f"⚠️ <span class='orange'><b>{r['Asuradur']} perlu perhatian khusus ({r['Growth']}% MoM)</b></span>",
-        unsafe_allow_html=True
+    st.metric(
+        label="Sisa Dana",
+        value=f"Rp {sisa_dana:,.0f}"
     )
 
-st.markdown(
-    f"✅ <span class='green'><b>{top['Asuradur']} memimpin dengan kontribusi {share:.1f}%</b></span>",
-    unsafe_allow_html=True
-)
+    st.metric(
+        label="Persentase Sisa Dana",
+        value=f"{rasio_tabungan:.1f}%"
+    )
 
-st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("---")
 
-# ==================================================
-# FOOTER
-# ==================================================
-st.markdown("""
-<div style="text-align:center; font-size:12px; color:#9ca3af;">
-© 2026 Bancassurance Performance Report – Bank Mandiri
-</div>
-""", unsafe_allow_html=True)
+    if sisa_dana < 0:
+        st.error(
+            "Pengeluaran Anda melebihi pendapatan. "
+            "Prioritaskan pengurangan pengeluaran tidak penting."
+        )
+
+    elif rasio_tabungan < 10:
+        st.warning(
+            "Kondisi cukup ketat. Disarankan menabung minimal 10%-20% dari pendapatan."
+        )
+
+    elif rasio_tabungan < 30:
+        st.success(
+            "Keuangan Anda cukup sehat. Mulailah membangun dana darurat dan investasi."
+        )
+
+    else:
+        st.success(
+            "Kondisi keuangan sangat baik. "
+            "Pertimbangkan investasi jangka panjang dan diversifikasi aset."
+        )
+
+    # Financial Health Score
+    score = min(max(rasio_tabungan * 2.5, 0), 100)
+
+    st.markdown("---")
+    st.subheader("🏆 Financial Health Score")
+
+    st.progress(int(score))
+    st.write(f"Skor Keuangan: **{score:.0f}/100**")
+
+    if score < 40:
+        kategori = "Perlu Perbaikan"
+    elif score < 70:
+        kategori = "Cukup Baik"
+    else:
+        kategori = "Sangat Sehat"
+
+    st.write(f"Kategori: **{kategori}**")
+
+    # Rekomendasi
+    st.markdown("---")
+    st.subheader("💡 Rekomendasi")
+
+    dana_darurat = pengeluaran * 6
+
+    st.write(
+        f"Target Dana Darurat: **Rp {dana_darurat:,.0f}** "
+        "(6 bulan pengeluaran)"
+    )
+
+    investasi = pendapatan * 0.2
+
+    st.write(
+        f"Rekomendasi Investasi Bulanan: "
+        f"**Rp {investasi:,.0f}** (20% pendapatan)"
+    )
+
+st.markdown("---")
+st.caption("Versi 1.0 - Konsultasi Keuangan Sederhana")
