@@ -1,107 +1,194 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Konsultasi Keuangan",
+    page_title="Financial Health Dashboard",
     page_icon="💰",
-    layout="centered"
+    layout="wide"
 )
 
-st.title("💰 Aplikasi Konsultasi Keuangan")
-st.write("Masukkan data keuangan Anda untuk mendapatkan analisis sederhana.")
+st.title("💰 Financial Health Dashboard")
 
-# Input
-pendapatan = st.number_input(
-    "Pendapatan Bulanan (Rp)",
-    min_value=0.0,
-    step=100000.0
+st.sidebar.header("Input Data")
+
+income = st.sidebar.number_input(
+    "Pendapatan Bulanan",
+    min_value=0,
+    value=10000000,
+    step=500000
 )
 
-pengeluaran = st.number_input(
-    "Pengeluaran Bulanan (Rp)",
-    min_value=0.0,
-    step=100000.0
+expense = st.sidebar.number_input(
+    "Pengeluaran Bulanan",
+    min_value=0,
+    value=6000000,
+    step=500000
 )
 
-if st.button("Analisa Keuangan"):
+debt = st.sidebar.number_input(
+    "Total Cicilan Bulanan",
+    min_value=0,
+    value=1000000,
+    step=500000
+)
 
-    sisa_dana = pendapatan - pengeluaran
+investment = st.sidebar.number_input(
+    "Investasi Bulanan",
+    min_value=0,
+    value=1000000,
+    step=500000
+)
 
-    if pendapatan > 0:
-        rasio_tabungan = (sisa_dana / pendapatan) * 100
-    else:
-        rasio_tabungan = 0
+emergency_fund = st.sidebar.number_input(
+    "Total Dana Darurat Saat Ini",
+    min_value=0,
+    value=10000000,
+    step=1000000
+)
 
-    st.subheader("📊 Hasil Analisa")
+# =====================
+# Perhitungan
+# =====================
 
-    st.metric(
-        label="Sisa Dana",
-        value=f"Rp {sisa_dana:,.0f}"
+saving = income - expense
+
+saving_ratio = (saving / income) * 100 if income else 0
+debt_ratio = (debt / income) * 100 if income else 0
+invest_ratio = (investment / income) * 100 if income else 0
+
+target_emergency = expense * 6
+
+emergency_ratio = (
+    emergency_fund / target_emergency * 100
+    if target_emergency > 0 else 0
+)
+
+# =====================
+# Scoring
+# =====================
+
+saving_score = min((saving_ratio / 20) * 25, 25)
+
+debt_score = max(25 - ((debt_ratio / 30) * 25), 0)
+
+emergency_score = min((emergency_ratio / 100) * 25, 25)
+
+invest_score = min((invest_ratio / 10) * 25, 25)
+
+health_score = round(
+    saving_score +
+    debt_score +
+    emergency_score +
+    invest_score
+)
+
+health_score = min(health_score, 100)
+
+# =====================
+# Dashboard
+# =====================
+
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric(
+    "Saving Ratio",
+    f"{saving_ratio:.1f}%"
+)
+
+col2.metric(
+    "Debt Ratio",
+    f"{debt_ratio:.1f}%"
+)
+
+col3.metric(
+    "Investment Ratio",
+    f"{invest_ratio:.1f}%"
+)
+
+col4.metric(
+    "Emergency Fund",
+    f"{emergency_ratio:.0f}%"
+)
+
+st.divider()
+
+st.subheader("🏆 Financial Health Score")
+
+st.progress(health_score)
+
+st.markdown(
+    f"""
+    <h1 style='text-align:center'>
+    {health_score}/100
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
+
+# =====================
+# Kategori
+# =====================
+
+if health_score >= 80:
+    category = "🟢 Sangat Sehat"
+elif health_score >= 60:
+    category = "🟡 Cukup Sehat"
+elif health_score >= 40:
+    category = "🟠 Perlu Perbaikan"
+else:
+    category = "🔴 Risiko Tinggi"
+
+st.success(f"Kategori: {category}")
+
+# =====================
+# Detail
+# =====================
+
+st.subheader("📊 Ringkasan Keuangan")
+
+st.write(
+    f"Pendapatan Bulanan : Rp {income:,.0f}"
+)
+
+st.write(
+    f"Pengeluaran Bulanan : Rp {expense:,.0f}"
+)
+
+st.write(
+    f"Sisa Dana : Rp {saving:,.0f}"
+)
+
+st.write(
+    f"Target Dana Darurat : Rp {target_emergency:,.0f}"
+)
+
+# =====================
+# Rekomendasi
+# =====================
+
+st.subheader("💡 Rekomendasi")
+
+if saving_ratio < 20:
+    st.warning(
+        "Tingkatkan tabungan minimal 20% dari pendapatan."
     )
 
-    st.metric(
-        label="Persentase Sisa Dana",
-        value=f"{rasio_tabungan:.1f}%"
+if debt_ratio > 30:
+    st.warning(
+        "Rasio cicilan terlalu tinggi. Idealnya di bawah 30%."
     )
 
-    st.markdown("---")
-
-    if sisa_dana < 0:
-        st.error(
-            "Pengeluaran Anda melebihi pendapatan. "
-            "Prioritaskan pengurangan pengeluaran tidak penting."
-        )
-
-    elif rasio_tabungan < 10:
-        st.warning(
-            "Kondisi cukup ketat. Disarankan menabung minimal 10%-20% dari pendapatan."
-        )
-
-    elif rasio_tabungan < 30:
-        st.success(
-            "Keuangan Anda cukup sehat. Mulailah membangun dana darurat dan investasi."
-        )
-
-    else:
-        st.success(
-            "Kondisi keuangan sangat baik. "
-            "Pertimbangkan investasi jangka panjang dan diversifikasi aset."
-        )
-
-    # Financial Health Score
-    score = min(max(rasio_tabungan * 2.5, 0), 100)
-
-    st.markdown("---")
-    st.subheader("🏆 Financial Health Score")
-
-    st.progress(int(score))
-    st.write(f"Skor Keuangan: **{score:.0f}/100**")
-
-    if score < 40:
-        kategori = "Perlu Perbaikan"
-    elif score < 70:
-        kategori = "Cukup Baik"
-    else:
-        kategori = "Sangat Sehat"
-
-    st.write(f"Kategori: **{kategori}**")
-
-    # Rekomendasi
-    st.markdown("---")
-    st.subheader("💡 Rekomendasi")
-
-    dana_darurat = pengeluaran * 6
-
-    st.write(
-        f"Target Dana Darurat: **Rp {dana_darurat:,.0f}** "
-        "(6 bulan pengeluaran)"
+if emergency_ratio < 100:
+    st.warning(
+        "Dana darurat belum mencapai target 6 bulan pengeluaran."
     )
 
-    investasi = pendapatan * 0.2
-
-    st.write(
-        f"Rekomendasi Investasi Bulanan: "
-        f"**Rp {investasi:,.0f}** (20% pendapatan)"
+if invest_ratio < 10:
+    st.warning(
+        "Alokasi investasi masih rendah."
     )
 
-st.markdown("---")
-st.caption("Versi 1.0 - Konsultasi Keuangan Sederhana")
+if health_score >= 80:
+    st.balloons()
+    st.success(
+        "Kondisi keuangan sangat sehat. Fokus pada pengembangan aset dan wealth accumulation."
+    )
