@@ -1,418 +1,325 @@
 import streamlit as st
-import plotly.graph_objects as go
+import pandas as pd
+import plotly.express as px
 
+# =========================
+# CONFIG PAGE
+# =========================
 st.set_page_config(
-    page_title="Financial Health",
-    page_icon="💰",
-    layout="centered"
+    page_title="Dashboard Tunggakan Klaim",
+    page_icon="📊",
+    layout="wide"
 )
 
 # =========================
-# CSS PREMIUM FINTECH
+# CUSTOM CSS
 # =========================
-
 st.markdown("""
 <style>
-
-#MainMenu {visibility:hidden;}
-footer {visibility:hidden;}
-header {visibility:hidden;}
-
-[data-testid="stAppViewContainer"]{
-    background:linear-gradient(
-        180deg,
-        #0F172A 0%,
-        #1E293B 100%
-    );
+.main {
+    background-color: #f5f7fb;
 }
 
-.block-container{
-    max-width:430px;
-    padding-top:1rem;
-    padding-bottom:2rem;
+.metric-card {
+    background: white;
+    padding: 18px;
+    border-radius: 15px;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
 }
 
-.title{
-    color:white;
-    font-size:30px;
-    font-weight:700;
+.kpi-title {
+    color: #6b7280;
+    font-size: 14px;
 }
 
-.subtitle{
-    color:#94A3B8;
-    margin-bottom:20px;
+.kpi-value {
+    font-size: 32px;
+    font-weight: bold;
 }
 
-.hero{
-    background:linear-gradient(
-        135deg,
-        #00C6FF,
-        #0072FF
-    );
-    border-radius:30px;
-    padding:25px;
-    text-align:center;
-    color:white;
-    margin-bottom:15px;
-    box-shadow:
-    0px 15px 40px rgba(0,114,255,.4);
+.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
-
-.hero-score{
-    font-size:72px;
-    font-weight:800;
-}
-
-.hero-category{
-    font-size:22px;
-    font-weight:600;
-}
-
-.card{
-    border-radius:22px;
-    padding:20px;
-    color:white;
-    text-align:center;
-    margin-bottom:10px;
-}
-
-.metric-label{
-    font-size:14px;
-}
-
-.metric-value{
-    font-size:28px;
-    font-weight:700;
-}
-
-.insight{
-    background:white;
-    color:#111827;
-    border-radius:25px;
-    padding:20px;
-    margin-top:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,.15);
-}
-
-.goal{
-    background:white;
-    color:#111827;
-    border-radius:25px;
-    padding:20px;
-    margin-top:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,.15);
-}
-
-.goal-item{
-    font-size:17px;
-    margin-bottom:10px;
-}
-
-.stButton > button{
-    background:linear-gradient(
-        135deg,
-        #00C6FF,
-        #0072FF
-    );
-    color:white;
-    border:none;
-    border-radius:15px;
-    height:55px;
-    font-weight:bold;
-    width:100%;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
 # =========================
 # HEADER
 # =========================
-
-st.markdown(
-    '<div class="title">💰 Financial Health</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="subtitle">Personal Finance Dashboard</div>',
-    unsafe_allow_html=True
-)
+st.title("📋 Dashboard Tunggakan Klaim Asuransi")
+st.caption("Monitoring Outstanding Klaim Bermasalah")
 
 # =========================
-# INPUT
+# FILTER
 # =========================
-
-with st.expander("📋 Input Data Keuangan", expanded=True):
-
-    income = st.number_input(
-        "Pendapatan Bulanan",
-        min_value=0,
-        value=None,
-        placeholder="Contoh: 10,000,000"
+with st.sidebar:
+    st.header("Filter")
+    area = st.multiselect(
+        "Area",
+        ["Jakarta", "Medan", "Surabaya", "Makassar"],
+        default=["Jakarta", "Medan", "Surabaya", "Makassar"]
     )
 
-    expense = st.number_input(
-        "Pengeluaran Bulanan",
-        min_value=0,
-        value=None,
-        placeholder="Contoh: 6,000,000"
+# =========================
+# KPI
+# =========================
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        "Outstanding Tunggakan Klaim",
+        "Rp 12,50 M",
+        "+8%"
     )
 
-    debt = st.number_input(
-        "Cicilan Bulanan",
-        min_value=0,
-        value=None,
-        placeholder="Contoh: 1,500,000"
+with col2:
+    st.metric(
+        "Total Pembayaran Klaim",
+        "Rp 3,20 M",
+        "+15%"
     )
 
-    investment = st.number_input(
-        "Investasi Bulanan",
-        min_value=0,
-        value=None,
-        placeholder="Contoh: 1,000,000"
+with col3:
+    st.metric(
+        "Jumlah Kasus Tertunggak",
+        "1.256",
+        "+45"
     )
 
-    emergency_fund = st.number_input(
-        "Dana Darurat Saat Ini",
-        min_value=0,
-        value=None,
-        placeholder="Contoh: 15,000,000"
+with col4:
+    st.metric(
+        "Rata-rata Aging",
+        "47 Hari",
+        "-3 Hari"
     )
 
-    proses = st.button(
-        "🚀 Analisis Financial Health",
+st.divider()
+
+# =========================
+# AGING CLAIM
+# =========================
+st.subheader("📈 Aging Klaim")
+
+aging_df = pd.DataFrame({
+    "Kategori": [
+        "0-30 Hari",
+        "31-60 Hari",
+        "61-90 Hari",
+        ">90 Hari"
+    ],
+    "Jumlah": [
+        450,
+        320,
+        280,
+        206
+    ]
+})
+
+col1, col2 = st.columns([1,1])
+
+with col1:
+    fig = px.pie(
+        aging_df,
+        names="Kategori",
+        values="Jumlah",
+        hole=0.55
+    )
+
+    fig.update_layout(
+        height=400
+    )
+
+    st.plotly_chart(
+        fig,
         use_container_width=True
     )
 
-# =========================
-# BELUM ANALISIS
-# =========================
-
-if not proses:
-    st.info(
-        "👆 Silakan isi seluruh data keuangan terlebih dahulu, lalu klik tombol Analisis Financial Health."
+with col2:
+    st.dataframe(
+        aging_df,
+        use_container_width=True,
+        hide_index=True
     )
-    st.stop()
+
+st.divider()
 
 # =========================
-# VALIDASI
+# OUTSTANDING PER ASURANSI
 # =========================
+st.subheader("🏢 Outstanding per Asuransi")
 
-if (
-    income is None or
-    expense is None or
-    debt is None or
-    investment is None or
-    emergency_fund is None
-):
-    st.error("Semua field wajib diisi.")
-    st.stop()
+asuransi_df = pd.DataFrame({
+    "Asuransi":[
+        "Asuransi ABC",
+        "Asuransi XYZ",
+        "Asuransi DEF",
+        "Asuransi GHI",
+        "Asuransi JKL"
+    ],
+    "Outstanding":[
+        2500000000,
+        1800000000,
+        1200000000,
+        950000000,
+        700000000
+    ]
+})
 
-# =========================
-# CALCULATION
-# =========================
-
-saving = income - expense
-
-saving_ratio = (
-    saving / income * 100
-    if income > 0 else 0
+fig = px.bar(
+    asuransi_df,
+    x="Outstanding",
+    y="Asuransi",
+    orientation="h",
+    text_auto=True
 )
-
-debt_ratio = (
-    debt / income * 100
-    if income > 0 else 0
-)
-
-invest_ratio = (
-    investment / income * 100
-    if income > 0 else 0
-)
-
-target_emergency = expense * 6
-
-emergency_ratio = (
-    emergency_fund / target_emergency * 100
-    if target_emergency > 0 else 0
-)
-
-saving_score = min((saving_ratio / 20) * 25, 25)
-debt_score = max(25 - (debt_ratio / 30) * 25, 0)
-invest_score = min((invest_ratio / 10) * 25, 25)
-emergency_score = min((emergency_ratio / 100) * 25, 25)
-
-score = round(
-    saving_score +
-    debt_score +
-    invest_score +
-    emergency_score
-)
-
-score = min(score, 100)
-
-# =========================
-# CATEGORY
-# =========================
-
-if score >= 80:
-    category = "🟢 Sangat Sehat"
-elif score >= 60:
-    category = "🟡 Sehat"
-elif score >= 40:
-    category = "🟠 Perlu Perbaikan"
-else:
-    category = "🔴 Risiko Tinggi"
-
-# =========================
-# HERO CARD
-# =========================
-
-st.markdown(f"""
-<div class="hero">
-
-<div style="font-size:22px;">
-Financial Health Score
-</div>
-
-<div class="hero-score">
-{score}
-</div>
-
-<div class="hero-category">
-{category}
-</div>
-
-</div>
-""", unsafe_allow_html=True)
-
-# =========================
-# GAUGE
-# =========================
-
-fig = go.Figure(go.Indicator(
-    mode="gauge",
-    value=score,
-    gauge={
-        'axis': {'range': [0, 100]},
-        'bar': {'color': '#38BDF8'},
-        'steps': [
-            {'range': [0, 40], 'color': '#7F1D1D'},
-            {'range': [40, 60], 'color': '#92400E'},
-            {'range': [60, 80], 'color': '#1E3A8A'},
-            {'range': [80, 100], 'color': '#14532D'}
-        ]
-    }
-))
 
 fig.update_layout(
-    height=250,
-    paper_bgcolor="rgba(0,0,0,0)",
-    margin=dict(l=20, r=20, t=20, b=20)
+    height=400
 )
 
-st.plotly_chart(fig, use_container_width=True)
-
-# =========================
-# KPI CARDS
-# =========================
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.markdown(f"""
-    <div class="card" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">
-        <div class="metric-label">Saving Ratio</div>
-        <div class="metric-value">{saving_ratio:.1f}%</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown(f"""
-    <div class="card" style="background:linear-gradient(135deg,#EC4899,#BE185D)">
-        <div class="metric-label">Debt Ratio</div>
-        <div class="metric-value">{debt_ratio:.1f}%</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-col3, col4 = st.columns(2)
-
-with col3:
-    st.markdown(f"""
-    <div class="card" style="background:linear-gradient(135deg,#06B6D4,#2563EB)">
-        <div class="metric-label">Investment</div>
-        <div class="metric-value">{invest_ratio:.1f}%</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown(f"""
-    <div class="card" style="background:linear-gradient(135deg,#10B981,#059669)">
-        <div class="metric-label">Emergency Fund</div>
-        <div class="metric-value">{emergency_ratio:.0f}%</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =========================
-# AI INSIGHT
-# =========================
-
-st.markdown(f"""
-<div class="insight">
-
-<h3>💡 AI Insight</h3>
-
-<p>
-Anda memiliki sisa dana bulanan sebesar
-<b>Rp {saving:,.0f}</b>.
-</p>
-
-<p>
-Kondisi keuangan Anda saat ini berada pada kategori
-<b>{category}</b>.
-</p>
-
-<p>
-Prioritas berikutnya:
-</p>
-
-<ul>
-<li>Meningkatkan investasi rutin</li>
-<li>Mengurangi utang konsumtif</li>
-<li>Menjaga dana darurat minimal 6 bulan pengeluaran</li>
-</ul>
-
-</div>
-""", unsafe_allow_html=True)
-
-# =========================
-# GOALS
-# =========================
-
-st.markdown("""
-<div class="goal">
-
-<h3>🎯 Financial Goals</h3>
-
-<div class="goal-item">✅ Dana Darurat</div>
-<div class="goal-item">✅ Investasi Rutin</div>
-<div class="goal-item">🟡 Dana Pensiun</div>
-<div class="goal-item">🟡 Passive Income</div>
-<div class="goal-item">🔵 Financial Freedom</div>
-
-</div>
-""", unsafe_allow_html=True)
-
-# =========================
-# SUMMARY
-# =========================
-
-st.metric(
-    "Sisa Dana Bulanan",
-    f"Rp {saving:,.0f}"
+st.plotly_chart(
+    fig,
+    use_container_width=True
 )
 
-st.metric(
-    "Target Dana Darurat",
-    f"Rp {target_emergency:,.0f}"
+# =========================
+# OUTSTANDING PER AREA
+# =========================
+st.subheader("📍 Outstanding per Area")
+
+area_df = pd.DataFrame({
+    "Area":[
+        "Jakarta",
+        "Medan",
+        "Surabaya",
+        "Makassar"
+    ],
+    "Outstanding":[
+        4500000000,
+        2800000000,
+        2100000000,
+        1600000000
+    ]
+})
+
+fig = px.bar(
+    area_df,
+    x="Area",
+    y="Outstanding",
+    text_auto=True
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
+
+st.divider()
+
+# =========================
+# PRIORITAS PENAGIHAN
+# =========================
+st.subheader("🚨 Prioritas Penagihan (>90 Hari)")
+
+priority_df = pd.DataFrame({
+    "Nomor Polis":[
+        "POL00123456",
+        "POL00987654",
+        "POL00543210",
+        "POL00112233",
+        "POL00445566"
+    ],
+    "Asuransi":[
+        "ABC",
+        "XYZ",
+        "DEF",
+        "GHI",
+        "JKL"
+    ],
+    "Outstanding":[
+        150000000,
+        120000000,
+        95000000,
+        80000000,
+        70000000
+    ],
+    "Aging":[
+        125,
+        115,
+        101,
+        97,
+        93
+    ]
+})
+
+st.dataframe(
+    priority_df,
+    use_container_width=True,
+    hide_index=True
+)
+
+st.divider()
+
+# =========================
+# DETAIL KLAIM
+# =========================
+st.subheader("📄 Detail Klaim")
+
+detail_df = pd.DataFrame({
+    "Nomor Polis":[
+        "POL00123456",
+        "POL00987654",
+        "POL00543210",
+        "POL00112233",
+        "POL00445566"
+    ],
+    "Nama Nasabah":[
+        "Andi",
+        "Budi",
+        "Citra",
+        "Dewi",
+        "Eko"
+    ],
+    "Area":[
+        "Jakarta",
+        "Medan",
+        "Surabaya",
+        "Makassar",
+        "Jakarta"
+    ],
+    "Outstanding":[
+        150000000,
+        120000000,
+        95000000,
+        80000000,
+        70000000
+    ],
+    "Aging":[
+        125,
+        115,
+        101,
+        97,
+        93
+    ]
+})
+
+st.dataframe(
+    detail_df,
+    use_container_width=True,
+    hide_index=True
+)
+
+# =========================
+# EXPORT
+# =========================
+csv = detail_df.to_csv(index=False).encode("utf-8")
+
+st.download_button(
+    "⬇ Download Data Klaim",
+    data=csv,
+    file_name="data_klaim.csv",
+    mime="text/csv"
 )
