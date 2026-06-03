@@ -1,225 +1,268 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
 
-# ==================================================
-# PAGE CONFIG
-# ==================================================
+# =====================================================
+# CONFIG
+# =====================================================
+
 st.set_page_config(
-    page_title="Tunggakan Klaim",
+    page_title="Insurance Collection",
     page_icon="📊",
     layout="centered"
 )
 
-# ==================================================
-# CSS MOBILE APP STYLE
-# ==================================================
+# =====================================================
+# CSS PREMIUM MOBILE
+# =====================================================
+
 st.markdown("""
 <style>
 
 html, body, [class*="css"] {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Inter, sans-serif;
+}
+
+.stApp {
+    background: #0F172A;
 }
 
 .main .block-container{
-    max-width:420px;
-    margin:auto;
+    max-width:430px;
     padding-top:1rem;
-    padding-bottom:5rem;
+    padding-bottom:100px;
 }
 
-.stApp{
-    background-color:#F4F7FC;
+div[data-testid="stToolbar"]{
+    display:none;
 }
 
-.app-header{
-    background:linear-gradient(135deg,#0052CC,#007BFF);
-    padding:20px;
-    border-radius:20px;
+section[data-testid="stSidebar"]{
+    display:none;
+}
+
+.hero-card{
+    background: linear-gradient(
+        135deg,
+        #2563EB,
+        #7C3AED
+    );
+
+    padding:24px;
+    border-radius:28px;
     color:white;
-    margin-bottom:15px;
+    margin-bottom:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
-.kpi-card{
-    background:white;
-    border-radius:18px;
-    padding:15px;
-    box-shadow:0px 3px 12px rgba(0,0,0,0.08);
+.hero-title{
+    font-size:14px;
+    opacity:.8;
+}
+
+.hero-value{
+    font-size:36px;
+    font-weight:800;
+    margin-top:10px;
+}
+
+.hero-sub{
+    margin-top:8px;
+    font-size:13px;
+    opacity:.8;
+}
+
+.metric-card{
+    background:#1E293B;
+    border-radius:24px;
+    padding:18px;
     text-align:center;
+    color:white;
 }
 
-.kpi-title{
-    color:#888;
+.metric-label{
+    color:#94A3B8;
     font-size:12px;
 }
 
-.kpi-value{
+.metric-value{
     font-size:22px;
     font-weight:700;
-    color:#111;
 }
 
 .section-title{
+    color:white;
     font-size:18px;
     font-weight:700;
-    margin-top:15px;
+    margin-top:20px;
     margin-bottom:10px;
 }
 
 .rank-card{
-    background:white;
-    border-radius:18px;
-    padding:15px;
+    background:#1E293B;
+    border-radius:22px;
+    padding:16px;
     margin-bottom:10px;
-    box-shadow:0px 2px 10px rgba(0,0,0,0.06);
+    color:white;
 }
 
-.priority-card{
-    background:white;
-    border-left:5px solid #ff4b4b;
-    border-radius:15px;
-    padding:15px;
+.alert-card{
+    background:#1E293B;
+    border-left:5px solid #EF4444;
+    border-radius:20px;
+    padding:16px;
     margin-bottom:10px;
-    box-shadow:0px 2px 10px rgba(0,0,0,0.06);
+    color:white;
+}
+
+.progress-wrap{
+    background:#1E293B;
+    padding:18px;
+    border-radius:24px;
 }
 
 .bottom-nav{
     position:fixed;
-    bottom:0;
+    bottom:12px;
     left:50%;
     transform:translateX(-50%);
-    width:420px;
-    background:white;
-    border-top:1px solid #ddd;
-    padding:10px;
+    width:390px;
+    background:rgba(30,41,59,.85);
+    backdrop-filter:blur(20px);
+    border-radius:24px;
+    padding:14px;
     text-align:center;
+    color:white;
     z-index:999;
 }
 
 .bottom-nav span{
-    margin:0 10px;
+    margin:0 18px;
     font-size:22px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ==================================================
-# DATA DUMMY
-# ==================================================
-aging_df = pd.DataFrame({
-    "Kategori":[
-        "0-30 Hari",
-        "31-60 Hari",
-        "61-90 Hari",
-        ">90 Hari"
-    ],
-    "Jumlah":[450,320,280,206]
-})
-
-asuransi_df = pd.DataFrame({
-    "Asuransi":[
-        "Asuransi ABC",
-        "Asuransi XYZ",
-        "Asuransi DEF",
-        "Asuransi GHI",
-        "Asuransi JKL"
-    ],
-    "Outstanding":[
-        2500000000,
-        1800000000,
-        1200000000,
-        950000000,
-        700000000
-    ]
-})
-
-priority_df = pd.DataFrame({
-    "Polis":[
-        "POL00123456",
-        "POL00987654",
-        "POL00543210"
-    ],
-    "Outstanding":[
-        "Rp150 Jt",
-        "Rp120 Jt",
-        "Rp95 Jt"
-    ],
-    "Aging":[
-        "125 Hari",
-        "115 Hari",
-        "101 Hari"
-    ]
-})
-
-# ==================================================
+# =====================================================
 # HEADER
-# ==================================================
+# =====================================================
+
 st.markdown("""
-<div class="app-header">
-    <h3>📋 Dashboard Klaim</h3>
-    <p>Monitoring Tunggakan Klaim Asuransi</p>
+<div style="color:white;">
+<h4>👋 Selamat Datang</h4>
+<p>Dashboard Tunggakan Asuransi</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==================================================
-# KPI CARDS
-# ==================================================
-col1,col2 = st.columns(2)
+# =====================================================
+# HERO CARD
+# =====================================================
 
-with col1:
+st.markdown("""
+<div class="hero-card">
+    <div class="hero-title">
+        Outstanding Klaim
+    </div>
+
+    <div class="hero-value">
+        Rp 12,5 M
+    </div>
+
+    <div class="hero-sub">
+        ▼ 8% dibanding bulan lalu
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# =====================================================
+# KPI
+# =====================================================
+
+c1,c2 = st.columns(2)
+
+with c1:
     st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-title">Outstanding Klaim</div>
-        <div class="kpi-value">Rp12,5 M</div>
+    <div class="metric-card">
+        <div class="metric-label">
+            Pembayaran
+        </div>
+
+        <div class="metric-value">
+            Rp 3,2 M
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-with col2:
+with c2:
     st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-title">Pembayaran Klaim</div>
-        <div class="kpi-value">Rp3,2 M</div>
+    <div class="metric-card">
+        <div class="metric-label">
+            Total Kasus
+        </div>
+
+        <div class="metric-value">
+            1.256
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-col3,col4 = st.columns(2)
+c3,c4 = st.columns(2)
 
-with col3:
+with c3:
     st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-title">Kasus</div>
-        <div class="kpi-value">1.256</div>
+    <div class="metric-card">
+        <div class="metric-label">
+            Avg Aging
+        </div>
+
+        <div class="metric-value">
+            47 Hari
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-with col4:
+with c4:
     st.markdown("""
-    <div class="kpi-card">
-        <div class="kpi-title">Avg Aging</div>
-        <div class="kpi-value">47 Hari</div>
+    <div class="metric-card">
+        <div class="metric-label">
+            Recovery
+        </div>
+
+        <div class="metric-value">
+            82%
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# ==================================================
+# =====================================================
 # AGING
-# ==================================================
+# =====================================================
+
 st.markdown(
-    '<div class="section-title">📈 Aging Klaim</div>',
+    '<div class="section-title">📈 Aging Distribution</div>',
     unsafe_allow_html=True
 )
 
-fig = px.pie(
-    aging_df,
-    names="Kategori",
-    values="Jumlah",
-    hole=0.65
-)
+fig = go.Figure()
+
+fig.add_trace(go.Bar(
+    y=["0-30","31-60","61-90",">90"],
+    x=[45,30,15,10],
+    orientation='h'
+))
 
 fig.update_layout(
-    height=350,
-    margin=dict(l=10,r=10,t=10,b=10),
-    showlegend=True
+    height=250,
+    paper_bgcolor="#0F172A",
+    plot_bgcolor="#0F172A",
+    font_color="white",
+    margin=dict(
+        l=10,
+        r=10,
+        t=10,
+        b=10
+    )
 )
 
 st.plotly_chart(
@@ -227,119 +270,119 @@ st.plotly_chart(
     use_container_width=True
 )
 
-# ==================================================
-# RANKING ASURANSI
-# ==================================================
+# =====================================================
+# TOP INSURANCE
+# =====================================================
+
 st.markdown(
-    '<div class="section-title">🏆 Top Outstanding Asuransi</div>',
+    '<div class="section-title">🏆 Top Outstanding</div>',
     unsafe_allow_html=True
 )
 
-for i,row in asuransi_df.iterrows():
+ranking = [
+    ("🥇","Asuransi ABC","Rp 2,5 M"),
+    ("🥈","Asuransi XYZ","Rp 1,8 M"),
+    ("🥉","Asuransi DEF","Rp 1,2 M"),
+]
 
-    medal = "🏅"
-
-    if i == 0:
-        medal = "🥇"
-
-    elif i == 1:
-        medal = "🥈"
-
-    elif i == 2:
-        medal = "🥉"
-
-    nominal = f"Rp {row['Outstanding']/1000000000:.1f} M"
+for medal,nama,nilai in ranking:
 
     st.markdown(f"""
     <div class="rank-card">
-        <b>{medal} {row['Asuransi']}</b><br>
-        Outstanding : {nominal}
+        <b>{medal} {nama}</b><br>
+        Outstanding : {nilai}
     </div>
     """, unsafe_allow_html=True)
 
-# ==================================================
-# PRIORITAS PENAGIHAN
-# ==================================================
+# =====================================================
+# PRIORITY CASE
+# =====================================================
+
 st.markdown(
     '<div class="section-title">🚨 Prioritas Penagihan</div>',
     unsafe_allow_html=True
 )
 
-for _,row in priority_df.iterrows():
+priority = [
+    ("POL00123456","Rp150 Jt","125 Hari"),
+    ("POL00987654","Rp120 Jt","115 Hari"),
+    ("POL00888888","Rp95 Jt","101 Hari")
+]
+
+for polis,outstanding,aging in priority:
 
     st.markdown(f"""
-    <div class="priority-card">
-        <b>{row['Polis']}</b><br><br>
-        Outstanding : {row['Outstanding']}<br>
-        Aging : {row['Aging']}
+    <div class="alert-card">
+        <b>{polis}</b><br><br>
+        Outstanding : {outstanding}<br>
+        Aging : {aging}
     </div>
     """, unsafe_allow_html=True)
 
-# ==================================================
-# DETAIL DATA
-# ==================================================
+# =====================================================
+# DETAIL
+# =====================================================
+
 st.markdown(
     '<div class="section-title">📄 Detail Klaim</div>',
     unsafe_allow_html=True
 )
 
-detail = pd.DataFrame({
+df = pd.DataFrame({
     "Polis":[
         "POL00123456",
         "POL00987654",
-        "POL00543210",
-        "POL00333333",
+        "POL00888888",
         "POL00777777"
     ],
     "Area":[
         "Jakarta",
         "Medan",
         "Surabaya",
-        "Makassar",
-        "Bandung"
+        "Makassar"
     ],
     "Outstanding":[
         150000000,
         120000000,
         95000000,
-        85000000,
-        65000000
+        85000000
     ],
     "Aging":[
         125,
         115,
         101,
-        88,
-        75
+        95
     ]
 })
 
 st.dataframe(
-    detail,
+    df,
     use_container_width=True,
     hide_index=True
 )
 
-# ==================================================
+# =====================================================
 # DOWNLOAD
-# ==================================================
-csv = detail.to_csv(index=False).encode('utf-8')
+# =====================================================
+
+csv = df.to_csv(index=False).encode()
 
 st.download_button(
-    "⬇ Download Data",
+    "⬇ Export Data",
     csv,
     "klaim.csv",
     "text/csv"
 )
 
-# ==================================================
-# BOTTOM NAVIGATION
-# ==================================================
+# =====================================================
+# NAVIGATION
+# =====================================================
+
 st.markdown("""
 <div class="bottom-nav">
 <span>🏠</span>
-<span>📋</span>
 <span>📈</span>
+<span>📋</span>
 <span>👤</span>
 </div>
 """, unsafe_allow_html=True)
