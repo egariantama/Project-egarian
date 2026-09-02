@@ -1,388 +1,778 @@
 import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
 
-# =====================================================
+# ============================================================
 # CONFIG
-# =====================================================
+# ============================================================
 
 st.set_page_config(
-    page_title="Insurance Collection",
-    page_icon="📊",
-    layout="centered"
+    page_title="BancaPocket",
+    page_icon="🛡️",
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
-# =====================================================
-# CSS PREMIUM MOBILE
-# =====================================================
+# ============================================================
+# DATA CONTOH
+# Nanti bisa diganti dengan Excel / database
+# ============================================================
 
-st.markdown("""
+ASURADUR = [
+    {
+        "nama": "ASKRIDA",
+        "jenis": "Asuransi Umum",
+        "status": "Active",
+        "warna": "#2563EB",
+        "inisial": "A",
+        "produk": [
+            "KSM",
+            "KUM",
+            "KUR",
+            "Asuransi Kebakaran",
+            "Credit Life"
+        ],
+        "deskripsi": "Mitra Bancassurance untuk perlindungan kredit dan aset.",
+        "contact": "Bancassurance ASKRIDA",
+        "phone": "021-xxxxxxx"
+    },
+    {
+        "nama": "ASPAN",
+        "jenis": "Asuransi Umum",
+        "status": "Active",
+        "warna": "#10B981",
+        "inisial": "A",
+        "produk": [
+            "KSM",
+            "KUM",
+            "KUR",
+            "Asuransi Kebakaran"
+        ],
+        "deskripsi": "Mitra Bancassurance untuk kebutuhan perlindungan kredit.",
+        "contact": "Bancassurance ASPAN",
+        "phone": "021-xxxxxxx"
+    },
+    {
+        "nama": "BOSOWA",
+        "jenis": "Asuransi Umum",
+        "status": "Active",
+        "warna": "#F59E0B",
+        "inisial": "B",
+        "produk": [
+            "KSM",
+            "KUM",
+            "Asuransi Kebakaran"
+        ],
+        "deskripsi": "Mitra Bancassurance untuk perlindungan kredit dan properti.",
+        "contact": "Bancassurance BOSOWA",
+        "phone": "021-xxxxxxx"
+    },
+    {
+        "nama": "JASINDO",
+        "jenis": "Asuransi Umum",
+        "status": "Active",
+        "warna": "#7C3AED",
+        "inisial": "J",
+        "produk": [
+            "KSM",
+            "KUM",
+            "KUR",
+            "Asuransi Kebakaran",
+            "Machinery Breakdown"
+        ],
+        "deskripsi": "Mitra Bancassurance untuk berbagai kebutuhan proteksi.",
+        "contact": "Bancassurance JASINDO",
+        "phone": "021-xxxxxxx"
+    },
+    {
+        "nama": "SINARMAS",
+        "jenis": "Asuransi Umum",
+        "status": "Active",
+        "warna": "#EF4444",
+        "inisial": "S",
+        "produk": [
+            "KSM",
+            "KUM",
+            "KUR",
+            "Asuransi Kebakaran"
+        ],
+        "deskripsi": "Mitra Bancassurance untuk perlindungan kredit dan aset.",
+        "contact": "Bancassurance SINARMAS",
+        "phone": "021-xxxxxxx"
+    }
+]
+
+
+# ============================================================
+# CSS
+# ============================================================
+
+st.markdown(
+    """
 <style>
 
+@import url(
+'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'
+);
+
 html, body, [class*="css"] {
-    font-family: Inter, sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .stApp {
-    background: #0F172A;
+    background:
+        linear-gradient(
+            180deg,
+            #F8FAFC 0%,
+            #EEF4FF 100%
+        );
 }
 
-.main .block-container{
-    max-width:430px;
-    padding-top:1rem;
-    padding-bottom:100px;
+/* Hilangkan menu Streamlit */
+
+#MainMenu {
+    visibility: hidden;
 }
 
-div[data-testid="stToolbar"]{
-    display:none;
+footer {
+    visibility: hidden;
 }
 
-section[data-testid="stSidebar"]{
-    display:none;
+header {
+    visibility: hidden;
 }
 
-.hero-card{
-    background: linear-gradient(
-        135deg,
-        #2563EB,
-        #7C3AED
-    );
+/* Container */
 
-    padding:24px;
-    border-radius:28px;
-    color:white;
-    margin-bottom:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,.25);
+.block-container {
+    max-width: 760px;
+    padding-top: 25px;
+    padding-bottom: 80px;
 }
 
-.hero-title{
-    font-size:14px;
-    opacity:.8;
+/* Header */
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
 }
 
-.hero-value{
-    font-size:36px;
-    font-weight:800;
-    margin-top:10px;
+.logo-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563EB,
+            #60A5FA
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
+
+    box-shadow:
+        0px 10px 25px
+        rgba(37,99,235,0.25);
 }
 
-.hero-sub{
-    margin-top:8px;
-    font-size:13px;
-    opacity:.8;
+.title {
+    font-size: 25px;
+    font-weight: 800;
+    color: #0F172A;
 }
 
-.metric-card{
-    background:#1E293B;
-    border-radius:24px;
-    padding:18px;
-    text-align:center;
-    color:white;
+.subtitle {
+    color: #64748B;
+    font-size: 13px;
+    margin-top: 3px;
 }
 
-.metric-label{
-    color:#94A3B8;
-    font-size:12px;
+/* Welcome */
+
+.welcome {
+    padding: 24px;
+
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1D4ED8,
+            #3B82F6
+        );
+
+    color: white;
+
+    box-shadow:
+        0px 15px 35px
+        rgba(37,99,235,0.22);
+
+    margin-bottom: 20px;
 }
 
-.metric-value{
-    font-size:22px;
-    font-weight:700;
+.welcome-title {
+    font-size: 22px;
+    font-weight: 800;
 }
 
-.section-title{
-    color:white;
-    font-size:18px;
-    font-weight:700;
-    margin-top:20px;
-    margin-bottom:10px;
+.welcome-text {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-top: 6px;
 }
 
-.rank-card{
-    background:#1E293B;
-    border-radius:22px;
-    padding:16px;
-    margin-bottom:10px;
-    color:white;
+/* Search */
+
+.search-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 7px;
 }
 
-.alert-card{
-    background:#1E293B;
-    border-left:5px solid #EF4444;
-    border-radius:20px;
-    padding:16px;
-    margin-bottom:10px;
-    color:white;
+/* Section */
+
+.section-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0F172A;
+    margin-top: 25px;
+    margin-bottom: 12px;
 }
 
-.progress-wrap{
-    background:#1E293B;
-    padding:18px;
-    border-radius:24px;
+/* Insurance Card */
+
+.insurance-card {
+    background: rgba(255,255,255,0.88);
+
+    border: 1px solid
+        rgba(226,232,240,0.9);
+
+    border-radius: 22px;
+
+    padding: 17px;
+
+    margin-bottom: 12px;
+
+    box-shadow:
+        0px 7px 22px
+        rgba(15,23,42,0.05);
 }
 
-.bottom-nav{
-    position:fixed;
-    bottom:12px;
-    left:50%;
-    transform:translateX(-50%);
-    width:390px;
-    background:rgba(30,41,59,.85);
-    backdrop-filter:blur(20px);
-    border-radius:24px;
-    padding:14px;
-    text-align:center;
-    color:white;
-    z-index:999;
+.insurance-row {
+    display: flex;
+    align-items: center;
 }
 
-.bottom-nav span{
-    margin:0 18px;
-    font-size:22px;
+.insurance-icon {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    font-size: 19px;
+    font-weight: 800;
+
+    margin-right: 13px;
+}
+
+.insurance-name {
+    font-weight: 800;
+    font-size: 16px;
+    color: #0F172A;
+}
+
+.insurance-type {
+    font-size: 12px;
+    color: #64748B;
+    margin-top: 3px;
+}
+
+.active {
+    margin-left: auto;
+
+    background: #DCFCE7;
+    color: #15803D;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+}
+
+/* Detail */
+
+.detail-card {
+    background: white;
+
+    border-radius: 26px;
+
+    padding: 24px;
+
+    box-shadow:
+        0px 12px 35px
+        rgba(15,23,42,0.08);
+}
+
+.detail-header {
+    display: flex;
+    align-items: center;
+}
+
+.detail-icon {
+    width: 64px;
+    height: 64px;
+
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    font-size: 25px;
+    font-weight: 800;
+
+    margin-right: 15px;
+}
+
+.detail-name {
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.detail-type {
+    color: #64748B;
+    font-size: 13px;
+}
+
+.description {
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.6;
+
+    margin-top: 18px;
+}
+
+/* Product */
+
+.product {
+    display: inline-block;
+
+    background: #EFF6FF;
+
+    color: #1D4ED8;
+
+    padding: 8px 12px;
+
+    border-radius: 12px;
+
+    margin: 4px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Info */
+
+.info-card {
+    background: #F8FAFC;
+
+    border-radius: 17px;
+
+    padding: 15px;
+
+    margin-top: 10px;
+}
+
+.info-label {
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+.info-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+
+    margin-top: 4px;
+}
+
+/* Bottom navigation */
+
+.bottom-nav {
+    position: fixed;
+
+    bottom: 15px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(92%, 700px);
+
+    background:
+        rgba(255,255,255,0.94);
+
+    backdrop-filter: blur(15px);
+
+    border:
+        1px solid
+        rgba(226,232,240,0.9);
+
+    border-radius: 22px;
+
+    padding: 12px 20px;
+
+    display: flex;
+
+    justify-content:
+        space-around;
+
+    box-shadow:
+        0px 12px 35px
+        rgba(15,23,42,0.13);
+
+    z-index: 999;
+}
+
+.nav-item {
+    text-align: center;
+
+    color: #94A3B8;
+
+    font-size: 10px;
+}
+
+.nav-active {
+    color: #2563EB;
+    font-weight: 700;
+}
+
+.nav-icon {
+    font-size: 19px;
+    margin-bottom: 2px;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .block-container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .title {
+        font-size: 22px;
+    }
+
+    .welcome {
+        padding: 20px;
+    }
+
 }
 
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
-# =====================================================
+
+# ============================================================
+# SESSION STATE
+# ============================================================
+
+if "selected" not in st.session_state:
+    st.session_state.selected = None
+
+
+# ============================================================
 # HEADER
-# =====================================================
-
-st.markdown("""
-<div style="color:white;">
-<h4>👋 Selamat Datang</h4>
-<p>Dashboard Tunggakan Asuransi</p>
-</div>
-""", unsafe_allow_html=True)
-
-# =====================================================
-# HERO CARD
-# =====================================================
-
-st.markdown("""
-<div class="hero-card">
-    <div class="hero-title">
-        Outstanding Klaim
-    </div>
-
-    <div class="hero-value">
-        Rp 12,5 M
-    </div>
-
-    <div class="hero-sub">
-        ▼ 8% dibanding bulan lalu
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# =====================================================
-# KPI
-# =====================================================
-
-c1,c2 = st.columns(2)
-
-with c1:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-label">
-            Pembayaran
-        </div>
-
-        <div class="metric-value">
-            Rp 3,2 M
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with c2:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-label">
-            Total Kasus
-        </div>
-
-        <div class="metric-value">
-            1.256
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-c3,c4 = st.columns(2)
-
-with c3:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-label">
-            Avg Aging
-        </div>
-
-        <div class="metric-value">
-            47 Hari
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with c4:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-label">
-            Recovery
-        </div>
-
-        <div class="metric-value">
-            82%
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =====================================================
-# AGING
-# =====================================================
+# ============================================================
 
 st.markdown(
-    '<div class="section-title">📈 Aging Distribution</div>',
+    """
+<div class="app-header">
+
+    <div>
+        <div class="title">
+            BancaPocket
+        </div>
+
+        <div class="subtitle">
+            Bancassurance Partner Information
+        </div>
+    </div>
+
+    <div class="logo-box">
+        🛡️
+    </div>
+
+</div>
+""",
     unsafe_allow_html=True
 )
 
-fig = go.Figure()
 
-fig.add_trace(go.Bar(
-    y=["0-30","31-60","61-90",">90"],
-    x=[45,30,15,10],
-    orientation='h'
-))
+# ============================================================
+# WELCOME CARD
+# ============================================================
 
-fig.update_layout(
-    height=250,
-    paper_bgcolor="#0F172A",
-    plot_bgcolor="#0F172A",
-    font_color="white",
-    margin=dict(
-        l=10,
-        r=10,
-        t=10,
-        b=10
+st.markdown(
+    """
+<div class="welcome">
+
+    <div class="welcome-title">
+        Hello, Pegawai 👋
+    </div>
+
+    <div class="welcome-text">
+        Temukan informasi Asuradur Partner
+        Bancassurance dengan cepat.
+    </div>
+
+</div>
+""",
+    unsafe_allow_html=True
+)
+
+
+# ============================================================
+# DETAIL PAGE
+# ============================================================
+
+if st.session_state.selected:
+
+    selected = next(
+        x for x in ASURADUR
+        if x["nama"] == st.session_state.selected
     )
-)
 
-st.plotly_chart(
-    fig,
-    use_container_width=True
-)
+    if st.button("← Kembali ke Daftar"):
 
-# =====================================================
-# TOP INSURANCE
-# =====================================================
+        st.session_state.selected = None
+        st.rerun()
 
-st.markdown(
-    '<div class="section-title">🏆 Top Outstanding</div>',
-    unsafe_allow_html=True
-)
+    st.markdown(
+        f"""
+<div class="detail-card">
 
-ranking = [
-    ("🥇","Asuransi ABC","Rp 2,5 M"),
-    ("🥈","Asuransi XYZ","Rp 1,8 M"),
-    ("🥉","Asuransi DEF","Rp 1,2 M"),
-]
+    <div class="detail-header">
 
-for medal,nama,nilai in ranking:
+        <div
+            class="detail-icon"
+            style="background:{selected['warna']};"
+        >
+            {selected['inisial']}
+        </div>
 
-    st.markdown(f"""
-    <div class="rank-card">
-        <b>{medal} {nama}</b><br>
-        Outstanding : {nilai}
+        <div>
+
+            <div class="detail-name">
+                {selected['nama']}
+            </div>
+
+            <div class="detail-type">
+                {selected['jenis']}
+            </div>
+
+        </div>
+
     </div>
-    """, unsafe_allow_html=True)
 
-# =====================================================
-# PRIORITY CASE
-# =====================================================
-
-st.markdown(
-    '<div class="section-title">🚨 Prioritas Penagihan</div>',
-    unsafe_allow_html=True
-)
-
-priority = [
-    ("POL00123456","Rp150 Jt","125 Hari"),
-    ("POL00987654","Rp120 Jt","115 Hari"),
-    ("POL00888888","Rp95 Jt","101 Hari")
-]
-
-for polis,outstanding,aging in priority:
-
-    st.markdown(f"""
-    <div class="alert-card">
-        <b>{polis}</b><br><br>
-        Outstanding : {outstanding}<br>
-        Aging : {aging}
+    <div class="description">
+        {selected['deskripsi']}
     </div>
-    """, unsafe_allow_html=True)
 
-# =====================================================
-# DETAIL
-# =====================================================
+    <div class="section-title">
+        Produk yang tersedia
+    </div>
 
-st.markdown(
-    '<div class="section-title">📄 Detail Klaim</div>',
-    unsafe_allow_html=True
-)
+    <div>
+        {
+            ''.join(
+                f'<span class="product">{p}</span>'
+                for p in selected["produk"]
+            )
+        }
+    </div>
 
-df = pd.DataFrame({
-    "Polis":[
-        "POL00123456",
-        "POL00987654",
-        "POL00888888",
-        "POL00777777"
-    ],
-    "Area":[
-        "Jakarta",
-        "Medan",
-        "Surabaya",
-        "Makassar"
-    ],
-    "Outstanding":[
-        150000000,
-        120000000,
-        95000000,
-        85000000
-    ],
-    "Aging":[
-        125,
-        115,
-        101,
-        95
-    ]
-})
+    <div class="section-title">
+        Informasi Kontak
+    </div>
 
-st.dataframe(
-    df,
-    use_container_width=True,
-    hide_index=True
-)
+    <div class="info-card">
 
-# =====================================================
-# DOWNLOAD
-# =====================================================
+        <div class="info-label">
+            PIC / Contact
+        </div>
 
-csv = df.to_csv(index=False).encode()
+        <div class="info-value">
+            {selected['contact']}
+        </div>
 
-st.download_button(
-    "⬇ Export Data",
-    csv,
-    "klaim.csv",
-    "text/csv"
-)
+    </div>
 
-# =====================================================
-# NAVIGATION
-# =====================================================
+    <div class="info-card">
 
-st.markdown("""
-<div class="bottom-nav">
-<span>🏠</span>
-<span>📈</span>
-<span>📋</span>
-<span>👤</span>
+        <div class="info-label">
+            Telepon
+        </div>
+
+        <div class="info-value">
+            {selected['phone']}
+        </div>
+
+    </div>
+
 </div>
-""", unsafe_allow_html=True)
+""",
+        unsafe_allow_html=True
+    )
+
+
+# ============================================================
+# MAIN PAGE
+# ============================================================
+
+else:
+
+    st.markdown(
+        """
+<div class="search-title">
+    Cari Asuradur
+</div>
+""",
+        unsafe_allow_html=True
+    )
+
+    search = st.text_input(
+        "Cari",
+        placeholder="Contoh: ASKRIDA...",
+        label_visibility="collapsed"
+    )
+
+    # Filter
+
+    hasil = [
+        x for x in ASURADUR
+        if search.lower() in x["nama"].lower()
+    ]
+
+    st.markdown(
+        """
+<div class="section-title">
+    Asuradur Partner
+</div>
+""",
+        unsafe_allow_html=True
+    )
+
+    if not hasil:
+
+        st.info(
+            "Asuradur tidak ditemukan."
+        )
+
+    for insurer in hasil:
+
+        st.markdown(
+            f"""
+<div class="insurance-card">
+
+    <div class="insurance-row">
+
+        <div
+            class="insurance-icon"
+            style="
+                background:
+                linear-gradient(
+                    135deg,
+                    {insurer['warna']},
+                    #93C5FD
+                );
+            "
+        >
+            {insurer['inisial']}
+        </div>
+
+        <div>
+
+            <div class="insurance-name">
+                {insurer['nama']}
+            </div>
+
+            <div class="insurance-type">
+                {insurer['jenis']}
+            </div>
+
+        </div>
+
+        <div class="active">
+            ● Active
+        </div>
+
+    </div>
+
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+        if st.button(
+            f"Lihat {insurer['nama']}",
+            key=f"btn_{insurer['nama']}",
+            use_container_width=True
+        ):
+
+            st.session_state.selected = insurer["nama"]
+            st.rerun()
+
+
+# ============================================================
+# BOTTOM NAVIGATION
+# ============================================================
+
+st.markdown(
+    """
+<div class="bottom-nav">
+
+    <div class="nav-item nav-active">
+        <div class="nav-icon">⌂</div>
+        Home
+    </div>
+
+    <div class="nav-item">
+        <div class="nav-icon">🛡️</div>
+        Partner
+    </div>
+
+    <div class="nav-item">
+        <div class="nav-icon">📚</div>
+        Guide
+    </div>
+
+    <div class="nav-item">
+        <div class="nav-icon">ℹ️</div>
+        Info
+    </div>
+
+</div>
+""",
+    unsafe_allow_html=True
+)
