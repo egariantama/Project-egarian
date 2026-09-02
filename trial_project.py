@@ -1,266 +1,514 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+from io import BytesIO
 
-# Konfigurasi Halaman & Meta Mobile Viewport
 st.set_page_config(
-    page_title="Direktori Rekanan Asuransi",
+    page_title="Asuradur Risk Heatmap",
     page_icon="🛡️",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
-# Kustomisasi CSS untuk Desain Mewah & Mobile-First Experience
+# =========================
+# CONFIG
+# =========================
+THRESHOLD_2026 = 250_000   # Rp juta = Rp250 miliar
+THRESHOLD_2028 = 500_000   # Rp juta = Rp500 miliar
+
+SHEETS = {
+    "Asuransi Umum": "Asuransi Umum",
+    "Asuransi Jiwa": "Asuransi Jiwa",
+    "Umum – PKS Bancass": "Umum PKS Bancass",
+    "Life – PKS Bancass": "Life PKS Bancass",
+}
+
+# =========================
+# STYLE – MOBILE LOOK
+# =========================
 st.markdown("""
-    <style>
-    /* Styling Dasar & Background */
-    .main {
-        background-color: #0F172A;
-        color: #F8FAFC;
-    }
-    
-    /* Custom Header/Banner */
-    .lux-header {
-        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-        border: 1px solid #334155;
-        border-radius: 16px;
-        padding: 24px 20px;
-        text-align: center;
-        margin-bottom: 20px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    }
-    .lux-header h1 {
-        color: #F8FAFC;
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 6px;
-        letter-spacing: 0.5px;
-    }
-    .lux-header p {
-        color: #94A3B8;
-        font-size: 13px;
-        margin: 0;
+<style>
+    #MainMenu {visibility:hidden;}
+    footer {visibility:hidden;}
+    header {visibility:hidden;}
+
+    .block-container {
+        max-width: 1250px;
+        padding-top: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 4rem;
     }
 
-    /* Badge Kualifikasi Header */
-    .qual-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 11px;
+    .hero {
+        padding: 1.15rem 1.25rem;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #334155 100%);
+        color: white;
+        margin-bottom: 1rem;
+        box-shadow: 0 10px 28px rgba(15,23,42,.16);
+    }
+    .hero-title {
+        font-size: 1.65rem;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -.03em;
+    }
+    .hero-subtitle {
+        margin-top: .35rem;
+        font-size: .88rem;
+        color: #cbd5e1;
+    }
+
+    .kpi {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 1rem;
+        box-shadow: 0 5px 18px rgba(15,23,42,.06);
+        min-height: 105px;
+    }
+    .kpi-label {
+        color: #64748b;
+        font-size: .76rem;
         font-weight: 700;
         text-transform: uppercase;
+        letter-spacing: .04em;
     }
-    .badge-a { background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid #3B82F6; }
-    .badge-b { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid #F59E0B; }
-    .badge-c { background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid #10B981; }
-
-    /* Card Rekanan Asuransi */
-    .lux-card {
-        background: #1E293B;
-        border: 1px solid #334155;
-        border-radius: 12px;
-        padding: 18px;
-        margin-bottom: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    .kpi-value {
+        color: #0f172a;
+        font-size: 1.65rem;
+        font-weight: 800;
+        margin-top: .2rem;
     }
-    .card-a { border-left: 4px solid #3B82F6; }
-    .card-b { border-left: 4px solid #F59E0B; }
-    .card-c { border-left: 4px solid #10B981; }
-
-    .lux-title {
-        color: #38BDF8;
-        font-size: 15px;
-        font-weight: 700;
-        margin-bottom: 8px;
-        line-height: 1.4;
-    }
-    .lux-info {
-        font-size: 13px;
-        color: #CBD5E1;
-        margin-bottom: 6px;
-        line-height: 1.5;
-    }
-    .lux-label {
-        color: #94A3B8;
-        font-weight: 600;
+    .kpi-note {
+        color: #94a3b8;
+        font-size: .72rem;
+        margin-top: .15rem;
     }
 
-    /* Badges untuk PIC & Kontak */
-    .pic-tag {
-        display: inline-block;
-        background: #0F172A;
-        border: 1px solid #475569;
-        color: #E2E8F0;
-        border-radius: 6px;
-        padding: 2px 8px;
-        font-size: 12px;
-        margin-right: 4px;
-        margin-top: 4px;
-    }
-    .phone-tag {
-        display: inline-block;
-        background: rgba(59, 130, 246, 0.15);
-        color: #60A5FA;
-        border-radius: 6px;
-        padding: 4px 8px;
-        font-size: 12px;
-        font-weight: 600;
-        margin-right: 6px;
-        margin-top: 6px;
-        text-decoration: none;
+    .risk-card {
+        border-radius: 16px;
+        padding: .8rem 1rem;
+        margin: .35rem 0;
+        border: 1px solid #e2e8f0;
+        background: #fff;
     }
 
-    /* Custom Filter Buttons Styling */
-    div.stButton > button {
-        width: 100%;
-        border-radius: 10px;
-        height: 42px;
-        font-weight: 600;
-        font-size: 12px;
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 1.2rem 0 .65rem;
     }
 
-    /* Sembunyikan elemen bawaan Streamlit yang mengganggu */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    </style>
+    .legend {
+        display:flex;
+        flex-wrap:wrap;
+        gap:.45rem;
+        margin:.3rem 0 .7rem;
+    }
+    .pill {
+        border-radius:999px;
+        padding:.32rem .65rem;
+        font-size:.72rem;
+        font-weight:700;
+        border:1px solid #e2e8f0;
+        background:#f8fafc;
+    }
+
+    .small-muted {
+        color:#64748b;
+        font-size:.78rem;
+    }
+
+    @media (max-width: 700px) {
+        .block-container {
+            padding: .65rem .55rem 3rem;
+        }
+        .hero-title { font-size: 1.35rem; }
+        .kpi-value { font-size: 1.35rem; }
+        div[data-testid="stHorizontalBlock"] {
+            gap: .45rem;
+        }
+        .section-title { margin-top: .9rem; }
+    }
+</style>
 """, unsafe_allow_html=True)
 
-# Data Rekanan Berdasarkan Lampiran Dokumen
-@st.cache_data
-def get_insurance_data():
-    return [
-        # Gambar 1 - Kualifikasi A
-        {"kualifikasi": "A", "no": 1, "nama": "PT ASURANSI ASTRA BUANA", "alamat": "Grha Asuransi Astra, Jalan TB Simatupang Kavling 15, Lebak Bulus, Cilandak, Jakarta 12440", "pic": "Ary Adrian, Reva Gauzi, Budi Santoso", "hp": "0811934001, 081366641206, 081383531133", "telp": "021-75900800"},
-        {"kualifikasi": "A", "no": 2, "nama": "PT ASURANSI BINA DANA ARTA TBK", "alamat": "Plaza Asia 27th Floor Jl. Jend. Sudirman Kav.59 Jakarta 12190", "pic": "Eko Setiawan", "hp": "082298261222", "telp": "021-51401688"},
-        {"kualifikasi": "A", "no": 3, "nama": "PT ASURANSI CENTRAL ASIA", "alamat": "Wisma Asia Lt. 10, Kav. 12-15 Jl. Letjen S. Parman Kav. 79 Jakarta 11420", "pic": "Tita Kania, Windiarto Husodo", "hp": "0818747518, 08129380502", "telp": "021-56998288 / 021-56998222"},
-        {"kualifikasi": "A", "no": 4, "nama": "PT ASURANSI JASARAHARJA PUTERA", "alamat": "Wisma Raharja, JL.TB.Simatupang kav.1, Cilandak Timur, Jakarta Selatan 12560", "pic": "Nauva Marin, Yafizam Lanry Bahran, Muchammad Syafrudin", "hp": "08129550286, 085266708294, 085921517235", "telp": "021-78844444"},
-        {"kualifikasi": "A", "no": 5, "nama": "PT ASURANSI MULTI ARTHA GUNA TBK", "alamat": "The City Center Batavia Tower One Lt.17 Jl. KH. Mas Mansyur Kav.126 Jakarta Pusat 10220", "pic": "Prakash Rajamanickam", "hp": "08118628541", "telp": "021-2700590"},
-        {"kualifikasi": "A", "no": 6, "nama": "PT ASURANSI SINAR MAS", "alamat": "Plasa Simas Jl. Fachrudin No.18, Jakarta Pusat 10250", "pic": "Cynthia Agustina", "hp": "082211808880", "telp": "021-3902141"},
-        {"kualifikasi": "A", "no": 7, "nama": "PT ASURANSI TRI PAKARTA", "alamat": "Jl. Falatehan I No.17-19, Kebayoran Baru, Kota Adm. Jakarta Selatan, DKI Jakarta 12160", "pic": "Ardana Reswari", "hp": "082225901212", "telp": "021-39502300"},
-        {"kualifikasi": "A", "no": 8, "nama": "PT ASURANSI TUGU PRATAMA INDONESIA TBK", "alamat": "Wisma Tugu I, Jl. H.R. Rasuna Said, Kav C 8-9 Jakarta 12920", "pic": "Murdianto Musafa, Rully Hendra Wijaya", "hp": "081213352323, 081288687800", "telp": "021-52961777"},
-        {"kualifikasi": "A", "no": 9, "nama": "PT ASURANSI WAHANA TATA", "alamat": "Gd. Asuransi Wahana Tata Jl. HR Rasuna Said Kav. C4 Jakarta Selatan 12920", "pic": "Yayuk Rahayu", "hp": "08129278769", "telp": "021-5203145"},
-        {"kualifikasi": "A", "no": 10, "nama": "PT BRI ASURANSI INDONESIA (dh. PT ASURANSI BRINGIN SEJAHTERA ARTAMAKMUR)", "alamat": "Graha BRI Insurance Jl. Mampang Prapatan Raya No. 18 Jakarta Selatan - 12790", "pic": "Adit Sulistiyo Pratama, Fadjar Indra, Slamet Pambudi, Abdul Syakur", "hp": "087681511471, 08111122424, 081213033323, 081315529293", "telp": "021-79170477 / 021-79170478"},
-        {"kualifikasi": "A", "no": 11, "nama": "PT LIPPO GENERAL INSURANCE TBK", "alamat": "Karawaci Office Park Blok I No.30-35 Karawaci, Tangerang 15139", "pic": "Leviano Winoto", "hp": "08179971972", "telp": "021-55790672"},
-        {"kualifikasi": "A", "no": 12, "nama": "PT ZURICH ASURANSI INDONESIA TBK (D/H PT ASURANSI ADIRA DINAMIKA TBK)", "alamat": "Graha Zurich, Jl. MT. Haryono Kav. 42 Jakarta Selatan 12770", "pic": "Rudy Paulus", "hp": "081299886728", "telp": "021-29667373"},
-        
-        # Gambar 2 - Kualifikasi B
-        {"kualifikasi": "B", "no": 1, "nama": "PT ASURANSI BINAGRIYA UPAKARA", "alamat": "Jl. Kesehatan No. 56-58 Tanah Abang, Jakarta 10160", "pic": "Arief H. Rachman, Gunadi", "hp": "0818485966, 08978781247", "telp": "021-34830348"},
-        {"kualifikasi": "B", "no": 2, "nama": "PT ASURANSI BUANA INDEPENDENT", "alamat": "Jl. Pintu Besar Selatan No. 74D, 76, 78, Jakarta Barat 11110", "pic": "Esther Kurniawan", "hp": "08121107557", "telp": "021-6266286"},
-        {"kualifikasi": "B", "no": 3, "nama": "PT ASURANSI CAKRAWALA PROTEKSI INDONESIA", "alamat": "CITRA Tower - Tower Utara Lantai 9, Jalan Benyamin Suaeb Kav A6, Kemayoran, Jakarta Pusat 10630", "pic": "Elisa Wisdiana, Putri Amalia", "hp": "08129367858, 085659038624", "telp": "021-30051888"},
-        {"kualifikasi": "B", "no": 4, "nama": "PT ASURANSI DAYIN MITRA TBK", "alamat": "Wisma Hayam Wuruk 7th Floor Jl. Hayam Wuruk No.8 Jakarta 10120", "pic": "Ariaji Wiyoso, Mustafa Samil", "hp": "081540888890, 081310821823", "telp": "021-5708989"},
-        {"kualifikasi": "B", "no": 5, "nama": "PT ASURANSI JASA INDONESIA", "alamat": "Graha Jasindo Jl. Menteng Raya No. 21, Jakarta Pusat, 10340", "pic": "Hardyan, Henri Pratama", "hp": "082112733555, 085211118895", "telp": "021-7987908"},
-        {"kualifikasi": "B", "no": 6, "nama": "PT ASURANSI JASA TANIA TBK", "alamat": "Gedung Agro Plaza Lt. 9 Jl. HR. Rasuna Said Kav. X2 No.1 Jakarta 12950", "pic": "Hasbi Ashsiddiqi, Amalia Lutvita Nisa", "hp": "081296490762, 082330669897", "telp": "021-3101850"},
-        {"kualifikasi": "B", "no": 7, "nama": "PT ASURANSI KREDIT INDONESIA", "alamat": "Jalan Angkasa Blok B-9 Kavling Nomor 8, Kota Baru Bandar Kemayoran, Jakarta Pusat 10610", "pic": "Yudho Pamungkas, Tara A. Napitupulu", "hp": "08159946192, 082136822933", "telp": "021-6546471"},
-        {"kualifikasi": "B", "no": 8, "nama": "PT ASURANSI MITRA PELINDUNG MUSTIKA", "alamat": "AKR Tower Level 22, Jl.Panjang No.5 RT.11/RW.10, Kebon Jeruk, Jakarta Barat 11530", "pic": "Julian Fernando Hutabarat", "hp": "08111904611", "telp": "021-1500676"},
-        {"kualifikasi": "B", "no": 9, "nama": "PT ASURANSI MSIG INDONESIA", "alamat": "Gedung Summitmas II lantai 15 Jalan Jendral Sudirman Kav. 61-62 Jakarta 12190", "pic": "Mohamad Riskan, Herbert Torrey Sibarani", "hp": "081617140523, 081212849990", "telp": "021-252 3110"},
-        {"kualifikasi": "B", "no": 10, "nama": "PT ASURANSI RAKSA PRATIKARA", "alamat": "Jl. Abdul Muis No. 40 Wisma BSG Lt. 3 Jakarta Pusat 10160", "pic": "Agata Febrina, Rahmadila Alif Madia Putri", "hp": "081283644836, 08224137178", "telp": "021-3859007"},
-        {"kualifikasi": "B", "no": 11, "nama": "PT ASURANSI RAMAYANA TBK", "alamat": "Jl. Kebon Sirih No.49 Jakarta 10340", "pic": "Suwedi", "hp": "08117887789", "telp": "021-31937148"},
-        {"kualifikasi": "B", "no": 12, "nama": "PT ASURANSI UMUM MEGA", "alamat": "Menara Bank Mega, Lantai 18 Jl. Kapten Tendean, Kav. 12-14A Mampang Prapatan, Jakarta Selatan 12790", "pic": "Erico Harpend, Cicilia Shantara", "hp": "08111800583, 085163135454", "telp": "021-79175588"},
-        {"kualifikasi": "B", "no": 13, "nama": "PT ASURANSI TOKIO MARINE INDONESIA", "alamat": "Sentral Senayan II Lt. 3, Jl. Asia Afrika No. 8 10270", "pic": "Faerus Stefhani", "hp": "082189291991", "telp": "021-5724007"},
-        {"kualifikasi": "B", "no": 14, "nama": "PT ASURANSI TOTAL BERSAMA", "alamat": "Citra Tower Lt. 27, Jl. Benyamin Sueb Kav. A6, Kemayoran, Jakarta 10630", "pic": "Wawan Supriyanto", "hp": "082135303532", "telp": "021-22607272"},
-        {"kualifikasi": "B", "no": 15, "nama": "PT CHINA TAIPING INSURANCE INDONESIA", "alamat": "Wisma Argo Manunggal Lt. 19, Jl. Jend. Gatot Subroto Kav. 22, Jakarta Selatan, 12930", "pic": "Chatarina Ike Kusuma", "hp": "082311495266", "telp": "021-2522422"},
-        {"kualifikasi": "B", "no": 16, "nama": "PT CHUBB GENERAL INSURANCE INDONESIA", "alamat": "Gedung Bursa Efek Indonesia Tower II, Lantai 10, Suite 1001 Jl. Jend. Sudirman kav 52-53 Senayan, Jakarta 10190", "pic": "Wiwit Audiyanto, Rama Hifni", "hp": "082112267890, 08118703637, 08119318289", "telp": "021-29498500"},
-        {"kualifikasi": "B", "no": 17, "nama": "PT GREAT EASTERN GENERAL INSURANCE INDONESIA", "alamat": "MidPlaza 2, 23rd Floor Jalan Jendral Sudirman Kav.10-11 Jakarta 10220", "pic": "Muchammad Wijaya, Alvid Alim, Muhammad Aditama", "hp": "081219620152, 082111287012, 082111020392", "telp": "021-5723737"},
+# =========================
+# HELPERS
+# =========================
+def rupiah_miliar(x):
+    if pd.isna(x):
+        return "-"
+    return f"Rp {x/1000:,.1f} M"
 
-        # Gambar 3 - Kualifikasi C
-        {"kualifikasi": "C", "no": 1, "nama": "PT ARTHAGRAHA GENERAL INSURANCE", "alamat": "Kawasan Niaga Terpadu Sudirman (SCBD) Gedung Artha Graha Lt. 3, Jl. Jend. Sudirman Kav, 52 - 53 Jakarta 12190", "pic": "Jane Angela, Kezia Aprianto", "hp": "081398880561, 085175480920", "telp": "021-5152808"},
-        {"kualifikasi": "C", "no": 2, "nama": "PT ASURANSI ARTARINDO", "alamat": "Head Office - Gedung Hermina Tower Lt. 12 Tower A JL. HBR Motik Blok B-10 Kav. 4, Gunung Sahari Selatan, Kemayoran. Jakarta Pusat 10610", "pic": "Ronald Rinaldy R.", "hp": "08561372344", "telp": "021-39710999"},
-        {"kualifikasi": "C", "no": 3, "nama": "PT ASURANSI HARTA AMAN PRATAMA TBK", "alamat": "Wisma 46, Kota BNI, Jl. Jend Sudirman kav. 1, Jakarta 12920", "pic": "Henry Harwanto, Susanto, Iwan Aryanto", "hp": "0811363456, 08562053021", "telp": "021-63864420 / 021-6348760"},
-        {"kualifikasi": "C", "no": 4, "nama": "PT ASURANSI CANDI UTAMA", "alamat": "AXA Tower Kuningan City Lantai 32 Suite 1, Jl. Prof. DR. Satrio No Kav.18, Jakarta 12940", "pic": "Bulan Purnamasari", "hp": "082260906019", "telp": "021-30051888"},
-        {"kualifikasi": "C", "no": 5, "nama": "PT ASURANSI STACO MANDIRI", "alamat": "Jl. Kebon Kacang Raya No. 25 Jakarta Pusat 10240", "pic": "Linda Susanti", "hp": "08119278886", "telp": "021-23595999"},
-        {"kualifikasi": "C", "no": 6, "nama": "PT ASURANSI PERISAI LISTRIK NASIONAL (dh. PT ASURANSI TUGU KRESNA PRATAMA)", "alamat": "JL. Raya Pasar Minggu No. 5 Pancoran, Jakarta Selatan 12780", "pic": "Dwi Astuti Eloran, Novi Yeniarti", "hp": "08118689960, 081212267676", "telp": "021-7995888"},
-        {"kualifikasi": "C", "no": 7, "nama": "PT AVRIST GENERAL INSURANCE", "alamat": "Gedung Bank Panin Senayan Lt. 8, Jl. Jend. Sudirman Kav. 1, Jakarta 10270", "pic": "Rico Saputra", "hp": "082153203332", "telp": "021-5740381"},
-        {"kualifikasi": "C", "no": 8, "nama": "PT AXA INSURANCE INDONESIA (dh. PT MANDIRI AXA GENERAL INSURANCE)", "alamat": "AXA Tower Lt. 16, Jl. Prof. Dr. Satrio Kav. 18, Kuningan City, Jakarta 12940", "pic": "I Dewa Putu Sidan Bayupati", "hp": "0811384109", "telp": "021-30057633"},
-        {"kualifikasi": "C", "no": 9, "nama": "PT CITRA INTERNATIONAL UNDERWRITERS", "alamat": "Menara Standard Chartered 33rd Floor, Jl. Prof. Dr. Satrio No. 164 Jakarta 12930", "pic": "Harsa", "hp": "02811867140", "telp": "021-29927999 / 021-29927998"},
-        {"kualifikasi": "C", "no": 10, "nama": "PT MERITZ KORINDO INSURANCE", "alamat": "Wisma Korindo, Jl. M.T. Haryono Kav. 62, Jakarta Selatan 12780", "pic": "Achmad Buchori, Zakiatul Muna", "hp": "0818217689, 082112894450", "telp": "021-7975959"},
-        {"kualifikasi": "C", "no": 11, "nama": "PT MNC ASURANSI INDONESIA", "alamat": "MNC Financial Center Lt. 11, Jl. Kebon Sirih no. 21 - 27 Jakarta Pusat 10340", "pic": "Adrianus Eko Febriyansyah", "hp": "081808703366, 085692289674", "telp": "021-29701234"}
-    ]
+def rupiah_triliun(x):
+    if pd.isna(x):
+        return "-"
+    return f"Rp {x/1_000_000:,.2f} T"
 
-data = get_insurance_data()
+def yes(v):
+    return str(v).strip().lower() in {"yes", "ya", "true", "1"}
 
-# --- HEADER LUXURY ---
+def clean_main_sheet(raw):
+    # File sumber memiliki 3 baris header/metadata sebelum header sebenarnya.
+    df = pd.read_excel(raw, header=2)
+
+    # Hapus kolom kosong total
+    df = df.dropna(axis=1, how="all").copy()
+
+    # Normalisasi nama kolom
+    df.columns = [str(c).strip() for c in df.columns]
+
+    if "Asuradur" not in df.columns:
+        return pd.DataFrame()
+
+    # Baris yang bukan perusahaan: header kategori dan baris nomor kolom.
+    df["Asuradur"] = df["Asuradur"].astype("string").str.strip()
+    df["No"] = pd.to_numeric(df["No"], errors="coerce")
+
+    # Perusahaan harus punya nama dan nilai Modal Sendiri numerik.
+    df["Modal Sendiri"] = pd.to_numeric(df["Modal Sendiri"], errors="coerce")
+    df = df[df["Asuradur"].notna() & df["Modal Sendiri"].notna()].copy()
+
+    # Pastikan angka numerik
+    for c in ["Investasi", "Aset", "Pendapatan Jasa Asuransi",
+              "Laba (Rugi) Setelah Pajak", "Ekuitas"]:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+
+    # Risk capital classification
+    df["Status 2026"] = np.where(
+        df["Modal Sendiri"] >= THRESHOLD_2026, "MEMENUHI", "AT RISK"
+    )
+    df["Status 2028"] = np.where(
+        df["Modal Sendiri"] >= THRESHOLD_2028, "MEMENUHI", "AT RISK"
+    )
+
+    def capital_risk(row):
+        cap = row["Modal Sendiri"]
+        if cap < THRESHOLD_2026:
+            return "CRITICAL"
+        elif cap < THRESHOLD_2028:
+            return "WATCHLIST"
+        return "LOW RISK"
+
+    df["Capital Risk"] = df.apply(capital_risk, axis=1)
+
+    # Gap to thresholds
+    df["Gap 2026 (Rp juta)"] = (THRESHOLD_2026 - df["Modal Sendiri"]).clip(lower=0)
+    df["Gap 2028 (Rp juta)"] = (THRESHOLD_2028 - df["Modal Sendiri"]).clip(lower=0)
+
+    # Combined flag hanya untuk screening, bukan pengganti assessment risiko resmi.
+    extra = []
+    for _, r in df.iterrows():
+        flags = []
+        if r["Capital Risk"] == "CRITICAL":
+            flags.append("Modal < 250 M")
+        elif r["Capital Risk"] == "WATCHLIST":
+            flags.append("Modal < 500 M")
+        if "Market At Risk" in df.columns and yes(r["Market At Risk"]):
+            flags.append("Market At Risk")
+        if "Bank At Risk" in df.columns and yes(r["Bank At Risk"]):
+            flags.append("Bank At Risk")
+        extra.append(flags)
+    df["Risk Flags"] = extra
+
+    return df.reset_index(drop=True)
+
+def clean_pks_sheet(raw):
+    df = pd.read_excel(raw)
+    df.columns = [str(c).strip() for c in df.columns]
+    if "Asuradur" not in df.columns:
+        return pd.DataFrame()
+
+    df["Asuradur"] = df["Asuradur"].astype("string").str.strip()
+    df["Modal Sendiri"] = pd.to_numeric(df.get("Modal Sendiri"), errors="coerce")
+    df = df[df["Asuradur"].notna() & df["Modal Sendiri"].notna()].copy()
+
+    df["Status 2026"] = np.where(df["Modal Sendiri"] >= THRESHOLD_2026, "MEMENUHI", "AT RISK")
+    df["Status 2028"] = np.where(df["Modal Sendiri"] >= THRESHOLD_2028, "MEMENUHI", "AT RISK")
+    df["Capital Risk"] = np.select(
+        [
+            df["Modal Sendiri"] < THRESHOLD_2026,
+            df["Modal Sendiri"] < THRESHOLD_2028,
+        ],
+        ["CRITICAL", "WATCHLIST"],
+        default="LOW RISK",
+    )
+    return df.reset_index(drop=True)
+
+def prepare_all(uploaded_file):
+    result = {}
+    for key, sheet in SHEETS.items():
+        try:
+            if sheet in ["Asuransi Umum", "Asuransi Jiwa"]:
+                result[key] = clean_main_sheet(uploaded_file)
+            else:
+                result[key] = clean_pks_sheet(uploaded_file)
+        except Exception as e:
+            result[key] = pd.DataFrame()
+    return result
+
+# =========================
+# DATA SOURCE
+# =========================
 st.markdown("""
-    <div class="lux-header">
-        <h1>🛡️ DIREKTORI ASURANSI</h1>
-        <p>Klasifikasi Rekanan Perkreditan Perbankan</p>
+<div class="hero">
+    <div class="hero-title">🛡️ Asuradur Risk Heatmap</div>
+    <div class="hero-subtitle">
+        Mapping kecukupan modal asuradur terhadap minimum Rp250 miliar
+        per Desember 2026 dan Rp500 miliar per Desember 2028.
     </div>
+</div>
 """, unsafe_allow_html=True)
 
-# --- BUTTONS KHUSUS KUALIFIKASI (NAVIGATION BAR) ---
-if 'selected_qual' not in st.session_state:
-    st.session_state.selected_qual = 'Semua'
+with st.sidebar:
+    st.header("⚙️ Filter & Data")
+    uploaded = st.file_uploader(
+        "Upload Excel sumber",
+        type=["xlsx", "xls"],
+        help="Upload file universe asuradur dengan struktur sheet yang sama."
+    )
+    st.caption("Jika tidak upload, aplikasi menggunakan file sumber yang diletakkan di folder aplikasi.")
 
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    if st.button("Semua", type="primary" if st.session_state.selected_qual == 'Semua' else "secondary"):
-        st.session_state.selected_qual = 'Semua'
-        st.rerun()
-
-with col2:
-    if st.button("Kual A", type="primary" if st.session_state.selected_qual == 'A' else "secondary"):
-        st.session_state.selected_qual = 'A'
-        st.rerun()
-
-with col3:
-    if st.button("Kual B", type="primary" if st.session_state.selected_qual == 'B' else "secondary"):
-        st.session_state.selected_qual = 'B'
-        st.rerun()
-
-with col4:
-    if st.button("Kual C", type="primary" if st.session_state.selected_qual == 'C' else "secondary"):
-        st.session_state.selected_qual = 'C'
-        st.rerun()
-
-st.markdown("<div style='margin-bottom: 12px;'></div>", unsafe_allow_html=True)
-
-# Input Pencarian
-search_query = st.text_input("🔍 Cari PT Asuransi / PIC / Alamat:", placeholder="Ketik kata kunci...").strip()
-
-# Logika Filter
-filtered_data = data
-
-if st.session_state.selected_qual != 'Semua':
-    filtered_data = [item for item in filtered_data if item['kualifikasi'] == st.session_state.selected_qual]
-
-if search_query:
-    filtered_data = [
-        item for item in filtered_data 
-        if search_query.lower() in item["nama"].lower() 
-        or search_query.lower() in item["alamat"].lower()
-        or search_query.lower() in item["pic"].lower()
+# Local fallback
+if uploaded is None:
+    local_candidates = [
+        "2026 - Universe Asuradur At Risk 1.xlsx",
+        "Universe Asuradur At Risk 1.xlsx",
     ]
+    local_file = next((f for f in local_candidates if __import__("os").path.exists(f)), None)
+    if local_file:
+        source = local_file
+    else:
+        st.info("Silakan upload file Excel pada sidebar.")
+        st.stop()
+else:
+    source = uploaded
 
-# Jumlah Data Terfilter
-label_qual = f"KUALIFIKASI {st.session_state.selected_qual}" if st.session_state.selected_qual != "Semua" else "SEMUA KUALIFIKASI"
-st.markdown(f"<p style='color: #64748B; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-top: 10px;'>MENAMPILKAN {len(filtered_data)} REKANAN ({label_qual})</p>", unsafe_allow_html=True)
+data = prepare_all(source)
 
-# Loop Render Card
-for item in filtered_data:
-    pics = [p.strip() for p in item["pic"].split(",")]
-    pic_badges = "".join([f'<span class="pic-tag">👤 {p}</span>' for p in pics])
-    
-    qual = item['kualifikasi']
-    card_class = f"card-{qual.lower()}"
-    badge_class = f"badge-{qual.lower()}"
-    
-    st.markdown(f"""
-        <div class="lux-card {card_class}">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span class="qual-badge {badge_class}">Kualifikasi {qual} #{item['no']}</span>
-            </div>
-            <div class="lux-title">{item['nama']}</div>
-            <div class="lux-info">
-                <span class="lux-label">📍 Alamat:</span><br>{item['alamat']}
-            </div>
-            <div class="lux-info" style="margin-top: 8px;">
-                <span class="lux-label">Person in Charge (PIC):</span><br>
-                {pic_badges}
-            </div>
-            <div style="margin-top: 10px;">
-                <a class="phone-tag" href="tel:{item['telp']}">📞 Telp: {item['telp']}</a>
-                <span class="phone-tag" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">📱 HP: {item['hp']}</span>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+# =========================
+# GLOBAL FILTERS
+# =========================
+available_types = [k for k,v in data.items() if not v.empty]
+if not available_types:
+    st.error("Tidak ada data perusahaan yang berhasil dibaca dari file.")
+    st.stop()
+
+c1, c2, c3 = st.columns([1.1, 1.1, 1.6])
+with c1:
+    selected_type = st.selectbox("Jenis", available_types)
+with c2:
+    risk_filter = st.selectbox(
+        "Capital Risk",
+        ["Semua", "CRITICAL", "WATCHLIST", "LOW RISK"]
+    )
+with c3:
+    search = st.text_input("🔎 Cari asuradur", placeholder="Nama perusahaan...")
+
+df = data[selected_type].copy()
+
+if risk_filter != "Semua":
+    df = df[df["Capital Risk"] == risk_filter]
+
+if search:
+    df = df[df["Asuradur"].str.contains(search, case=False, na=False)]
+
+# =========================
+# KPI
+# =========================
+total = len(df)
+critical = int((df["Capital Risk"] == "CRITICAL").sum())
+watch = int((df["Capital Risk"] == "WATCHLIST").sum())
+low = int((df["Capital Risk"] == "LOW RISK").sum())
+avg_cap = df["Modal Sendiri"].mean() if total else np.nan
+
+k1, k2, k3, k4 = st.columns(4)
+k1.markdown(f"""<div class="kpi"><div class="kpi-label">Asuradur</div>
+<div class="kpi-value">{total}</div><div class="kpi-note">hasil filter</div></div>""", unsafe_allow_html=True)
+k2.markdown(f"""<div class="kpi"><div class="kpi-label">Critical</div>
+<div class="kpi-value">{critical}</div><div class="kpi-note">modal &lt; Rp250 M</div></div>""", unsafe_allow_html=True)
+k3.markdown(f"""<div class="kpi"><div class="kpi-label">Watchlist</div>
+<div class="kpi-value">{watch}</div><div class="kpi-note">Rp250–&lt;500 M</div></div>""", unsafe_allow_html=True)
+k4.markdown(f"""<div class="kpi"><div class="kpi-label">Avg. Modal</div>
+<div class="kpi-value">{rupiah_miliar(avg_cap)}</div><div class="kpi-note">Rp juta pada sumber</div></div>""", unsafe_allow_html=True)
+
+# =========================
+# RISK LEGEND
+# =========================
+st.markdown('<div class="section-title">🎯 Risk Mapping</div>', unsafe_allow_html=True)
+st.markdown("""
+<div class="legend">
+  <span class="pill">🔴 CRITICAL: Modal &lt; Rp250 M</span>
+  <span class="pill">🟠 WATCHLIST: Rp250 M – &lt; Rp500 M</span>
+  <span class="pill">🟢 LOW RISK: Modal ≥ Rp500 M</span>
+</div>
+""", unsafe_allow_html=True)
+
+# =========================
+# HEATMAP / SCATTER
+# =========================
+if not df.empty:
+    plot_df = df.copy()
+    plot_df["Modal (Rp Miliar)"] = plot_df["Modal Sendiri"] / 1000
+
+    # Sort for stable vertical mapping
+    plot_df = plot_df.sort_values("Modal Sendiri", ascending=True).reset_index(drop=True)
+    plot_df["Rank"] = np.arange(1, len(plot_df) + 1)
+
+    fig = px.scatter(
+        plot_df,
+        x="Modal (Rp Miliar)",
+        y="Rank",
+        color="Capital Risk",
+        size="Modal (Rp Miliar)",
+        hover_name="Asuradur",
+        hover_data={
+            "Modal (Rp Miliar)": ":,.1f",
+            "Rank": False,
+            "Capital Risk": True,
+            "Status 2026": True,
+            "Status 2028": True,
+        },
+        category_orders={
+            "Capital Risk": ["CRITICAL", "WATCHLIST", "LOW RISK"]
+        },
+        height=max(430, min(760, 260 + len(plot_df)*7)),
+    )
+
+    # Threshold lines
+    fig.add_vline(
+        x=250, line_width=2, line_dash="dash",
+        annotation_text="Rp250 M – batas 2026",
+        annotation_position="top"
+    )
+    fig.add_vline(
+        x=500, line_width=2, line_dash="dash",
+        annotation_text="Rp500 M – batas 2028",
+        annotation_position="top"
+    )
+
+    fig.update_layout(
+        template="plotly_white",
+        margin=dict(l=10,r=10,t=45,b=10),
+        xaxis_title="Modal Sendiri (Rp Miliar)",
+        yaxis_title="Urutan Asuradur berdasarkan modal",
+        legend_title="Capital Risk",
+        hoverlabel=dict(font_size=12),
+    )
+    fig.update_yaxes(showticklabels=False)
+    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+
+    # =========================
+    # RISK MATRIX
+    # =========================
+    st.markdown('<div class="section-title">🧭 Compliance Matrix</div>', unsafe_allow_html=True)
+    matrix = pd.crosstab(df["Status 2026"], df["Status 2028"])
+    matrix = matrix.reindex(
+        index=["AT RISK", "MEMENUHI"],
+        columns=["AT RISK", "MEMENUHI"],
+        fill_value=0
+    )
+
+    fig2 = go.Figure(data=go.Heatmap(
+        z=matrix.values,
+        x=["2028: AT RISK", "2028: MEMENUHI"],
+        y=["2026: AT RISK", "2026: MEMENUHI"],
+        text=matrix.values,
+        texttemplate="%{text}",
+        hovertemplate="2026=%{y}<br>2028=%{x}<br>Jumlah=%{z}<extra></extra>",
+        showscale=False,
+    ))
+    fig2.update_layout(
+        height=320,
+        margin=dict(l=10,r=10,t=10,b=10),
+        xaxis_title="Target Desember 2028",
+        yaxis_title="Target Desember 2026",
+    )
+    st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
+
+    # =========================
+    # TOP AT RISK
+    # =========================
+    at_risk = df[df["Capital Risk"].isin(["CRITICAL", "WATCHLIST"])].copy()
+    if not at_risk.empty:
+        st.markdown('<div class="section-title">🚨 Priority Watchlist</div>', unsafe_allow_html=True)
+
+        show_cols = [
+            "Asuradur", "Modal Sendiri", "Status 2026", "Status 2028",
+            "Capital Risk", "Gap 2026 (Rp juta)", "Gap 2028 (Rp juta)"
+        ]
+        show_cols = [c for c in show_cols if c in at_risk.columns]
+        display_df = at_risk[show_cols].copy()
+
+        display_df["Modal"] = display_df["Modal Sendiri"].map(rupiah_miliar)
+        display_df["Gap 2026"] = display_df["Gap 2026 (Rp juta)"].map(rupiah_miliar)
+        display_df["Gap 2028"] = display_df["Gap 2028 (Rp juta)"].map(rupiah_miliar)
+
+        display_df = display_df[
+            ["Asuradur", "Modal", "Capital Risk", "Status 2026", "Status 2028",
+             "Gap 2026", "Gap 2028"]
+        ]
+        st.dataframe(display_df, use_container_width=True, hide_index=True)
+
+    # =========================
+    # DETAIL
+    # =========================
+    st.markdown('<div class="section-title">📋 Detail Asuradur</div>', unsafe_allow_html=True)
+
+    detail_cols = [
+        "Asuradur", "Modal Sendiri", "Investasi", "Aset",
+        "Pendapatan Jasa Asuransi", "Laba (Rugi) Setelah Pajak",
+        "Predikat Infobank", "PKS Rekanan (PCP)", "Status 2026",
+        "Status 2028", "Capital Risk", "Market At Risk",
+        "Bank At Risk", "PKS Bancassurance (DSG)", "Keterangan"
+    ]
+    detail_cols = [c for c in detail_cols if c in df.columns]
+    detail = df[detail_cols].copy()
+
+    for c in ["Modal Sendiri", "Investasi", "Aset", "Pendapatan Jasa Asuransi",
+              "Laba (Rugi) Setelah Pajak"]:
+        if c in detail.columns:
+            detail[c] = detail[c].map(rupiah_miliar)
+
+    st.dataframe(
+        detail,
+        use_container_width=True,
+        hide_index=True,
+        height=470,
+    )
+
+    # =========================
+    # DOWNLOAD
+    # =========================
+    export = df.copy()
+    export["Modal Sendiri (Rp Miliar)"] = export["Modal Sendiri"] / 1000
+    export["Gap 2026 (Rp Miliar)"] = export["Gap 2026 (Rp juta)"] / 1000
+    export["Gap 2028 (Rp Miliar)"] = export["Gap 2028 (Rp juta)"] / 1000
+
+    csv = export.to_csv(index=False).encode("utf-8-sig")
+    st.download_button(
+        "⬇️ Download hasil mapping CSV",
+        data=csv,
+        file_name="asuradur_risk_heatmap.csv",
+        mime="text/csv",
+        use_container_width=True,
+    )
+
+else:
+    st.warning("Tidak ada asuradur yang sesuai filter.")
+
+# =========================
+# FOOTNOTE
+# =========================
+st.caption(
+    "Sumber data: file Excel yang di-upload pengguna. Nilai modal pada sumber menggunakan "
+    "satuan Rp juta. Klasifikasi CRITICAL/WATCHLIST/LOW RISK adalah screening berbasis "
+    "threshold modal dan bukan penilaian risiko resmi/regulator."
+)
