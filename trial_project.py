@@ -16,7 +16,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-DATA_FILE = Path("data/Data_Asuransi1.xlsx")
+DATA_FILE = Path("data/Rekanan_Asuradur.xlsx")
 
 # ------------------------------------------------------------
 # CSS
