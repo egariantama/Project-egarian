@@ -980,10 +980,31 @@ div[data-testid="stHorizontalBlock"]:has(button[kind="secondary"]) {
     margin-right: 0 !important;
 }
 
-/* Remove column padding so the row is perfectly aligned */
+/* Remove column padding/gap and force true 1/3 sizing.
+   Streamlit can otherwise apply a content-based minimum width on mobile,
+   causing the row to become ~2x the phone viewport. */
+div[data-testid="stHorizontalBlock"] {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
 div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    flex: 1 1 0% !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
 }
 
 /* Filter buttons */
@@ -1070,17 +1091,28 @@ div[data-testid="stHorizontalBlock"]:has(button[key="cat_btn_All Asuransi"]) {
         gap: 0 !important;
     }
 
+    div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        flex-wrap: nowrap !important;
+        gap: 0 !important;
+        overflow: hidden !important;
+    }
+
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
         min-width: 0 !important;
-        width: 33.3333% !important;
-        flex: 1 1 33.3333% !important;
+        width: 0 !important;
+        max-width: none !important;
+        flex: 1 1 0% !important;
+        overflow: hidden !important;
     }
 
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button {
         height: 58px !important;
         min-height: 58px !important;
         padding: 0 4px !important;
-        font-size: 16px !important;
+        font-size: 15px !important;
         font-weight: 650 !important;
     }
 }
