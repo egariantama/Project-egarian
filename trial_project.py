@@ -1083,10 +1083,18 @@ div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) {
 
 /* Prevent horizontal overflow without creating an overflow/scroll container.
    `overflow-x:hidden` can break position:sticky on mobile Safari. */
-html, body, .stApp, [data-testid="stAppViewContainer"], section.main {
+html, body, .stApp, [data-testid="stAppViewContainer"] {
     max-width: 100% !important;
     overflow-x: clip !important;
-    overflow-y: visible !important;
+}
+
+/* Streamlit's main section is the actual scrolling viewport.
+   Keep vertical scrolling here so position:sticky has a real scroll
+   container on desktop and especially iOS Safari. */
+section.main {
+    max-width: 100% !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
 }
 
 
@@ -1646,9 +1654,9 @@ section.main,
 .st-key-sticky_filters {
     position: -webkit-sticky !important;
     position: sticky !important;
-    top: 0px !important;
+    top: 0 !important;
+    align-self: stretch !important;
     z-index: 99999 !important;
-    align-self: flex-start !important;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
