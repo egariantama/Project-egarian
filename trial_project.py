@@ -987,10 +987,10 @@ div[data-testid="stHorizontalBlock"] {
 }
 
 div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-    flex: 1 1 0% !important;
-    width: 0 !important;
+    flex: 1 1 33.333333% !important;
+    width: 33.333333% !important;
     min-width: 0 !important;
-    max-width: none !important;
+    max-width: 33.333333% !important;
     padding: 0 !important;
     margin: 0 !important;
     box-sizing: border-box !important;
@@ -1002,8 +1002,9 @@ div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div {
     min-width: 0 !important;
 }
 
-/* Every filter button fills its exact 1/3 segment. */
-div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
+/* Every filter button fills its exact 1/3 segment.
+   This rule intentionally overrides the older global .stButton rule. */
+div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] > button {
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
@@ -1015,6 +1016,7 @@ div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
     border-radius: 0 !important;
     background: #FFFFFF !important;
     color: #4D6584 !important;
+    -webkit-text-fill-color: #4D6584 !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
     box-shadow: none !important;
@@ -1044,7 +1046,7 @@ div[data-testid="stHorizontalBlock"] button[kind="secondary"]:active {
 }
 
 /* Active filter button */
-div[data-testid="stHorizontalBlock"] button[kind="primary"] {
+div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] > button[kind="primary"] {
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
@@ -1063,12 +1065,12 @@ div[data-testid="stHorizontalBlock"] button[kind="primary"] {
     overflow: hidden !important;
 }
 
-div[data-testid="stHorizontalBlock"] button[kind="primary"]:active {
+div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] > button[kind="primary"]:active {
     transform: scale(.985) !important;
 }
 
 @media (max-width: 600px) {
-    div[data-testid="stHorizontalBlock"] button[kind="primary"] {
+    div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] > button[kind="primary"] {
         height: 56px !important;
         min-height: 56px !important;
         font-size: 15px !important;
@@ -1096,9 +1098,10 @@ div[data-testid="stHorizontalBlock"] + div[data-testid="stHorizontalBlock"] {
     }
 
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        width: 0 !important;
+        width: 33.333333% !important;
         min-width: 0 !important;
-        flex: 1 1 0% !important;
+        max-width: 33.333333% !important;
+        flex: 1 1 33.333333% !important;
         padding: 0 !important;
     }
 
