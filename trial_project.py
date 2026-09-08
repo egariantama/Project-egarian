@@ -686,6 +686,125 @@ button[kind="primary"],
     border-color: #2563EB !important;
 }
 
+
+
+/* ============================================================
+   BANCA POCKET - FINAL MOBILE FILTER UI
+   Native radio version: no BaseWeb black/red segmented control.
+   ============================================================ */
+
+/* Hide native radio circles */
+div[data-testid="stRadio"] > label {
+    display: none !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    border: 1px solid #D7E3F3 !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 22px rgba(37, 99, 235, .08) !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
+    border: 0 !important;
+    border-right: 1px solid #D7E3F3 !important;
+    border-radius: 0 !important;
+    cursor: pointer !important;
+    transition: all .18s ease !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:last-child {
+    border-right: 0 !important;
+}
+
+/* Text wrapper */
+div[data-testid="stRadio"] [role="radiogroup"] > label > div:last-child,
+div[data-testid="stRadio"] [role="radiogroup"] > label p,
+div[data-testid="stRadio"] [role="radiogroup"] > label span {
+    color: #48617F !important;
+    -webkit-text-fill-color: #48617F !important;
+    font-weight: 700 !important;
+}
+
+/* Hide radio input/circle */
+div[data-testid="stRadio"] [role="radiogroup"] input {
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Selected label = blue */
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) {
+    background: linear-gradient(135deg, #1456C8 0%, #2563EB 55%, #3B82F6 100%) !important;
+    border-color: #2563EB !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.10),
+                0 6px 18px rgba(37,99,235,.20) !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) > div:last-child,
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) p,
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) span {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Hover */
+div[data-testid="stRadio"] [role="radiogroup"] > label:hover {
+    background: #EEF5FF !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked):hover {
+    background: linear-gradient(135deg, #1456C8, #3B82F6) !important;
+}
+
+/* Category selector */
+div[data-testid="stRadio"]:has(input[value="▦  All"]) [role="radiogroup"] {
+    min-height: 58px !important;
+}
+
+/* PKS selector directly below category */
+div[data-testid="stRadio"] + div[data-testid="stRadio"] {
+    margin-top: 10px !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    div[data-testid="stRadio"] [role="radiogroup"] {
+        min-height: 54px !important;
+        border-radius: 17px !important;
+    }
+
+    div[data-testid="stRadio"] [role="radiogroup"] > label {
+        min-height: 54px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 0 3px !important;
+        overflow: hidden !important;
+    }
+
+    div[data-testid="stRadio"] [role="radiogroup"] > label p,
+    div[data-testid="stRadio"] [role="radiogroup"] > label span {
+        font-size: 14px !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -888,24 +1007,14 @@ category_index = {"All Asuransi": 0, "Asuransi Umum": 1, "Asuransi Jiwa": 2}.get
     st.session_state.category, 0
 )
 
-if hasattr(st, "segmented_control"):
-    category_choice = st.segmented_control(
-        "Kategori Asuransi",
-        options=category_options,
-        default=category_options[category_index],
-        label_visibility="collapsed",
-        key="category_selector",
-    )
-else:
-    # Fallback untuk Streamlit versi lama
-    category_choice = st.radio(
-        "Kategori Asuransi",
-        category_options,
-        index=category_index,
-        horizontal=True,
-        label_visibility="collapsed",
-        key="category_selector",
-    )
+category_choice = st.radio(
+    "Kategori Asuransi",
+    category_options,
+    index=category_index,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="category_selector",
+)
 
 category_map = {
     "▦  All": "All Asuransi",
@@ -931,23 +1040,14 @@ pks_index = {
     "PKS Banca": 2,
 }.get(st.session_state.pks_filter, 0)
 
-if hasattr(st, "segmented_control"):
-    pks_choice = st.segmented_control(
-        "Filter PKS",
-        options=pks_options,
-        default=pks_options[pks_index],
-        label_visibility="collapsed",
-        key="pks_selector",
-    )
-else:
-    pks_choice = st.radio(
-        "Filter PKS",
-        pks_options,
-        index=pks_index,
-        horizontal=True,
-        label_visibility="collapsed",
-        key="pks_selector",
-    )
+pks_choice = st.radio(
+    "Filter PKS",
+    pks_options,
+    index=pks_index,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="pks_selector",
+)
 
 if pks_choice and pks_choice != st.session_state.pks_filter:
     st.session_state.pks_filter = pks_choice
