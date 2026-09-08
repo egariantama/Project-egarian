@@ -972,7 +972,7 @@ div[data-testid="stRadio"] {
    BANCASSPOCKET - SIMPLE MOBILE FILTER BUTTONS
    Layout intentionally follows the user's sketch:
    Row 1 = All / Umum / Jiwa
-   Row 2 = PKS Kredit / PKS Banca
+   Row 2 = PKS Perkreditan / PKS Bancassssssss
    Each item is an independent rounded button.
    ============================================================ */
 
@@ -1865,10 +1865,10 @@ def prepare_data(df):
         ]),
         "credit": find_column(df, [
             "PKS Rekanan Perkreditan",
-            "PKS Kredit", "PKS Rekanan Kredit"
+            "PKS Perkreditan", "PKS Rekanan Kredit"
         ]),
         "banca": find_column(df, [
-            "PKS Bancassurance", "PKS Banca", "Bancassurance"
+            "PKS Bancassssssssssurance", "PKS Bancassssssss", "Bancassurance"
         ]),
     }
 
@@ -1902,7 +1902,7 @@ def prepare_data(df):
 
     for key, label in [
         ("credit", "PKS Rekanan Perkreditan"),
-        ("banca", "PKS Bancassurance"),
+        ("banca", "PKS Bancassssssssssurance"),
     ]:
         if mapping[key]:
             out[label] = df[mapping[key]].apply(clean_yes_no)
@@ -1960,7 +1960,7 @@ st.markdown("""
 if "category" not in st.session_state:
     st.session_state.category = "All Asuransi"
 if "pks_filter" not in st.session_state or st.session_state.pks_filter not in {
-    "Lepas Filter", "PKS Kredit", "PKS Banca"
+    "Lepas Filter", "PKS Perkreditan", "PKS Bancassssssss"
 }:
     st.session_state.pks_filter = "Lepas Filter"
 
@@ -2007,7 +2007,7 @@ with st.container(key="sticky_filters"):
                 )
 
     # ------------------------------------------------------------
-    # Row 2 — Lepas Filter / PKS Kredit / PKS Banca
+    # Row 2 — Lepas Filter / PKS Perkreditan / PKS Bancassssssss
     # ------------------------------------------------------------
     st.markdown(
         '<div class="filter-section-title">'
@@ -2020,7 +2020,7 @@ with st.container(key="sticky_filters"):
     with st.container(key="pks_filters"):
         # "Lepas Filter" hanya menghapus filter PKS. Filter kategori
         # (All / Umum / Jiwa) dan pencarian nama tetap dipertahankan.
-        pks_items = ["Lepas Filter", "PKS Kredit", "PKS Banca"]
+        pks_items = ["Lepas Filter", "PKS Perkreditan", "PKS Bancassssssss"]
         pks_cols = st.columns(3, gap="small")
         for i, value in enumerate(pks_items):
             with pks_cols[i]:
@@ -2061,15 +2061,15 @@ else:
 # kategori Asuransi Umum / Jiwa dan pencarian nama.
 pks_filter = st.session_state.pks_filter
 
-if pks_filter == "PKS Kredit":
+if pks_filter == "PKS Perkreditan":
     filtered = filtered[
         filtered["PKS Rekanan Perkreditan"]
         .apply(clean_yes_no)
         .eq("Yes")
     ].copy()
-elif pks_filter == "PKS Banca":
+elif pks_filter == "PKS Bancassssssss":
     filtered = filtered[
-        filtered["PKS Bancassurance"]
+        filtered["PKS Bancassssssssssurance"]
         .apply(clean_yes_no)
         .eq("Yes")
     ].copy()
@@ -2112,7 +2112,7 @@ else:
         selected = st.session_state.selected_company == name
 
         credit = clean_yes_no(row["PKS Rekanan Perkreditan"])
-        banca = clean_yes_no(row["PKS Bancassurance"])
+        banca = clean_yes_no(row["PKS Bancassssssssssurance"])
 
         # IMPORTANT:
         # This HTML is intentionally built as one continuous string.
@@ -2144,10 +2144,10 @@ else:
             '</div>'
             '<div class="status-row">'
             f'<div class="status {"yes" if credit == "Yes" else "no"}">'
-            f'PKS Kredit<br>{credit}'
+            f'PKS Perkreditan<br>{credit}'
             '</div>'
             f'<div class="status {"yes" if banca == "Yes" else "no"}">'
-            f'PKS Banca<br>{banca}'
+            f'PKS Bancassssssss<br>{banca}'
             '</div>'
             '</div>'
             '</div>'
@@ -2194,7 +2194,7 @@ else:
                 f'<div class="value">{credit}</div>'
                 '</div>'
                 '<div class="detail-metric">'
-                '<div class="label">PKS Bancassurance</div>'
+                '<div class="label">PKS Bancassssssssssurance</div>'
                 f'<div class="value">{banca}</div>'
                 '</div>'
                 '</div>'
