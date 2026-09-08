@@ -1868,7 +1868,7 @@ def prepare_data(df):
             "PKS Rekanan", "PKS Rekanan Kredit"
         ]),
         "banca": find_column(df, [
-            "PKS Bancassssurance", "PKS Bancass", "Bancassurance"
+            "PKS Bancassurance", "PKS Bancass", "Bancassurance"
         ]),
     }
 
@@ -1902,7 +1902,7 @@ def prepare_data(df):
 
     for key, label in [
         ("credit", "PKS Rekanan Perkreditan"),
-        ("banca", "PKS Bancassssurance"),
+        ("banca", "PKS Bancassurance"),
     ]:
         if mapping[key]:
             out[label] = df[mapping[key]].apply(clean_yes_no)
@@ -2069,7 +2069,7 @@ if pks_filter == "PKS Rekanan":
     ].copy()
 elif pks_filter == "PKS Bancass":
     filtered = filtered[
-        filtered["PKS Bancassssurance"]
+        filtered["PKS Bancassurance"]
         .apply(clean_yes_no)
         .eq("Yes")
     ].copy()
@@ -2112,7 +2112,7 @@ else:
         selected = st.session_state.selected_company == name
 
         credit = clean_yes_no(row["PKS Rekanan Perkreditan"])
-        banca = clean_yes_no(row["PKS Bancassssurance"])
+        banca = clean_yes_no(row["PKS Bancassurance"])
 
         # IMPORTANT:
         # This HTML is intentionally built as one continuous string.
@@ -2194,7 +2194,7 @@ else:
                 f'<div class="value">{credit}</div>'
                 '</div>'
                 '<div class="detail-metric">'
-                '<div class="label">PKS Bancassssurance</div>'
+                '<div class="label">PKS Bancassurance</div>'
                 f'<div class="value">{banca}</div>'
                 '</div>'
                 '</div>'
