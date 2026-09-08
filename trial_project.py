@@ -972,7 +972,7 @@ div[data-testid="stRadio"] {
    BANCASSPOCKET - SIMPLE MOBILE FILTER BUTTONS
    Layout intentionally follows the user's sketch:
    Row 1 = All / Umum / Jiwa
-   Row 2 = PKS Perkreditan / PKS Bancassssssss
+   Row 2 = PKS Perkreditan / PKS Bancass
    Each item is an independent rounded button.
    ============================================================ */
 
@@ -1868,7 +1868,7 @@ def prepare_data(df):
             "PKS Perkreditan", "PKS Rekanan Kredit"
         ]),
         "banca": find_column(df, [
-            "PKS Bancassssssssssurance", "PKS Bancassssssss", "Bancassurance"
+            "PKS Bancassssurance", "PKS Bancass", "Bancassurance"
         ]),
     }
 
@@ -1902,7 +1902,7 @@ def prepare_data(df):
 
     for key, label in [
         ("credit", "PKS Rekanan Perkreditan"),
-        ("banca", "PKS Bancassssssssssurance"),
+        ("banca", "PKS Bancassssurance"),
     ]:
         if mapping[key]:
             out[label] = df[mapping[key]].apply(clean_yes_no)
@@ -1960,7 +1960,7 @@ st.markdown("""
 if "category" not in st.session_state:
     st.session_state.category = "All Asuransi"
 if "pks_filter" not in st.session_state or st.session_state.pks_filter not in {
-    "Lepas Filter", "PKS Perkreditan", "PKS Bancassssssss"
+    "Lepas Filter", "PKS Perkreditan", "PKS Bancass"
 }:
     st.session_state.pks_filter = "Lepas Filter"
 
@@ -2007,7 +2007,7 @@ with st.container(key="sticky_filters"):
                 )
 
     # ------------------------------------------------------------
-    # Row 2 — Lepas Filter / PKS Perkreditan / PKS Bancassssssss
+    # Row 2 — Lepas Filter / PKS Perkreditan / PKS Bancass
     # ------------------------------------------------------------
     st.markdown(
         '<div class="filter-section-title">'
@@ -2020,7 +2020,7 @@ with st.container(key="sticky_filters"):
     with st.container(key="pks_filters"):
         # "Lepas Filter" hanya menghapus filter PKS. Filter kategori
         # (All / Umum / Jiwa) dan pencarian nama tetap dipertahankan.
-        pks_items = ["Lepas Filter", "PKS Perkreditan", "PKS Bancassssssss"]
+        pks_items = ["Lepas Filter", "PKS Perkreditan", "PKS Bancass"]
         pks_cols = st.columns(3, gap="small")
         for i, value in enumerate(pks_items):
             with pks_cols[i]:
@@ -2067,9 +2067,9 @@ if pks_filter == "PKS Perkreditan":
         .apply(clean_yes_no)
         .eq("Yes")
     ].copy()
-elif pks_filter == "PKS Bancassssssss":
+elif pks_filter == "PKS Bancass":
     filtered = filtered[
-        filtered["PKS Bancassssssssssurance"]
+        filtered["PKS Bancassssurance"]
         .apply(clean_yes_no)
         .eq("Yes")
     ].copy()
@@ -2112,7 +2112,7 @@ else:
         selected = st.session_state.selected_company == name
 
         credit = clean_yes_no(row["PKS Rekanan Perkreditan"])
-        banca = clean_yes_no(row["PKS Bancassssssssssurance"])
+        banca = clean_yes_no(row["PKS Bancassssurance"])
 
         # IMPORTANT:
         # This HTML is intentionally built as one continuous string.
@@ -2147,7 +2147,7 @@ else:
             f'PKS Perkreditan<br>{credit}'
             '</div>'
             f'<div class="status {"yes" if banca == "Yes" else "no"}">'
-            f'PKS Bancassssssss<br>{banca}'
+            f'PKS Bancass<br>{banca}'
             '</div>'
             '</div>'
             '</div>'
@@ -2194,7 +2194,7 @@ else:
                 f'<div class="value">{credit}</div>'
                 '</div>'
                 '<div class="detail-metric">'
-                '<div class="label">PKS Bancassssssssssurance</div>'
+                '<div class="label">PKS Bancassssurance</div>'
                 f'<div class="value">{banca}</div>'
                 '</div>'
                 '</div>'
