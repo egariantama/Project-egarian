@@ -173,25 +173,44 @@ div[data-testid="stRadio"] > label {
     display: none !important;
 }
 
+/* Mobile category tabs — large, touch friendly, no radio-dot artifacts */
+div[data-testid="stRadio"] {
+    margin: 0 !important;
+    width: 100% !important;
+}
+
 div[data-testid="stRadio"] [role="radiogroup"] {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
+    align-items: stretch !important;
     width: 100% !important;
-    gap: 7px !important;
-    padding: 4px !important;
+    gap: 6px !important;
+    padding: 5px !important;
     box-sizing: border-box !important;
-    background: rgba(235,241,249,.72) !important;
-    border: 1px solid #dbe5f1 !important;
-    border-radius: 18px !important;
-    overflow: hidden !important;
+    background: rgba(255,255,255,.78) !important;
+    border: 1px solid #d8e3f0 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 5px 18px rgba(37,72,120,.06) !important;
+    overflow: visible !important;
 }
 
 div[data-testid="stRadio"] [role="radiogroup"] > label {
+    position: relative !important;
     flex: 1 1 0 !important;
     min-width: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
+    cursor: pointer !important;
+}
+
+/* Hide native radio controls completely */
+div[data-testid="stRadio"] [role="radiogroup"] input[type="radio"] {
+    position: absolute !important;
+    opacity: 0 !important;
+    width: 1px !important;
+    height: 1px !important;
+    pointer-events: none !important;
 }
 
 div[data-testid="stRadio"] [role="radiogroup"] > label > div:first-child {
@@ -200,22 +219,30 @@ div[data-testid="stRadio"] [role="radiogroup"] > label > div:first-child {
 
 div[data-testid="stRadio"] [role="radiogroup"] > label > div:last-child {
     width: 100% !important;
-    min-height: 45px !important;
+    min-height: 58px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 7px 3px !important;
+    padding: 8px 5px !important;
     box-sizing: border-box !important;
-    border-radius: 14px !important;
+    border-radius: 16px !important;
     color: #536987 !important;
-    font-size: 11px !important;
+    font-size: 15px !important;
     font-weight: 700 !important;
-    line-height: 1.1 !important;
+    line-height: 1.15 !important;
     text-align: center !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    transition: all .18s ease !important;
+    transition: transform .16s ease, background .18s ease, color .18s ease, box-shadow .18s ease !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:hover > div:last-child {
+    background: #f0f5fc !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:active > div:last-child {
+    transform: scale(.97) !important;
 }
 
 div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) > div:last-child {
@@ -225,15 +252,21 @@ div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) > div:
 }
 
 @media (max-width: 480px) {
+    .block-container {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
     div[data-testid="stRadio"] [role="radiogroup"] {
-        gap: 4px !important;
-        padding: 3px !important;
-        border-radius: 16px !important;
+        gap: 5px !important;
+        padding: 5px !important;
+        border-radius: 20px !important;
     }
     div[data-testid="stRadio"] [role="radiogroup"] > label > div:last-child {
-        min-height: 43px !important;
-        font-size: 10px !important;
-        border-radius: 13px !important;
+        min-height: 58px !important;
+        font-size: 14px !important;
+        border-radius: 15px !important;
+        padding-left: 3px !important;
+        padding-right: 3px !important;
     }
 }
 
