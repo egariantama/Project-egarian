@@ -35,8 +35,11 @@ html, body, [class*="css"] {
 }
 
 .block-container {
+    width: 100% !important;
     max-width: 760px !important;
-    padding: 1rem .75rem 5.5rem !important;
+    box-sizing: border-box !important;
+    padding: 0.75rem 12px 2rem !important;
+    margin: 0 auto !important;
 }
 
 /* Hide Streamlit chrome */
@@ -51,7 +54,7 @@ html, body, [class*="css"] {
     color: white;
     background: linear-gradient(135deg, #1245a0 0%, #2563eb 55%, #3b82f6 100%);
     box-shadow: 0 12px 30px rgba(37,99,235,.20);
-    margin: -16px -12px 18px;
+    margin: 0 0 18px;
 }
 
 .bp-header:after {
@@ -156,96 +159,81 @@ div[data-testid="stTextInput"] input:focus {
     box-shadow: 0 0 0 2px rgba(37,99,235,.10) !important;
 }
 
-/* Category buttons / segmented control */
-div[data-testid="stHorizontalBlock"]:has(div.category-active),
-div[data-testid="stHorizontalBlock"] {
+/* Category selector */
+.category-wrap {
+    margin: 0 0 16px;
+}
+
+/* Streamlit horizontal radio: safe on narrow phones */
+div[data-testid="stRadio"] {
+    width: 100% !important;
+}
+
+div[data-testid="stRadio"] > label {
+    display: none !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    gap: 8px !important;
     width: 100% !important;
+    gap: 7px !important;
+    padding: 4px !important;
+    box-sizing: border-box !important;
+    background: rgba(235,241,249,.72) !important;
+    border: 1px solid #dbe5f1 !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
 }
 
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+div[data-testid="stRadio"] [role="radiogroup"] > label {
     flex: 1 1 0 !important;
-    width: 0 !important;
     min-width: 0 !important;
-    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div {
-    width: 100% !important;
+div[data-testid="stRadio"] [role="radiogroup"] > label > div:first-child {
+    display: none !important;
 }
 
-div[data-testid="stHorizontalBlock"] .category-active {
+div[data-testid="stRadio"] [role="radiogroup"] > label > div:last-child {
     width: 100% !important;
-}
-
-div[data-testid="stHorizontalBlock"] div.stButton {
-    width: 100% !important;
-}
-
-div[data-testid="stHorizontalBlock"] div.stButton > button {
-    width: 100% !important;
-    min-height: 48px !important;
-    padding: 7px 5px !important;
-    border-radius: 16px !important;
-    border: 1px solid #dce5f1 !important;
-    background: rgba(255,255,255,.92) !important;
+    min-height: 45px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 7px 3px !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
     color: #536987 !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
     font-weight: 700 !important;
-    line-height: 1.15 !important;
+    line-height: 1.1 !important;
+    text-align: center !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    box-shadow: 0 4px 14px rgba(30,60,100,.045) !important;
-    transition:
-        transform .18s ease,
-        background .22s ease,
-        color .22s ease,
-        border-color .22s ease,
-        box-shadow .22s ease !important;
+    transition: all .18s ease !important;
 }
 
-div[data-testid="stHorizontalBlock"] div.stButton > button:hover {
-    transform: translateY(-1px) !important;
-    border-color: #9bb9e8 !important;
-    color: #2563eb !important;
-    box-shadow: 0 7px 18px rgba(37,99,235,.09) !important;
-}
-
-div[data-testid="stHorizontalBlock"] div.stButton > button:active {
-    transform: scale(.97) !important;
-}
-
-div[data-testid="stHorizontalBlock"] .category-active div.stButton > button {
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) > div:last-child {
+    color: #fff !important;
     background: linear-gradient(135deg,#1555c8,#2563eb) !important;
-    color: #ffffff !important;
-    border-color: #1555c8 !important;
-    box-shadow: 0 7px 18px rgba(37,99,235,.18) !important;
+    box-shadow: 0 5px 14px rgba(37,99,235,.20) !important;
 }
 
-/* Prevent Streamlit's narrow-screen column stacking */
-@media (max-width: 640px) {
-    div[data-testid="stHorizontalBlock"] {
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 6px !important;
+@media (max-width: 480px) {
+    div[data-testid="stRadio"] [role="radiogroup"] {
+        gap: 4px !important;
+        padding: 3px !important;
+        border-radius: 16px !important;
     }
-
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        flex: 1 1 0 !important;
-        width: 0 !important;
-        min-width: 0 !important;
-    }
-
-    div[data-testid="stHorizontalBlock"] div.stButton > button {
-        min-height: 46px !important;
-        padding: 6px 3px !important;
-        font-size: 11px !important;
-        border-radius: 14px !important;
+    div[data-testid="stRadio"] [role="radiogroup"] > label > div:last-child {
+        min-height: 43px !important;
+        font-size: 10px !important;
+        border-radius: 13px !important;
     }
 }
 
@@ -449,7 +437,8 @@ div[data-testid="stHorizontalBlock"] .category-active div.stButton > button {
 
 /* Mobile */
 @media (max-width: 480px) {
-    .bp-brand { font-size:25px; }
+    .bp-header { padding: 22px 18px 24px; border-radius: 0 0 26px 26px; }
+    .bp-brand { font-size:24px; }
     .section-title { font-size:20px; }
     .metrics { gap:5px; }
     .metric-value { font-size:12px; }
@@ -652,38 +641,26 @@ st.markdown("""
 if "category" not in st.session_state:
     st.session_state.category = "All Asuransi"
 
-# Three buttons stay side-by-side.
-c1, c2, c3 = st.columns(3)
+# Responsive segmented selector — no st.columns, so it will not stack or overflow on phones.
+category_choice = st.radio(
+    "Kategori Asuransi",
+    ["▦  All", "🏢  Umum", "♥  Jiwa"],
+    index={"All Asuransi": 0, "Asuransi Umum": 1, "Asuransi Jiwa": 2}.get(st.session_state.category, 0),
+    horizontal=True,
+    label_visibility="collapsed",
+    key="category_selector",
+)
 
-with c1:
-    if st.session_state.category == "All Asuransi":
-        st.markdown('<div class="category-active">', unsafe_allow_html=True)
-    if st.button("▦  All", use_container_width=True):
-        st.session_state.category = "All Asuransi"
-        st.session_state.selected_company = None
-        st.rerun()
-    if st.session_state.category == "All Asuransi":
-        st.markdown('</div>', unsafe_allow_html=True)
-
-with c2:
-    if st.session_state.category == "Asuransi Umum":
-        st.markdown('<div class="category-active">', unsafe_allow_html=True)
-    if st.button("🏢  Umum", use_container_width=True):
-        st.session_state.category = "Asuransi Umum"
-        st.session_state.selected_company = None
-        st.rerun()
-    if st.session_state.category == "Asuransi Umum":
-        st.markdown('</div>', unsafe_allow_html=True)
-
-with c3:
-    if st.session_state.category == "Asuransi Jiwa":
-        st.markdown('<div class="category-active">', unsafe_allow_html=True)
-    if st.button("♥  Jiwa", use_container_width=True):
-        st.session_state.category = "Asuransi Jiwa"
-        st.session_state.selected_company = None
-        st.rerun()
-    if st.session_state.category == "Asuransi Jiwa":
-        st.markdown('</div>', unsafe_allow_html=True)
+category_map = {
+    "▦  All": "All Asuransi",
+    "🏢  Umum": "Asuransi Umum",
+    "♥  Jiwa": "Asuransi Jiwa",
+}
+new_category = category_map[category_choice]
+if new_category != st.session_state.category:
+    st.session_state.category = new_category
+    st.session_state.selected_company = None
+    st.rerun()
 
 # ------------------------------------------------------------
 # Search
