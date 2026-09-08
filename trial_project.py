@@ -1320,7 +1320,7 @@ for value, icon, label in category_items:
     active = " bp-segment-active" if st.session_state.category == value else ""
     cat_html += (
         f'<a class="bp-segment-item{active}" '
-        f'href="{html.escape(filter_href(value, st.session_state.pks_filter))}">'
+        f'href="{html.escape(filter_href(value, st.session_state.pks_filter))}" target="_top" rel="nofollow">'
         f'<span class="bp-segment-icon">{icon}</span>'
         f'<span>{label}</span></a>'
     )
@@ -1333,7 +1333,7 @@ for value in pks_items:
     active = " bp-segment-active" if st.session_state.pks_filter == value else ""
     pks_html += (
         f'<a class="bp-segment-item{active}" '
-        f'href="{html.escape(filter_href(st.session_state.category, value))}">'
+        f'href="{html.escape(filter_href(st.session_state.category, value))}" target="_top" rel="nofollow">'
         f'<span>{value}</span></a>'
     )
 pks_html += "</div></div>"
