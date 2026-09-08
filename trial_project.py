@@ -964,6 +964,127 @@ div[data-testid="stRadio"] {
     }
 }
 
+
+
+/* ============================================================
+   BANCAPOCKET - FINAL MOBILE BUTTON FILTER
+   Exact width = content/header width, no radio dots.
+   ============================================================ */
+
+/* Each of the two 3-column rows */
+div[data-testid="stHorizontalBlock"]:has(button[kind="primary"]),
+div[data-testid="stHorizontalBlock"]:has(button[kind="secondary"]) {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Remove column padding so the row is perfectly aligned */
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Filter buttons */
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton {
+    width: 100% !important;
+}
+
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    padding: 0 8px !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: 1px solid #D7E3F3 !important;
+    background: #FFFFFF !important;
+    color: #48617F !important;
+    -webkit-text-fill-color: #48617F !important;
+    font-size: 17px !important;
+    font-weight: 650 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    box-shadow: none !important;
+    transition: background .18s ease, color .18s ease,
+                box-shadow .18s ease, transform .12s ease !important;
+}
+
+/* First / middle / last geometry */
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child .stButton > button {
+    border-radius: 20px 0 0 20px !important;
+}
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child .stButton > button {
+    border-radius: 0 20px 20px 0 !important;
+}
+
+/* Active = smooth blue */
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #1456C8 0%, #2563EB 55%, #3B82F6 100%) !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    border-color: #2563EB !important;
+    box-shadow: 0 7px 18px rgba(37,99,235,.20) !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Inactive */
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button[kind="secondary"] {
+    background: #FFFFFF !important;
+    color: #48617F !important;
+    -webkit-text-fill-color: #48617F !important;
+}
+
+/* Hover/focus */
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button:hover {
+    background: #EEF5FF !important;
+    color: #2563EB !important;
+    -webkit-text-fill-color: #2563EB !important;
+    border-color: #C5D9F5 !important;
+}
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button[kind="primary"]:hover {
+    background: linear-gradient(135deg, #1456C8, #3B82F6) !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button:focus,
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(37,99,235,.16) !important;
+}
+
+/* Row spacing: category -> PKS */
+div[data-testid="stHorizontalBlock"]:has(button[key="cat_btn_All Asuransi"]) {
+    margin-bottom: 10px !important;
+}
+
+/* The two rows should never become vertical on mobile */
+@media (max-width: 600px) {
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 0 !important;
+    }
+
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        min-width: 0 !important;
+        width: 33.3333% !important;
+        flex: 1 1 33.3333% !important;
+    }
+
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button {
+        height: 58px !important;
+        min-height: 58px !important;
+        padding: 0 4px !important;
+        font-size: 16px !important;
+        font-weight: 650 !important;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1166,25 +1287,25 @@ category_index = {"All Asuransi": 0, "Asuransi Umum": 1, "Asuransi Jiwa": 2}.get
     st.session_state.category, 0
 )
 
-category_choice = st.radio(
-    "Kategori Asuransi",
-    category_options,
-    index=category_index,
-    horizontal=True,
-    label_visibility="collapsed",
-    key="category_selector",
-)
+# Native Streamlit buttons give us exact 1/3 widths and avoid
+# the unwanted radio dots that appeared on iPhone.
+cat_cols = st.columns(3, gap="small")
+cat_labels = ["▦  All", "🏢  Umum", "♥  Jiwa"]
+cat_values = ["All Asuransi", "Asuransi Umum", "Asuransi Jiwa"]
 
-category_map = {
-    "▦  All": "All Asuransi",
-    "🏢  Umum": "Asuransi Umum",
-    "♥  Jiwa": "Asuransi Jiwa",
-}
-new_category = category_map.get(category_choice, st.session_state.category)
-if new_category != st.session_state.category:
-    st.session_state.category = new_category
-    st.session_state.selected_company = None
-    st.rerun()
+for col, label, value in zip(cat_cols, cat_labels, cat_values):
+    with col:
+        if st.button(
+            label,
+            key=f"cat_btn_{value}",
+            type="primary" if st.session_state.category == value else "secondary",
+            use_container_width=True,
+        ):
+            if st.session_state.category != value:
+                st.session_state.category = value
+                st.session_state.selected_company = None
+                st.rerun()
+
 
 # ------------------------------------------------------------
 # PKS FILTER
@@ -1199,19 +1320,22 @@ pks_index = {
     "PKS Banca": 2,
 }.get(st.session_state.pks_filter, 0)
 
-pks_choice = st.radio(
-    "Filter PKS",
-    pks_options,
-    index=pks_index,
-    horizontal=True,
-    label_visibility="collapsed",
-    key="pks_selector",
-)
+# PKS filter — same exact 3-column layout as category.
+pks_cols = st.columns(3, gap="small")
+pks_labels = ["Semua", "PKS Kredit", "PKS Banca"]
 
-if pks_choice and pks_choice != st.session_state.pks_filter:
-    st.session_state.pks_filter = pks_choice
-    st.session_state.selected_company = None
-    st.rerun()
+for col, label in zip(pks_cols, pks_labels):
+    with col:
+        if st.button(
+            label,
+            key=f"pks_btn_{label}",
+            type="primary" if st.session_state.pks_filter == label else "secondary",
+            use_container_width=True,
+        ):
+            if st.session_state.pks_filter != label:
+                st.session_state.pks_filter = label
+                st.session_state.selected_company = None
+                st.rerun()
 
 # ------------------------------------------------------------
 # Search
