@@ -967,129 +967,153 @@ div[data-testid="stRadio"] {
 
 
 
+
 /* ============================================================
-   BANCAPOCKET - MOBILE SEGMENTED FILTER
-   Pure HTML/CSS grid: exactly 100% of the app content width.
+   BANCAPOCKET - NATIVE STREAMLIT FILTER BUTTONS
+   Three equal segments, no browser navigation, mobile-safe.
    ============================================================ */
 
-.bp-segment-wrap {
+.bp-segment-wrap { width:100%; max-width:100%; }
+
+div[data-testid="stHorizontalBlock"] {
     width: 100% !important;
     max-width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 8px 0 10px !important;
-    overflow: hidden !important;
-}
-
-.bp-segment {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 56px !important;
     min-width: 0 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-    border: 1px solid #D7E3F3 !important;
-    border-radius: 20px !important;
-    background: #FFFFFF !important;
-    box-shadow: 0 7px 20px rgba(37,99,235,.07) !important;
-}
-
-.bp-segment-item {
-    min-width: 0 !important;
-    width: 100% !important;
-    height: 56px !important;
-    box-sizing: border-box !important;
     display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 5px !important;
-    padding: 0 3px !important;
-    border-right: 1px solid #D7E3F3 !important;
-    text-decoration: none !important;
+    flex-wrap: nowrap !important;
+    gap: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    flex: 1 1 0% !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+/* Every filter button fills its exact 1/3 segment. */
+div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    padding: 0 4px !important;
+    margin: 0 !important;
+    border: 1px solid #D7E3F3 !important;
+    border-radius: 0 !important;
+    background: #FFFFFF !important;
     color: #4D6584 !important;
-    -webkit-text-fill-color: #4D6584 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
     font-size: 16px !important;
     font-weight: 650 !important;
-    line-height: 1 !important;
     white-space: nowrap !important;
-    overflow: hidden !important;
     text-overflow: clip !important;
-    -webkit-tap-highlight-color: transparent !important;
     transition: all .18s ease !important;
 }
 
-.bp-segment-item:last-child {
-    border-right: 0 !important;
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child button {
+    border-radius: 20px 0 0 20px !important;
 }
 
-.bp-segment-item:hover {
-    background: #F2F7FF !important;
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child button {
+    border-radius: 0 20px 20px 0 !important;
 }
 
-.bp-segment-item:active {
+/* Active segment: generated from the current session state. */
+div[data-testid="stHorizontalBlock"]:has(button[kind="secondary"][aria-pressed="true"]) button {
+    color: #4D6584 !important;
+}
+
+/* Button click feedback. */
+div[data-testid="stHorizontalBlock"] button[kind="secondary"]:active {
     transform: scale(.985) !important;
 }
 
-.bp-segment-item.bp-segment-active {
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
+/* Active filter button */
+div[data-testid="stHorizontalBlock"] button[kind="primary"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    padding: 0 4px !important;
+    margin: 0 !important;
+    border: 1px solid #2563EB !important;
+    border-radius: 0 !important;
     background: linear-gradient(135deg, #1554C5 0%, #2563EB 55%, #3B82F6 100%) !important;
+    color: #FFFFFF !important;
     box-shadow: 0 6px 16px rgba(37,99,235,.18) !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
 }
 
-.bp-segment-icon {
-    flex: 0 0 auto !important;
-    font-size: 19px !important;
-    line-height: 1 !important;
-}
-
-.bp-segment-pks {
-    margin-top: 12px !important;
-    margin-bottom: 22px !important;
+div[data-testid="stHorizontalBlock"] button[kind="primary"]:active {
+    transform: scale(.985) !important;
 }
 
 @media (max-width: 600px) {
-    .block-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding-left: 24px !important;
-        padding-right: 24px !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
+    div[data-testid="stHorizontalBlock"] button[kind="primary"] {
+        height: 56px !important;
+        min-height: 56px !important;
+        font-size: 15px !important;
+        padding: 0 2px !important;
     }
+}
 
-    .bp-segment-wrap {
+
+/* First filter row active button */
+div[data-testid="stHorizontalBlock"]:nth-of-type(1) button[kind="secondary"] {
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Second filter row spacing */
+div[data-testid="stHorizontalBlock"] + div[data-testid="stHorizontalBlock"] {
+    margin-top: 12px !important;
+}
+
+@media (max-width: 600px) {
+    div[data-testid="stHorizontalBlock"] {
         width: 100% !important;
         max-width: 100% !important;
+        gap: 0 !important;
         overflow: hidden !important;
     }
 
-    .bp-segment {
-        width: 100% !important;
-        max-width: 100% !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        width: 0 !important;
+        min-width: 0 !important;
+        flex: 1 1 0% !important;
+        padding: 0 !important;
     }
 
-    .bp-segment-item {
-        width: 100% !important;
-        min-width: 0 !important;
+    div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
+        height: 56px !important;
+        min-height: 56px !important;
         font-size: 15px !important;
         padding: 0 2px !important;
-        gap: 3px !important;
     }
+}
 
-    .bp-segment-icon {
-        font-size: 17px !important;
-    }
-
-    html, body,
-    .stApp,
-    [data-testid="stAppViewContainer"],
-    section.main {
-        max-width: 100% !important;
-        overflow-x: hidden !important;
-    }
+/* Prevent any horizontal document overflow on phones. */
+html, body, .stApp, [data-testid="stAppViewContainer"], section.main {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
 }
 
 </style>
@@ -1285,60 +1309,54 @@ st.markdown("""
 # ------------------------------------------------------------
 # MOBILE SEGMENTED FILTERS
 # ------------------------------------------------------------
-qp = st.query_params
-
-valid_categories = {"All Asuransi", "Asuransi Umum", "Asuransi Jiwa"}
-valid_pks = {"Semua", "PKS Kredit", "PKS Banca"}
+# Native Streamlit buttons are used here intentionally.
+# Unlike <a href>, clicking them does NOT navigate/reload the browser
+# document or open a new tab. Only Streamlit performs its normal rerun.
 
 if "category" not in st.session_state:
     st.session_state.category = "All Asuransi"
 if "pks_filter" not in st.session_state:
     st.session_state.pks_filter = "Semua"
 
-# Read filter selection from the URL when a segmented item is tapped.
-if qp.get("category") in valid_categories:
-    st.session_state.category = qp.get("category")
-if qp.get("pks") in valid_pks:
-    st.session_state.pks_filter = qp.get("pks")
+def set_category(value):
+    st.session_state.category = value
 
-def filter_href(category_value, pks_value):
-    return "?" + urlencode({
-        "category": category_value,
-        "pks": pks_value,
-    })
+def set_pks(value):
+    st.session_state.pks_filter = value
 
-# One HTML grid = exactly 3 equal columns. This avoids Streamlit's
-# st.columns responsive behavior that caused horizontal overflow.
 category_items = [
-    ("All Asuransi", "▦", "All"),
-    ("Asuransi Umum", "🏢", "Umum"),
-    ("Asuransi Jiwa", "♥", "Jiwa"),
+    ("All Asuransi", "▦  All"),
+    ("Asuransi Umum", "🏢  Umum"),
+    ("Asuransi Jiwa", "♥  Jiwa"),
 ]
 
-cat_html = '<div class="bp-segment-wrap"><div class="bp-segment">'
-for value, icon, label in category_items:
-    active = " bp-segment-active" if st.session_state.category == value else ""
-    cat_html += (
-        f'<a class="bp-segment-item{active}" '
-        f'href="{html.escape(filter_href(value, st.session_state.pks_filter))}" target="_top" rel="nofollow">'
-        f'<span class="bp-segment-icon">{icon}</span>'
-        f'<span>{label}</span></a>'
-    )
-cat_html += "</div></div>"
-st.markdown(cat_html, unsafe_allow_html=True)
+cat_cols = st.columns(3, gap="small")
+for i, (value, label) in enumerate(category_items):
+    with cat_cols[i]:
+        st.button(
+            label,
+            key=f"category_btn_{i}",
+            use_container_width=True,
+            type="primary" if st.session_state.category == value else "secondary",
+            on_click=set_category,
+            args=(value,),
+        )
 
 pks_items = ["Semua", "PKS Kredit", "PKS Banca"]
-pks_html = '<div class="bp-segment-wrap bp-segment-pks"><div class="bp-segment">'
-for value in pks_items:
-    active = " bp-segment-active" if st.session_state.pks_filter == value else ""
-    pks_html += (
-        f'<a class="bp-segment-item{active}" '
-        f'href="{html.escape(filter_href(st.session_state.category, value))}" target="_top" rel="nofollow">'
-        f'<span>{value}</span></a>'
-    )
-pks_html += "</div></div>"
-st.markdown(pks_html, unsafe_allow_html=True)
 
+pks_cols = st.columns(3, gap="small")
+for i, value in enumerate(pks_items):
+    with pks_cols[i]:
+        st.button(
+            value,
+            key=f"pks_btn_{i}",
+            use_container_width=True,
+            type="primary" if st.session_state.pks_filter == value else "secondary",
+            on_click=set_pks,
+            args=(value,),
+        )
+
+# ------------------------------------------------------------
 # ------------------------------------------------------------
 # Search
 # ------------------------------------------------------------
