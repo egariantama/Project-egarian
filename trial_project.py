@@ -967,153 +967,127 @@ div[data-testid="stRadio"] {
 
 
 /* ============================================================
-   BANCAPOCKET - FINAL MOBILE BUTTON FILTER
-   Exact width = content/header width, no radio dots.
+   BANCAPOCKET - MOBILE SEGMENTED FILTER
+   Pure HTML/CSS grid: exactly 100% of the app content width.
    ============================================================ */
 
-/* Each of the two 3-column rows */
-div[data-testid="stHorizontalBlock"]:has(button[kind="primary"]),
-div[data-testid="stHorizontalBlock"]:has(button[kind="secondary"]) {
+.bp-segment-wrap {
     width: 100% !important;
     max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-/* Remove column padding/gap and force true 1/3 sizing.
-   Streamlit can otherwise apply a content-based minimum width on mobile,
-   causing the row to become ~2x the phone viewport. */
-div[data-testid="stHorizontalBlock"] {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    gap: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
     box-sizing: border-box !important;
+    margin: 8px 0 10px !important;
     overflow: hidden !important;
 }
 
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-    flex: 1 1 0% !important;
-    width: 0 !important;
+.bp-segment {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 56px !important;
     min-width: 0 !important;
-    max-width: none !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin: 0 !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
-}
-
-/* Filter buttons */
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton {
-    width: 100% !important;
-}
-
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button {
-    width: 100% !important;
-    min-width: 0 !important;
-    height: 58px !important;
-    min-height: 58px !important;
-    padding: 0 8px !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
     border: 1px solid #D7E3F3 !important;
+    border-radius: 20px !important;
     background: #FFFFFF !important;
-    color: #48617F !important;
-    -webkit-text-fill-color: #48617F !important;
-    font-size: 17px !important;
+    box-shadow: 0 7px 20px rgba(37,99,235,.07) !important;
+}
+
+.bp-segment-item {
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 56px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    padding: 0 3px !important;
+    border-right: 1px solid #D7E3F3 !important;
+    text-decoration: none !important;
+    color: #4D6584 !important;
+    -webkit-text-fill-color: #4D6584 !important;
+    font-size: 16px !important;
     font-weight: 650 !important;
     line-height: 1 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: clip !important;
-    box-shadow: none !important;
-    transition: background .18s ease, color .18s ease,
-                box-shadow .18s ease, transform .12s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: all .18s ease !important;
 }
 
-/* First / middle / last geometry */
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child .stButton > button {
-    border-radius: 20px 0 0 20px !important;
-}
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child .stButton > button {
-    border-radius: 0 20px 20px 0 !important;
+.bp-segment-item:last-child {
+    border-right: 0 !important;
 }
 
-/* Active = smooth blue */
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button[kind="primary"] {
-    background: linear-gradient(135deg, #1456C8 0%, #2563EB 55%, #3B82F6 100%) !important;
+.bp-segment-item:hover {
+    background: #F2F7FF !important;
+}
+
+.bp-segment-item:active {
+    transform: scale(.985) !important;
+}
+
+.bp-segment-item.bp-segment-active {
     color: #FFFFFF !important;
     -webkit-text-fill-color: #FFFFFF !important;
-    border-color: #2563EB !important;
-    box-shadow: 0 7px 18px rgba(37,99,235,.20) !important;
-    position: relative !important;
-    z-index: 2 !important;
+    background: linear-gradient(135deg, #1554C5 0%, #2563EB 55%, #3B82F6 100%) !important;
+    box-shadow: 0 6px 16px rgba(37,99,235,.18) !important;
 }
 
-/* Inactive */
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button[kind="secondary"] {
-    background: #FFFFFF !important;
-    color: #48617F !important;
-    -webkit-text-fill-color: #48617F !important;
+.bp-segment-icon {
+    flex: 0 0 auto !important;
+    font-size: 19px !important;
+    line-height: 1 !important;
 }
 
-/* Hover/focus */
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button:hover {
-    background: #EEF5FF !important;
-    color: #2563EB !important;
-    -webkit-text-fill-color: #2563EB !important;
-    border-color: #C5D9F5 !important;
-}
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button[kind="primary"]:hover {
-    background: linear-gradient(135deg, #1456C8, #3B82F6) !important;
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-}
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button:focus,
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button:focus-visible {
-    outline: none !important;
-    box-shadow: 0 0 0 2px rgba(37,99,235,.16) !important;
+.bp-segment-pks {
+    margin-top: 12px !important;
+    margin-bottom: 22px !important;
 }
 
-/* Row spacing: category -> PKS */
-div[data-testid="stHorizontalBlock"]:has(button[key="cat_btn_All Asuransi"]) {
-    margin-bottom: 10px !important;
-}
-
-/* The two rows should never become vertical on mobile */
 @media (max-width: 600px) {
-    div[data-testid="stHorizontalBlock"] {
-        flex-wrap: nowrap !important;
-        gap: 0 !important;
-    }
-
-    div[data-testid="stHorizontalBlock"] {
+    .block-container {
         width: 100% !important;
         max-width: 100% !important;
-        min-width: 0 !important;
-        flex-wrap: nowrap !important;
-        gap: 0 !important;
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    .bp-segment-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
         overflow: hidden !important;
     }
 
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        min-width: 0 !important;
-        width: 0 !important;
-        max-width: none !important;
-        flex: 1 1 0% !important;
-        overflow: hidden !important;
+    .bp-segment {
+        width: 100% !important;
+        max-width: 100% !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     }
 
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] .stButton > button {
-        height: 58px !important;
-        min-height: 58px !important;
-        padding: 0 4px !important;
+    .bp-segment-item {
+        width: 100% !important;
+        min-width: 0 !important;
         font-size: 15px !important;
-        font-weight: 650 !important;
+        padding: 0 2px !important;
+        gap: 3px !important;
+    }
+
+    .bp-segment-icon {
+        font-size: 17px !important;
+    }
+
+    html, body,
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    section.main {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
     }
 }
 
@@ -1308,66 +1282,61 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------
-# Category state
+# MOBILE SEGMENTED FILTERS
 # ------------------------------------------------------------
+qp = st.query_params
+
+valid_categories = {"All Asuransi", "Asuransi Umum", "Asuransi Jiwa"}
+valid_pks = {"Semua", "PKS Kredit", "PKS Banca"}
+
 if "category" not in st.session_state:
     st.session_state.category = "All Asuransi"
-
-# Responsive segmented selector — no st.columns, so it will not stack or overflow on phones.
-category_options = ["▦  All", "🏢  Umum", "♥  Jiwa"]
-category_index = {"All Asuransi": 0, "Asuransi Umum": 1, "Asuransi Jiwa": 2}.get(
-    st.session_state.category, 0
-)
-
-# Native Streamlit buttons give us exact 1/3 widths and avoid
-# the unwanted radio dots that appeared on iPhone.
-cat_cols = st.columns(3, gap="small")
-cat_labels = ["▦  All", "🏢  Umum", "♥  Jiwa"]
-cat_values = ["All Asuransi", "Asuransi Umum", "Asuransi Jiwa"]
-
-for col, label, value in zip(cat_cols, cat_labels, cat_values):
-    with col:
-        if st.button(
-            label,
-            key=f"cat_btn_{value}",
-            type="primary" if st.session_state.category == value else "secondary",
-            use_container_width=True,
-        ):
-            if st.session_state.category != value:
-                st.session_state.category = value
-                st.session_state.selected_company = None
-                st.rerun()
-
-
-# ------------------------------------------------------------
-# PKS FILTER
-# ------------------------------------------------------------
 if "pks_filter" not in st.session_state:
     st.session_state.pks_filter = "Semua"
 
-pks_options = ["Semua", "PKS Kredit", "PKS Banca"]
-pks_index = {
-    "Semua": 0,
-    "PKS Kredit": 1,
-    "PKS Banca": 2,
-}.get(st.session_state.pks_filter, 0)
+# Read filter selection from the URL when a segmented item is tapped.
+if qp.get("category") in valid_categories:
+    st.session_state.category = qp.get("category")
+if qp.get("pks") in valid_pks:
+    st.session_state.pks_filter = qp.get("pks")
 
-# PKS filter — same exact 3-column layout as category.
-pks_cols = st.columns(3, gap="small")
-pks_labels = ["Semua", "PKS Kredit", "PKS Banca"]
+def filter_href(category_value, pks_value):
+    return "?" + urlencode({
+        "category": category_value,
+        "pks": pks_value,
+    })
 
-for col, label in zip(pks_cols, pks_labels):
-    with col:
-        if st.button(
-            label,
-            key=f"pks_btn_{label}",
-            type="primary" if st.session_state.pks_filter == label else "secondary",
-            use_container_width=True,
-        ):
-            if st.session_state.pks_filter != label:
-                st.session_state.pks_filter = label
-                st.session_state.selected_company = None
-                st.rerun()
+# One HTML grid = exactly 3 equal columns. This avoids Streamlit's
+# st.columns responsive behavior that caused horizontal overflow.
+category_items = [
+    ("All Asuransi", "▦", "All"),
+    ("Asuransi Umum", "🏢", "Umum"),
+    ("Asuransi Jiwa", "♥", "Jiwa"),
+]
+
+cat_html = '<div class="bp-segment-wrap"><div class="bp-segment">'
+for value, icon, label in category_items:
+    active = " bp-segment-active" if st.session_state.category == value else ""
+    cat_html += (
+        f'<a class="bp-segment-item{active}" '
+        f'href="{html.escape(filter_href(value, st.session_state.pks_filter))}">'
+        f'<span class="bp-segment-icon">{icon}</span>'
+        f'<span>{label}</span></a>'
+    )
+cat_html += "</div></div>"
+st.markdown(cat_html, unsafe_allow_html=True)
+
+pks_items = ["Semua", "PKS Kredit", "PKS Banca"]
+pks_html = '<div class="bp-segment-wrap bp-segment-pks"><div class="bp-segment">'
+for value in pks_items:
+    active = " bp-segment-active" if st.session_state.pks_filter == value else ""
+    pks_html += (
+        f'<a class="bp-segment-item{active}" '
+        f'href="{html.escape(filter_href(st.session_state.category, value))}">'
+        f'<span>{value}</span></a>'
+    )
+pks_html += "</div></div>"
+st.markdown(pks_html, unsafe_allow_html=True)
 
 # ------------------------------------------------------------
 # Search
