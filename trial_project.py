@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 import html
 import re
+from urllib.parse import urlencode
 
 # ============================================================
 # BANCAPOCKET - MOBILE INSURANCE PARTNER DIRECTORY
