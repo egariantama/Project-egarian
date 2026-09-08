@@ -1510,9 +1510,12 @@ html, body, #root, .stApp,
 }
 
 .st-key-pks_filters div[data-testid="column"]:nth-child(1) button::before {
-    content: "▤" !important;
+    content: "↺" !important;
 }
 .st-key-pks_filters div[data-testid="column"]:nth-child(2) button::before {
+    content: "▤" !important;
+}
+.st-key-pks_filters div[data-testid="column"]:nth-child(3) button::before {
     content: "♢" !important;
 }
 
@@ -1527,9 +1530,12 @@ html, body, #root, .stApp,
 }
 
 .st-key-pks_filters div[data-testid="column"]:nth-child(1) button::after {
-    content: "Kerja Sama Kredit" !important;
+    content: "Tampilkan Semua" !important;
 }
 .st-key-pks_filters div[data-testid="column"]:nth-child(2) button::after {
+    content: "Kerja Sama Kredit" !important;
+}
+.st-key-pks_filters div[data-testid="column"]:nth-child(3) button::after {
     content: "Bancassurance" !important;
 }
 
@@ -1821,8 +1827,10 @@ st.markdown("""
 
 if "category" not in st.session_state:
     st.session_state.category = "All Asuransi"
-if "pks_filter" not in st.session_state:
-    st.session_state.pks_filter = "Semua"
+if "pks_filter" not in st.session_state or st.session_state.pks_filter not in {
+    "Lepas Filter", "PKS Kredit", "PKS Banca"
+}:
+    st.session_state.pks_filter = "Lepas Filter"
 
 category_items = [
     ("▦  All", "All Asuransi"),
@@ -1863,19 +1871,22 @@ with st.container(key="category_filters"):
             )
 
 # ------------------------------------------------------------
-# Row 2 — PKS Kredit / PKS Banca
+# Row 2 — Lepas Filter / PKS Kredit / PKS Banca
 # ------------------------------------------------------------
 st.markdown(
     '<div class="filter-section-title">'
     '<div class="main">Jenis Kerja Sama</div>'
-    '<div class="hint">Filter berdasarkan PKS</div>'
+    '<div class="hint">Pilih atau lepas filter PKS</div>'
     '</div>',
     unsafe_allow_html=True
 )
 
 with st.container(key="pks_filters"):
-    pks_cols = st.columns(2, gap="small")
-    for i, value in enumerate(["PKS Kredit", "PKS Banca"]):
+    # "Lepas Filter" hanya menghapus filter PKS. Filter kategori
+    # (All / Umum / Jiwa) dan pencarian nama tetap dipertahankan.
+    pks_items = ["Lepas Filter", "PKS Kredit", "PKS Banca"]
+    pks_cols = st.columns(3, gap="small")
+    for i, value in enumerate(pks_items):
         with pks_cols[i]:
             st.button(
                 value,
@@ -1938,7 +1949,7 @@ if search.strip():
 # Section
 # ------------------------------------------------------------
 count_label = "Semua Asuransi" if category == "All Asuransi" else category
-pks_label = "" if pks_filter == "Semua" else f" • {pks_filter}"
+pks_label = "" if pks_filter == "Lepas Filter" else f" • {pks_filter}"
 
 st.markdown(
     f'<div class="section-title">Asuradur Partner</div>'
