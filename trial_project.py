@@ -598,6 +598,94 @@ div[data-testid="stButton"] button:active {
     .company-card { padding:13px; }
     .company-logo { width:52px; height:52px; flex-basis:52px; }
 }
+
+
+/* ============================================================
+   BANCA POCKET - FORCE BLUE PRIMARY COLOR
+   Overrides Streamlit's red/pink primary theme.
+   ============================================================ */
+:root,
+html,
+body,
+.stApp,
+[data-testid="stAppViewContainer"] {
+    --primary-color: #2563EB !important;
+    --primary-color-light: #60A5FA !important;
+    --primary-color-dark: #1456C8 !important;
+    --st-primary-color: #2563EB !important;
+    --st-primary-color-light: #60A5FA !important;
+    --st-primary-color-dark: #1456C8 !important;
+}
+
+/* Current Streamlit segmented control + BaseWeb variants */
+div[data-testid="stSegmentedControl"] button,
+div[data-testid="stSegmentedControl"] [role="radio"],
+div[data-testid="stSegmentedControl"] [data-baseweb="button"] {
+    color: #48617F !important;
+    -webkit-text-fill-color: #48617F !important;
+    background: #FFFFFF !important;
+    background-image: none !important;
+    border-color: #D7E3F3 !important;
+}
+
+/* Selected item: BLUE */
+div[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+div[data-testid="stSegmentedControl"] button[data-selected="true"],
+div[data-testid="stSegmentedControl"] button[aria-checked="true"],
+div[data-testid="stSegmentedControl"] [role="radio"][aria-checked="true"],
+div[data-testid="stSegmentedControl"] [role="radio"][aria-selected="true"],
+div[data-testid="stSegmentedControl"] [role="radio"][data-state="checked"],
+div[data-testid="stSegmentedControl"] [data-selected="true"],
+div[data-testid="stSegmentedControl"] [data-state="checked"],
+div[data-testid="stSegmentedControl"] [data-highlighted="true"] {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    background: linear-gradient(135deg, #1456C8 0%, #2563EB 55%, #3B82F6 100%) !important;
+    background-image: linear-gradient(135deg, #1456C8 0%, #2563EB 55%, #3B82F6 100%) !important;
+    border-color: #2563EB !important;
+    box-shadow: 0 6px 18px rgba(37,99,235,.25) !important;
+}
+
+/* Fallback if the app runs an older Streamlit radio */
+div[data-testid="stRadio"] label:has(input:checked) {
+    color: #FFFFFF !important;
+    background: linear-gradient(135deg, #1456C8, #3B82F6) !important;
+    border-color: #2563EB !important;
+}
+
+/* Focus/hover must stay blue, never red */
+div[data-testid="stSegmentedControl"] button:focus,
+div[data-testid="stSegmentedControl"] button:focus-visible,
+div[data-testid="stSegmentedControl"] [role="radio"]:focus,
+div[data-testid="stSegmentedControl"] [role="radio"]:focus-visible {
+    outline: none !important;
+    border-color: #2563EB !important;
+    box-shadow: 0 0 0 2px rgba(37,99,235,.18) !important;
+}
+
+div[data-testid="stSegmentedControl"] button:hover,
+div[data-testid="stSegmentedControl"] [role="radio"]:hover {
+    color: #2563EB !important;
+    -webkit-text-fill-color: #2563EB !important;
+    background: #EEF5FF !important;
+}
+
+div[data-testid="stSegmentedControl"] button[aria-pressed="true"]:hover,
+div[data-testid="stSegmentedControl"] [role="radio"][aria-checked="true"]:hover,
+div[data-testid="stSegmentedControl"] [data-selected="true"]:hover {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    background: linear-gradient(135deg, #1456C8, #3B82F6) !important;
+}
+
+/* Primary Streamlit buttons */
+button[kind="primary"],
+.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #1456C8, #3B82F6) !important;
+    color: #FFFFFF !important;
+    border-color: #2563EB !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
