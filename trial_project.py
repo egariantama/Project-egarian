@@ -117,9 +117,26 @@ div[data-testid="stTextInput"] input {
     border-radius: 15px !important;
     min-height: 48px !important;
     border: 1px solid #d9e2ef !important;
-    background: white !important;
+    background: #ffffff !important;
+    color: #17233d !important;
+    -webkit-text-fill-color: #17233d !important;
+    caret-color: #2563eb !important;
     font-size: 14px !important;
+    font-weight: 500 !important;
     box-shadow: 0 5px 18px rgba(25,55,100,.06);
+    outline: none !important;
+}
+
+div[data-testid="stTextInput"] input::placeholder {
+    color: #94a3b8 !important;
+    -webkit-text-fill-color: #94a3b8 !important;
+    opacity: 1 !important;
+}
+
+div[data-testid="stTextInput"] input:focus {
+    border: 1.5px solid #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.10) !important;
+    outline: none !important;
 }
 
 /* Category buttons */
