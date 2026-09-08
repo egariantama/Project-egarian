@@ -805,6 +805,165 @@ div[data-testid="stRadio"] + div[data-testid="stRadio"] {
     }
 }
 
+
+/* ============================================================
+   BANCAPOCKET - PRECISION MOBILE FILTERS V2
+   Full-width, equal segments, no native radio dots, smooth blue.
+   ============================================================ */
+
+/* The Streamlit radio wrapper must use the complete content width. */
+div[data-testid="stRadio"],
+div[data-testid="stRadio"] > div,
+div[data-testid="stRadio"] > div > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Remove Streamlit's native radio indicator completely.
+   Keep the input in the DOM so :has(input:checked) still works. */
+div[data-testid="stRadio"] [role="radiogroup"] input {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    margin: 0 !important;
+    pointer-events: none !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] [data-baseweb="radio"],
+div[data-testid="stRadio"] [role="radiogroup"] [data-baseweb="radio"] > div:first-child,
+div[data-testid="stRadio"] [role="radiogroup"] svg {
+    display: none !important;
+}
+
+/* Equal-width segmented shell */
+div[data-testid="stRadio"] [role="radiogroup"] {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    border: 1.5px solid #D7E3F3 !important;
+    border-radius: 20px !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 7px 22px rgba(37,99,235,.08) !important;
+}
+
+/* Each segment occupies exactly 1/3 */
+div[data-testid="stRadio"] [role="radiogroup"] > label {
+    flex: 1 1 33.333% !important;
+    width: 33.333% !important;
+    max-width: 33.333% !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    min-height: 58px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    padding: 0 4px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-right: 1px solid #D7E3F3 !important;
+    border-radius: 0 !important;
+    background: #FFFFFF !important;
+    cursor: pointer !important;
+    transition: background .20s ease, box-shadow .20s ease, transform .12s ease !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:last-child {
+    border-right: 0 !important;
+}
+
+/* Text only */
+div[data-testid="stRadio"] [role="radiogroup"] > label p,
+div[data-testid="stRadio"] [role="radiogroup"] > label span {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #4A6280 !important;
+    -webkit-text-fill-color: #4A6280 !important;
+    font-size: 17px !important;
+    line-height: 1.15 !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+}
+
+/* Selected segment */
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) {
+    color: #FFFFFF !important;
+    background: linear-gradient(135deg, #1456C8 0%, #2563EB 55%, #3B82F6 100%) !important;
+    border-color: #2563EB !important;
+    box-shadow: 0 5px 15px rgba(37,99,235,.20) !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) p,
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) span {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+
+/* Soft hover, no black/red */
+div[data-testid="stRadio"] [role="radiogroup"] > label:hover {
+    background: #F1F6FF !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked):hover {
+    background: linear-gradient(135deg, #1456C8, #3B82F6) !important;
+}
+
+/* No red focus outline */
+div[data-testid="stRadio"] [role="radiogroup"] > label:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Category and PKS spacing */
+div[data-testid="stRadio"] {
+    margin-bottom: 10px !important;
+}
+
+@media (max-width: 600px) {
+    .block-container {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+
+    div[data-testid="stRadio"] [role="radiogroup"] {
+        height: 56px !important;
+        min-height: 56px !important;
+        border-radius: 18px !important;
+    }
+
+    div[data-testid="stRadio"] [role="radiogroup"] > label {
+        min-height: 56px !important;
+        padding: 0 2px !important;
+    }
+
+    div[data-testid="stRadio"] [role="radiogroup"] > label p,
+    div[data-testid="stRadio"] [role="radiogroup"] > label span {
+        font-size: 15px !important;
+        font-weight: 650 !important;
+    }
+
+    /* Slightly tighter spacing between category and PKS rows */
+    div[data-testid="stRadio"] + div[data-testid="stRadio"] {
+        margin-top: 8px !important;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
