@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 # ============================================================
 
 st.set_page_config(
-    page_title="Baket - BancassPocket",
+    page_title="BancassPocket",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -808,7 +808,7 @@ div[data-testid="stRadio"] + div[data-testid="stRadio"] {
 
 
 /* ============================================================
-   BANCAPOCKET - PRECISION MOBILE FILTERS V2
+   BANCASSPOCKET - PRECISION MOBILE FILTERS V2
    Full-width, equal segments, no native radio dots, smooth blue.
    ============================================================ */
 
@@ -969,7 +969,7 @@ div[data-testid="stRadio"] {
 
 
 /* ============================================================
-   BANCAPOCKET - SIMPLE MOBILE FILTER BUTTONS
+   BANCASSPOCKET - SIMPLE MOBILE FILTER BUTTONS
    Layout intentionally follows the user's sketch:
    Row 1 = All / Umum / Jiwa
    Row 2 = PKS Kredit / PKS Banca
@@ -1098,7 +1098,7 @@ section.main {
 
 
 /* ============================================================
-   BANCAPOCKET - FINAL POLISHED MOBILE LAYOUT
+   BANCASSPOCKET - FINAL POLISHED MOBILE LAYOUT
    Inspired by the approved mobile mockup.
    ============================================================ */
 
@@ -1146,7 +1146,7 @@ div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
     transition: all .18s ease !important;
 }
 
-/* Active filter = smooth BancaPocket blue */
+/* Active filter = smooth BancassPocket blue */
 div[data-testid="stHorizontalBlock"] button[kind="primary"] {
     width: 100% !important;
     min-width: 0 !important;
@@ -1637,7 +1637,7 @@ html, body, #root, .stApp,
 }
 
 /* ============================================================
-   BANCAPOCKET - FREEZE TOP FILTER BAR
+   BANCASSPOCKET - FREEZE TOP FILTER BAR
    ============================================================ */
 
 /* No Streamlit ancestor is allowed to clip the sticky element. */
@@ -1944,7 +1944,7 @@ df, column_mapping = prepare_data(df_raw)
 # ------------------------------------------------------------
 st.markdown("""
 <div class="bp-header">
-    <div class="bp-brand">BancaPocket</div>
+    <div class="bp-brand">BancassPocket</div>
     <div class="bp-subtitle">Daftar Perusahaan Asuransi</div>
     <div class="bp-caption">Informasi Mitra Asuransi dalam Genggaman Anda</div>
     <div class="bp-shield">🛡️</div>
