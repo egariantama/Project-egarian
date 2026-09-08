@@ -159,115 +159,111 @@ div[data-testid="stTextInput"] input:focus {
     box-shadow: 0 0 0 2px rgba(37,99,235,.10) !important;
 }
 
-/* Category selector */
+
+/* ============================================================
+   CATEGORY — MOBILE SEGMENTED CONTROL
+   ============================================================ */
 .category-wrap {
-    margin: 0 0 16px;
+    margin: 0 0 22px !important;
 }
 
-/* Streamlit horizontal radio: safe on narrow phones */
-div[data-testid="stRadio"] {
+div[data-testid="stSegmentedControl"] {
     width: 100% !important;
-}
-
-div[data-testid="stRadio"] > label {
-    display: none !important;
-}
-
-/* Mobile category tabs — large, touch friendly, no radio-dot artifacts */
-div[data-testid="stRadio"] {
     margin: 0 !important;
+}
+
+div[data-testid="stSegmentedControl"] > div {
     width: 100% !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
+div[data-testid="stSegmentedControl"] [role="radiogroup"] {
     width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     gap: 6px !important;
     padding: 5px !important;
     box-sizing: border-box !important;
-    background: rgba(255,255,255,.78) !important;
-    border: 1px solid #d8e3f0 !important;
+    border: 1px solid #d7e2f0 !important;
     border-radius: 20px !important;
-    box-shadow: 0 5px 18px rgba(37,72,120,.06) !important;
-    overflow: visible !important;
+    background: rgba(255,255,255,.88) !important;
+    box-shadow: 0 7px 20px rgba(37,72,120,.07) !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label {
-    position: relative !important;
-    flex: 1 1 0 !important;
+div[data-testid="stSegmentedControl"] [role="radio"] {
     min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    cursor: pointer !important;
-}
-
-/* Hide native radio controls completely */
-div[data-testid="stRadio"] [role="radiogroup"] input[type="radio"] {
-    position: absolute !important;
-    opacity: 0 !important;
-    width: 1px !important;
-    height: 1px !important;
-    pointer-events: none !important;
-}
-
-div[data-testid="stRadio"] [role="radiogroup"] > label > div:first-child {
-    display: none !important;
-}
-
-div[data-testid="stRadio"] [role="radiogroup"] > label > div:last-child {
+    min-height: 54px !important;
     width: 100% !important;
-    min-height: 58px !important;
+    border-radius: 15px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 8px 5px !important;
+    padding: 6px 3px !important;
     box-sizing: border-box !important;
-    border-radius: 16px !important;
     color: #536987 !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
     font-weight: 700 !important;
-    line-height: 1.15 !important;
-    text-align: center !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    transition: transform .16s ease, background .18s ease, color .18s ease, box-shadow .18s ease !important;
+    transition: all .18s ease !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label:hover > div:last-child {
-    background: #f0f5fc !important;
+div[data-testid="stSegmentedControl"] [role="radio"][aria-checked="true"] {
+    color: #fff !important;
+    background: linear-gradient(135deg,#1555c8,#2563eb) !important;
+    box-shadow: 0 5px 15px rgba(37,99,235,.20) !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label:active > div:last-child {
+div[data-testid="stSegmentedControl"] [role="radio"]:active {
     transform: scale(.97) !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) > div:last-child {
-    color: #fff !important;
-    background: linear-gradient(135deg,#1555c8,#2563eb) !important;
-    box-shadow: 0 5px 14px rgba(37,99,235,.20) !important;
+@media (max-width: 480px) {
+    div[data-testid="stSegmentedControl"] [role="radiogroup"] {
+        gap: 4px !important;
+        padding: 4px !important;
+        border-radius: 18px !important;
+    }
+
+    div[data-testid="stSegmentedControl"] [role="radio"] {
+        min-height: 56px !important;
+        font-size: 14px !important;
+        border-radius: 14px !important;
+    }
 }
 
-@media (max-width: 480px) {
-    .block-container {
-        padding-left: 14px !important;
-        padding-right: 14px !important;
-    }
-    div[data-testid="stRadio"] [role="radiogroup"] {
-        gap: 5px !important;
-        padding: 5px !important;
-        border-radius: 20px !important;
-    }
-    div[data-testid="stRadio"] [role="radiogroup"] > label > div:last-child {
-        min-height: 58px !important;
-        font-size: 14px !important;
-        border-radius: 15px !important;
-        padding-left: 3px !important;
-        padding-right: 3px !important;
-    }
+/* ============================================================
+   SECTION / TEXT — FORCE DARK TEXT
+   ============================================================ */
+.section-title {
+    color: #17233d !important;
+    font-size: 21px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+    margin: 0 0 5px 2px !important;
+}
+
+.section-count {
+    color: #647896 !important;
+    font-size: 14px !important;
+    line-height: 1.3 !important;
+    font-weight: 500 !important;
+    margin: 0 0 14px 2px !important;
+}
+
+.empty {
+    color: #536987 !important;
+    background: rgba(255,255,255,.88) !important;
+    border: 1px solid #dce6f2 !important;
+    border-radius: 18px !important;
+    padding: 28px 16px !important;
+    text-align: center !important;
+}
+
+/* Streamlit markdown/text below the search must remain visible on light UI */
+.stMarkdown, .stMarkdown p, .stMarkdown div {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 /* Company card */
@@ -472,7 +468,7 @@ div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) > div:
 @media (max-width: 480px) {
     .bp-header { padding: 22px 18px 24px; border-radius: 0 0 26px 26px; }
     .bp-brand { font-size:24px; }
-    .section-title { font-size:20px; }
+    .section-title { font-size:21px !important; color:#17233d !important; }
     .metrics { gap:5px; }
     .metric-value { font-size:12px; }
     .company-card { padding:13px; }
@@ -675,21 +671,36 @@ if "category" not in st.session_state:
     st.session_state.category = "All Asuransi"
 
 # Responsive segmented selector — no st.columns, so it will not stack or overflow on phones.
-category_choice = st.radio(
-    "Kategori Asuransi",
-    ["▦  All", "🏢  Umum", "♥  Jiwa"],
-    index={"All Asuransi": 0, "Asuransi Umum": 1, "Asuransi Jiwa": 2}.get(st.session_state.category, 0),
-    horizontal=True,
-    label_visibility="collapsed",
-    key="category_selector",
+category_options = ["▦  All", "🏢  Umum", "♥  Jiwa"]
+category_index = {"All Asuransi": 0, "Asuransi Umum": 1, "Asuransi Jiwa": 2}.get(
+    st.session_state.category, 0
 )
+
+if hasattr(st, "segmented_control"):
+    category_choice = st.segmented_control(
+        "Kategori Asuransi",
+        options=category_options,
+        default=category_options[category_index],
+        label_visibility="collapsed",
+        key="category_selector",
+    )
+else:
+    # Fallback untuk Streamlit versi lama
+    category_choice = st.radio(
+        "Kategori Asuransi",
+        category_options,
+        index=category_index,
+        horizontal=True,
+        label_visibility="collapsed",
+        key="category_selector",
+    )
 
 category_map = {
     "▦  All": "All Asuransi",
     "🏢  Umum": "Asuransi Umum",
     "♥  Jiwa": "Asuransi Jiwa",
 }
-new_category = category_map[category_choice]
+new_category = category_map.get(category_choice, st.session_state.category)
 if new_category != st.session_state.category:
     st.session_state.category = new_category
     st.session_state.selected_company = None
