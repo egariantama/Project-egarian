@@ -1087,6 +1087,293 @@ html, body, .stApp, [data-testid="stAppViewContainer"], section.main {
     overflow-x: hidden !important;
 }
 
+
+/* ============================================================
+   BANCAPOCKET - FINAL POLISHED MOBILE LAYOUT
+   Inspired by the approved mobile mockup.
+   ============================================================ */
+
+/* Keep Streamlit columns horizontal on mobile.
+   This app uses horizontal blocks only for the filter controls. */
+div[data-testid="stHorizontalBlock"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+    gap: 10px !important;
+}
+
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    min-width: 0 !important;
+    flex: 1 1 0 !important;
+    width: auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Filter buttons: white by default */
+div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    padding: 6px 5px !important;
+    margin: 0 !important;
+    border-radius: 20px !important;
+    border: 1px solid #dbe6f4 !important;
+    background: rgba(255,255,255,.96) !important;
+    background-image: none !important;
+    color: #4e6686 !important;
+    -webkit-text-fill-color: #4e6686 !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    box-shadow: 0 7px 22px rgba(39,78,130,.07) !important;
+    transition: all .18s ease !important;
+}
+
+/* Active filter = smooth BancaPocket blue */
+div[data-testid="stHorizontalBlock"] button[kind="primary"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    padding: 6px 5px !important;
+    margin: 0 !important;
+    border-radius: 20px !important;
+    border: 1px solid #2563eb !important;
+    background: linear-gradient(135deg,#1554c5 0%,#2563eb 55%,#3b82f6 100%) !important;
+    background-image: linear-gradient(135deg,#1554c5 0%,#2563eb 55%,#3b82f6 100%) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    box-shadow: 0 10px 25px rgba(37,99,235,.18) !important;
+    transition: all .18s ease !important;
+}
+
+div[data-testid="stHorizontalBlock"] button[kind="secondary"]:hover {
+    background: #f5f9ff !important;
+    color: #2563eb !important;
+    -webkit-text-fill-color: #2563eb !important;
+    border-color: #bfd3f0 !important;
+}
+
+div[data-testid="stHorizontalBlock"] button:active {
+    transform: scale(.985) !important;
+}
+
+/* Make the PKS row narrower and centered */
+div[data-testid="stHorizontalBlock"]:has(button[key*="pks_btn"]) {
+    max-width: 76% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Category / cooperation section headings */
+.filter-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 7px 0 10px;
+}
+
+.filter-section-title .main {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #17233d;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.filter-section-title .main:before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 25px;
+    border-radius: 99px;
+    background: linear-gradient(180deg,#2563eb,#60a5fa);
+}
+
+.filter-section-title .hint {
+    color: #7184a0;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: right;
+}
+
+.search-label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #17233d !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    margin: 22px 0 9px 3px !important;
+}
+
+.search-label:before {
+    content: "⌕";
+    color: #2563eb;
+    font-size: 27px;
+    line-height: 1;
+    font-weight: 500;
+}
+
+/* Search field closer to the mockup */
+div[data-testid="stTextInput"] input {
+    min-height: 54px !important;
+    border-radius: 18px !important;
+    padding: 0 16px !important;
+    font-size: 16px !important;
+    border: 1px solid #d5e1f0 !important;
+    box-shadow: 0 7px 20px rgba(39,78,130,.07) !important;
+}
+
+/* More breathing room between filters and results */
+.section-title {
+    margin-top: 28px !important;
+    font-size: 27px !important;
+    line-height: 1.1 !important;
+    font-weight: 800 !important;
+    color: #17233d !important;
+}
+
+.section-count {
+    font-size: 16px !important;
+    color: #6c809e !important;
+    margin-top: 6px !important;
+    margin-bottom: 18px !important;
+}
+
+/* Mobile card polish */
+.company-card {
+    border-radius: 24px !important;
+    padding: 15px !important;
+    margin: 12px 0 !important;
+    box-shadow: 0 10px 28px rgba(39,78,130,.08) !important;
+}
+
+.company-name {
+    font-size: 16px !important;
+}
+
+.metric {
+    border-radius: 14px !important;
+    padding: 11px 9px !important;
+}
+
+.status {
+    border-radius: 14px !important;
+    padding: 10px 6px !important;
+}
+
+/* Prevent horizontal overflow on all screen sizes */
+html, body, #root, .stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+.block-container {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+@media (max-width: 600px) {
+    .block-container {
+        padding: 18px 18px 36px !important;
+    }
+
+    .bp-header {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 28px 18px 30px !important;
+        border-radius: 0 0 28px 28px !important;
+    }
+
+    .bp-brand {
+        font-size: 28px !important;
+    }
+
+    .bp-subtitle {
+        font-size: 17px !important;
+        margin-top: 5px !important;
+    }
+
+    .bp-caption {
+        font-size: 13px !important;
+        line-height: 1.4 !important;
+        max-width: 82% !important;
+    }
+
+    .bp-shield {
+        right: 16px !important;
+        top: 25px !important;
+        width: 70px !important;
+        height: 70px !important;
+        border-radius: 22px !important;
+    }
+
+    div[data-testid="stHorizontalBlock"] {
+        gap: 8px !important;
+    }
+
+    div[data-testid="stHorizontalBlock"] button[kind="secondary"],
+    div[data-testid="stHorizontalBlock"] button[kind="primary"] {
+        height: 62px !important;
+        min-height: 62px !important;
+        font-size: 15px !important;
+        border-radius: 18px !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[key*="pks_btn"]) {
+        max-width: 82% !important;
+    }
+
+    .filter-section-title {
+        margin-top: 18px !important;
+    }
+
+    .filter-section-title .main {
+        font-size: 16px !important;
+    }
+
+    .filter-section-title .hint {
+        font-size: 11px !important;
+    }
+
+    .section-title {
+        font-size: 25px !important;
+    }
+
+    .company-card {
+        padding: 14px !important;
+    }
+
+    .company-logo {
+        width: 56px !important;
+        height: 56px !important;
+        flex-basis: 56px !important;
+    }
+
+    .metrics {
+        gap: 7px !important;
+    }
+
+    .metric-value {
+        font-size: 13px !important;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1304,6 +1591,14 @@ def set_pks(value):
 # ------------------------------------------------------------
 # Row 1 — All / Umum / Jiwa
 # ------------------------------------------------------------
+st.markdown(
+    '<div class="filter-section-title">'
+    '<div class="main">Kategori Asuransi</div>'
+    '<div class="hint">Pilih jenis asuransi</div>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
 cat_cols = st.columns(3, gap="small")
 for i, (label, value) in enumerate(category_items):
     with cat_cols[i]:
@@ -1318,8 +1613,15 @@ for i, (label, value) in enumerate(category_items):
 
 # ------------------------------------------------------------
 # Row 2 — PKS Kredit / PKS Banca
-# Two equal buttons, centered with generous side margins.
 # ------------------------------------------------------------
+st.markdown(
+    '<div class="filter-section-title">'
+    '<div class="main">Jenis Kerja Sama</div>'
+    '<div class="hint">Filter berdasarkan PKS</div>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
 pks_cols = st.columns([0.55, 1, 1, 0.55], gap="small")
 for i, value in enumerate(["PKS Kredit", "PKS Banca"]):
     with pks_cols[i + 1]:
@@ -1339,7 +1641,7 @@ for i, value in enumerate(["PKS Kredit", "PKS Banca"]):
 st.markdown('<div class="search-label">Cari Asuradur</div>', unsafe_allow_html=True)
 search = st.text_input(
     "search",
-    placeholder="🔎  Cari nama asuransi...",
+    placeholder="Cari nama asuransi...",
     label_visibility="collapsed"
 )
 
