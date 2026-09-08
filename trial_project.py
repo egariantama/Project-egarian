@@ -1627,6 +1627,105 @@ html, body, #root, .stApp,
     }
 }
 
+/* ============================================================
+   BANCAPOCKET — FREEZE TOP FILTER BAR
+   Category + PKS filters stay visible while scrolling.
+   ============================================================ */
+.st-key-sticky_filters {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 0 18px 0 !important;
+    padding: 10px 0 14px 0 !important;
+    background: rgba(239, 245, 253, 0.94) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
+    backdrop-filter: blur(16px) saturate(150%) !important;
+    border-bottom: 1px solid rgba(215, 227, 243, 0.85) !important;
+    box-shadow: 0 8px 24px rgba(37, 78, 130, 0.08) !important;
+}
+
+/* When sticky, keep the two rows compact enough not to dominate the screen. */
+.st-key-sticky_filters .filter-section-title {
+    margin-top: 4px !important;
+    margin-bottom: 8px !important;
+}
+
+.st-key-sticky_filters .filter-section-title + .st-key-category_filters {
+    margin-bottom: 8px !important;
+}
+
+.st-key-sticky_filters .filter-section-title .main {
+    font-size: 15px !important;
+}
+
+.st-key-sticky_filters .filter-section-title .hint {
+    font-size: 11px !important;
+}
+
+@media (max-width: 600px) {
+    .st-key-sticky_filters {
+        top: 0 !important;
+        margin-left: -2px !important;
+        margin-right: -2px !important;
+        width: calc(100% + 4px) !important;
+        padding: 8px 2px 12px 2px !important;
+        border-radius: 0 0 18px 18px !important;
+    }
+
+    .st-key-sticky_filters .filter-section-title {
+        margin-top: 3px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .st-key-sticky_filters .filter-section-title .main {
+        font-size: 14px !important;
+    }
+
+    .st-key-sticky_filters .filter-section-title .hint {
+        font-size: 10px !important;
+    }
+
+    .st-key-sticky_filters .st-key-category_filters button {
+        height: 70px !important;
+        min-height: 70px !important;
+        border-radius: 16px !important;
+        padding: 8px 3px !important;
+        font-size: 15px !important;
+    }
+
+    .st-key-sticky_filters .st-key-category_filters button::before {
+        font-size: 20px !important;
+        margin-bottom: 3px !important;
+    }
+
+    .st-key-sticky_filters .st-key-category_filters button::after {
+        display: none !important;
+    }
+
+    .st-key-sticky_filters .st-key-pks_filters button {
+        height: 64px !important;
+        min-height: 64px !important;
+        border-radius: 16px !important;
+        padding: 0 4px !important;
+        font-size: 14px !important;
+        text-align: center !important;
+    }
+
+    .st-key-sticky_filters .st-key-pks_filters button::before,
+    .st-key-sticky_filters .st-key-pks_filters button::after {
+        display: none !important;
+    }
+
+    .st-key-sticky_filters .st-key-pks_filters div[data-testid="stHorizontalBlock"] {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1818,11 +1917,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------
-# MOBILE SEGMENTED FILTERS
+# MOBILE FILTERS — STICKY / FREEZE TOP
 # ------------------------------------------------------------
-# Native Streamlit buttons are used here intentionally.
-# Unlike <a href>, clicking them does NOT navigate/reload the browser
-# document or open a new tab. Only Streamlit performs its normal rerun.
+# Native Streamlit buttons are used intentionally. Clicking a filter
+# performs only the normal Streamlit rerun; it does not open a new tab.
 
 if "category" not in st.session_state:
     st.session_state.category = "All Asuransi"
@@ -1843,58 +1941,62 @@ def set_category(value):
 def set_pks(value):
     st.session_state.pks_filter = value
 
-# ------------------------------------------------------------
-# Row 1 — All / Umum / Jiwa
-# ------------------------------------------------------------
-st.markdown(
-    '<div class="filter-section-title">'
-    '<div class="main">Kategori Asuransi</div>'
-    '<div class="hint">Pilih jenis asuransi</div>'
-    '</div>',
-    unsafe_allow_html=True
-)
+# Everything below is placed inside one Streamlit container so the
+# category + PKS controls can freeze together while the user scrolls.
+with st.container(key="sticky_filters"):
 
-with st.container(key="category_filters"):
-    cat_cols = st.columns(3, gap="small")
-    for i, (label, value) in enumerate(category_items):
-        with cat_cols[i]:
-            # Short label; CSS supplies the icon and subtitle for the card UI.
-            short_label = ["All", "Umum", "Jiwa"][i]
-            st.button(
-                short_label,
-                key=f"category_btn_{i}",
-                use_container_width=True,
-                type="primary" if st.session_state.category == value else "secondary",
-                on_click=set_category,
-                args=(value,),
-            )
+    # ------------------------------------------------------------
+    # Row 1 — All / Umum / Jiwa
+    # ------------------------------------------------------------
+    st.markdown(
+        '<div class="filter-section-title">'
+        '<div class="main">Kategori Asuransi</div>'
+        '<div class="hint">Pilih jenis asuransi</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
-# ------------------------------------------------------------
-# Row 2 — Lepas Filter / PKS Kredit / PKS Banca
-# ------------------------------------------------------------
-st.markdown(
-    '<div class="filter-section-title">'
-    '<div class="main">Jenis Kerja Sama</div>'
-    '<div class="hint">Pilih atau lepas filter PKS</div>'
-    '</div>',
-    unsafe_allow_html=True
-)
+    with st.container(key="category_filters"):
+        cat_cols = st.columns(3, gap="small")
+        for i, (label, value) in enumerate(category_items):
+            with cat_cols[i]:
+                # Short label; CSS supplies the icon/subtitle for the card UI.
+                short_label = ["All", "Umum", "Jiwa"][i]
+                st.button(
+                    short_label,
+                    key=f"category_btn_{i}",
+                    use_container_width=True,
+                    type="primary" if st.session_state.category == value else "secondary",
+                    on_click=set_category,
+                    args=(value,),
+                )
 
-with st.container(key="pks_filters"):
-    # "Lepas Filter" hanya menghapus filter PKS. Filter kategori
-    # (All / Umum / Jiwa) dan pencarian nama tetap dipertahankan.
-    pks_items = ["Lepas Filter", "PKS Kredit", "PKS Banca"]
-    pks_cols = st.columns(3, gap="small")
-    for i, value in enumerate(pks_items):
-        with pks_cols[i]:
-            st.button(
-                value,
-                key=f"pks_btn_{i}",
-                use_container_width=True,
-                type="primary" if st.session_state.pks_filter == value else "secondary",
-                on_click=set_pks,
-                args=(value,),
-            )
+    # ------------------------------------------------------------
+    # Row 2 — Lepas Filter / PKS Kredit / PKS Banca
+    # ------------------------------------------------------------
+    st.markdown(
+        '<div class="filter-section-title">'
+        '<div class="main">Jenis Kerja Sama</div>'
+        '<div class="hint">Pilih atau lepas filter PKS</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    with st.container(key="pks_filters"):
+        # "Lepas Filter" hanya menghapus filter PKS. Filter kategori
+        # (All / Umum / Jiwa) dan pencarian nama tetap dipertahankan.
+        pks_items = ["Lepas Filter", "PKS Kredit", "PKS Banca"]
+        pks_cols = st.columns(3, gap="small")
+        for i, value in enumerate(pks_items):
+            with pks_cols[i]:
+                st.button(
+                    value,
+                    key=f"pks_btn_{i}",
+                    use_container_width=True,
+                    type="primary" if st.session_state.pks_filter == value else "secondary",
+                    on_click=set_pks,
+                    args=(value,),
+                )
 
 # ------------------------------------------------------------
 # ------------------------------------------------------------
