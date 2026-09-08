@@ -6,11 +6,11 @@ import re
 from urllib.parse import urlencode
 
 # ============================================================
-# BANCAPOCKET - MOBILE INSURANCE PARTNER DIRECTORY
+# BANCASSPOCKET - MOBILE INSURANCE PARTNER DIRECTORY
 # ============================================================
 
 st.set_page_config(
-    page_title="BancaPocket",
+    page_title="Baket - BancassPocket",
     page_icon="🛡️",
     layout="centered",
     initial_sidebar_state="collapsed",
