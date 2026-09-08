@@ -250,6 +250,112 @@ div[data-testid="stSegmentedControl"] [role="radio"]:active {
     }
 }
 
+
+/* ============================================================
+   BANCA POCKET — FINAL BLUE MOBILE THEME OVERRIDES
+   ============================================================ */
+
+/* Category + PKS segmented controls */
+div[data-testid="stSegmentedControl"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+}
+
+div[data-testid="stSegmentedControl"] [role="radiogroup"] {
+    background: #ffffff !important;
+    background-image: none !important;
+    border: 1px solid #d7e3f3 !important;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08) !important;
+}
+
+div[data-testid="stSegmentedControl"] [role="radio"] {
+    background: transparent !important;
+    color: #48617f !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+    -webkit-text-fill-color: #48617f !important;
+}
+
+div[data-testid="stSegmentedControl"] [role="radio"][aria-checked="true"],
+div[data-testid="stSegmentedControl"] [role="radio"][data-state="checked"],
+div[data-testid="stSegmentedControl"] [role="radio"][aria-selected="true"] {
+    background: linear-gradient(135deg, #1456c8 0%, #2f80ed 100%) !important;
+    background-image: linear-gradient(135deg, #1456c8 0%, #2f80ed 100%) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 7px 18px rgba(37, 99, 235, 0.25) !important;
+}
+
+/* Prevent dark native focus/hover styles */
+div[data-testid="stSegmentedControl"] [role="radio"]:hover {
+    background: #eef5ff !important;
+    color: #2563eb !important;
+    -webkit-text-fill-color: #2563eb !important;
+}
+
+div[data-testid="stSegmentedControl"] [role="radio"][aria-checked="true"]:hover,
+div[data-testid="stSegmentedControl"] [role="radio"][data-state="checked"]:hover,
+div[data-testid="stSegmentedControl"] [role="radio"][aria-selected="true"]:hover {
+    background: linear-gradient(135deg, #1456c8 0%, #2f80ed 100%) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Detail button — blue instead of black */
+div[data-testid="stButton"] > button,
+div[data-testid="stButton"] button {
+    min-height: 48px !important;
+    border-radius: 15px !important;
+    border: 0 !important;
+    background: linear-gradient(135deg, #1456c8 0%, #2f80ed 100%) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-weight: 800 !important;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18) !important;
+    transition: transform .15s ease, box-shadow .15s ease !important;
+}
+
+div[data-testid="stButton"] > button:hover,
+div[data-testid="stButton"] button:hover {
+    background: linear-gradient(135deg, #124bb1 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24) !important;
+}
+
+div[data-testid="stButton"] > button:active,
+div[data-testid="stButton"] button:active {
+    transform: scale(.985) !important;
+}
+
+/* Mobile: keep the three-item menus on one row */
+@media (max-width: 600px) {
+    div[data-testid="stSegmentedControl"] [role="radiogroup"] {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 4px !important;
+        padding: 4px !important;
+        border-radius: 18px !important;
+    }
+
+    div[data-testid="stSegmentedControl"] [role="radio"] {
+        min-height: 50px !important;
+        padding: 4px 2px !important;
+        font-size: 13px !important;
+        border-radius: 13px !important;
+    }
+
+    div[data-testid="stButton"] > button {
+        min-height: 50px !important;
+        border-radius: 15px !important;
+    }
+}
+
+/* ============================================================
+   END FINAL BLUE MOBILE THEME
+   ============================================================ */
+
 /* ============================================================
    SECTION / TEXT — FORCE DARK TEXT
    ============================================================ */
