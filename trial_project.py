@@ -2088,7 +2088,7 @@ count_label = "Semua Asuransi" if category == "All Asuransi" else category
 pks_label = "" if pks_filter == "Lepas Filter" else f" • {pks_filter}"
 
 st.markdown(
-    f'<div class="section-title">Asuradur Partner</div>'
+    f'<div class="section-title">Daftar Asuradur</div>'
     f'<div class="section-count">Total {len(filtered)} {count_label}{pks_label}</div>',
     unsafe_allow_html=True
 )
