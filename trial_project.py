@@ -1404,7 +1404,7 @@ html, body, #root, .stApp,
 }
 
 .st-key-pks_filters div[data-testid="stHorizontalBlock"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }
 
 .st-key-category_filters div[data-testid="column"],
@@ -1490,20 +1490,20 @@ html, body, #root, .stApp,
     content: "Asuransi Jiwa" !important;
 }
 
-/* PKS cards */
+/* PKS cards — same shape/proportion as Category cards */
 .st-key-pks_filters button {
-    height: 94px !important;
-    min-height: 94px !important;
-    text-align: left !important;
-    padding: 13px 20px 13px 70px !important;
+    height: 112px !important;
+    min-height: 112px !important;
+    text-align: center !important;
+    padding: 16px 8px !important;
 }
 
 .st-key-pks_filters button::before {
-    position: absolute !important;
-    left: 20px !important;
-    top: 50% !important;
-    transform: translateY(-55%) !important;
-    font-size: 31px !important;
+    position: static !important;
+    display: block !important;
+    margin-bottom: 6px !important;
+    transform: none !important;
+    font-size: 27px !important;
     line-height: 1 !important;
     color: #607796 !important;
     -webkit-text-fill-color: #607796 !important;
@@ -1575,8 +1575,8 @@ html, body, #root, .stApp,
         min-height: 118px !important;
     }
     .st-key-pks_filters button {
-        height: 100px !important;
-        min-height: 100px !important;
+        height: 118px !important;
+        min-height: 118px !important;
     }
 }
 
@@ -1604,17 +1604,16 @@ html, body, #root, .stApp,
     }
 
     .st-key-pks_filters button {
-        height: 88px !important;
-        min-height: 88px !important;
+        height: 108px !important;
+        min-height: 108px !important;
         border-radius: 20px !important;
-        padding-left: 57px !important;
-        padding-right: 8px !important;
-        font-size: 16px !important;
+        padding: 13px 4px !important;
+        font-size: 18px !important;
     }
 
     .st-key-pks_filters button::before {
-        left: 16px !important;
-        font-size: 27px !important;
+        font-size: 25px !important;
+        margin-bottom: 6px !important;
     }
 
     .st-key-pks_filters button::after {
