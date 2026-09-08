@@ -969,126 +969,117 @@ div[data-testid="stRadio"] {
 
 
 /* ============================================================
-   BANCAPOCKET - MOBILE FILTERS
-   Use native horizontal radio controls instead of st.columns.
-   This prevents the 1st item from stretching and keeps all 3
-   options inside the phone viewport.
+   BANCAPOCKET - SIMPLE MOBILE FILTER BUTTONS
+   Layout intentionally follows the user's sketch:
+   Row 1 = All / Umum / Jiwa
+   Row 2 = PKS Kredit / PKS Banca
+   Each item is an independent rounded button.
    ============================================================ */
 
-div[data-testid="stRadio"] {
+.bp-filter-row {
     width: 100% !important;
     max-width: 100% !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
-div[data-testid="stRadio"] > label {
-    display: none !important;
-}
-
-div[data-testid="stRadio"] [role="radiogroup"] {
+/* Streamlit columns used only by the two filter rows */
+.bp-filter-row ~ div[data-testid="stHorizontalBlock"],
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="category_btn"]),
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     display: flex !important;
-    flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
-    gap: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden !important;
-    border: 1px solid #D7E3F3 !important;
-    border-radius: 22px !important;
-    background: #FFFFFF !important;
     box-sizing: border-box !important;
-    box-shadow: 0 5px 16px rgba(37,99,235,.07) !important;
+    overflow: visible !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label {
-    flex: 1 1 33.333333% !important;
-    width: 33.333333% !important;
+/* Every filter column must be allowed to shrink */
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="category_btn"]) > div[data-testid="column"],
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) > div[data-testid="column"] {
     min-width: 0 !important;
-    max-width: 33.333333% !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+}
+
+/* Filter buttons */
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="category_btn"]) button,
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) button {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
     height: 58px !important;
     min-height: 58px !important;
+    padding: 0 10px !important;
     margin: 0 !important;
-    padding: 0 4px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-sizing: border-box !important;
-    border: 0 !important;
-    border-right: 1px solid #D7E3F3 !important;
-    border-radius: 0 !important;
+    border-radius: 18px !important;
+    border: 1px solid #D7E3F3 !important;
     background: #FFFFFF !important;
     color: #4D6584 !important;
     -webkit-text-fill-color: #4D6584 !important;
+    box-shadow: 0 5px 16px rgba(37,99,235,.07) !important;
     font-size: 17px !important;
     font-weight: 700 !important;
     line-height: 1.1 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    cursor: pointer !important;
-    transition: background .20s ease, color .20s ease, box-shadow .20s ease !important;
+    transition:
+        background .20s ease,
+        color .20s ease,
+        transform .15s ease,
+        box-shadow .20s ease !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label:last-child {
-    border-right: 0 !important;
-}
-
-div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) {
+/* Active = smooth blue */
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="category_btn"]) button[kind="primary"],
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) button[kind="primary"] {
     background: linear-gradient(135deg, #1554C5 0%, #2563EB 55%, #3B82F6 100%) !important;
     color: #FFFFFF !important;
     -webkit-text-fill-color: #FFFFFF !important;
-    box-shadow: 0 6px 16px rgba(37,99,235,.18) inset !important;
+    border-color: #2563EB !important;
+    box-shadow: 0 8px 20px rgba(37,99,235,.20) !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked):hover {
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-    background: linear-gradient(135deg, #1554C5 0%, #2563EB 55%, #3B82F6 100%) !important;
-}
-
-div[data-testid="stRadio"] [role="radiogroup"] > label:hover {
+/* Hover / click */
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="category_btn"]) button[kind="secondary"]:hover,
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) button[kind="secondary"]:hover {
     background: #F4F8FF !important;
     color: #2563EB !important;
     -webkit-text-fill-color: #2563EB !important;
+    border-color: #BBD0F2 !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label input {
-    position: absolute !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="category_btn"]) button:active,
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) button:active {
+    transform: scale(.985) !important;
 }
 
-div[data-testid="stRadio"] [role="radiogroup"] > label > div {
-    min-width: 0 !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+/* Space between the two rows */
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) {
+    margin-top: 14px !important;
 }
 
-div[data-testid="stRadio"] + div[data-testid="stRadio"] {
-    margin-top: 12px !important;
+/* Second row: two centered buttons, like the sketch */
+div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) {
+    justify-content: center !important;
 }
 
 @media (max-width: 600px) {
-    div[data-testid="stRadio"] [role="radiogroup"] {
-        border-radius: 20px !important;
-    }
-
-    div[data-testid="stRadio"] [role="radiogroup"] > label {
+    div[data-testid="stHorizontalBlock"]:has(button[data-testid*="category_btn"]) button,
+    div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) button {
         height: 56px !important;
         min-height: 56px !important;
-        padding: 0 2px !important;
+        padding: 0 7px !important;
+        border-radius: 18px !important;
         font-size: 15px !important;
-        font-weight: 700 !important;
     }
 }
+
+/* ============================================================
+   END SIMPLE MOBILE FILTER BUTTONS
+   ============================================================ */
 
 /* Prevent any horizontal document overflow on phones. */
 html, body, .stApp, [data-testid="stAppViewContainer"], section.main {
@@ -1299,38 +1290,47 @@ if "pks_filter" not in st.session_state:
     st.session_state.pks_filter = "Semua"
 
 category_items = [
-    "▦  All",
-    "🏢  Umum",
-    "♥  Jiwa",
-]
-category_values = [
-    "All Asuransi",
-    "Asuransi Umum",
-    "Asuransi Jiwa",
+    ("▦  All", "All Asuransi"),
+    ("🏢  Umum", "Asuransi Umum"),
+    ("♥  Jiwa", "Asuransi Jiwa"),
 ]
 
-cat_index = category_values.index(st.session_state.category)
-selected_category_label = st.radio(
-    "Kategori Asuransi",
-    category_items,
-    index=cat_index,
-    horizontal=True,
-    label_visibility="collapsed",
-    key="category_radio",
-)
-st.session_state.category = category_values[category_items.index(selected_category_label)]
+def set_category(value):
+    st.session_state.category = value
 
-pks_items = ["Semua", "PKS Kredit", "PKS Banca"]
-pks_index = pks_items.index(st.session_state.pks_filter)
-selected_pks = st.radio(
-    "Filter PKS",
-    pks_items,
-    index=pks_index,
-    horizontal=True,
-    label_visibility="collapsed",
-    key="pks_radio",
-)
-st.session_state.pks_filter = selected_pks
+def set_pks(value):
+    st.session_state.pks_filter = value
+
+# ------------------------------------------------------------
+# Row 1 — All / Umum / Jiwa
+# ------------------------------------------------------------
+cat_cols = st.columns(3, gap="small")
+for i, (label, value) in enumerate(category_items):
+    with cat_cols[i]:
+        st.button(
+            label,
+            key=f"category_btn_{i}",
+            use_container_width=True,
+            type="primary" if st.session_state.category == value else "secondary",
+            on_click=set_category,
+            args=(value,),
+        )
+
+# ------------------------------------------------------------
+# Row 2 — PKS Kredit / PKS Banca
+# Two equal buttons, centered with generous side margins.
+# ------------------------------------------------------------
+pks_cols = st.columns([0.55, 1, 1, 0.55], gap="small")
+for i, value in enumerate(["PKS Kredit", "PKS Banca"]):
+    with pks_cols[i + 1]:
+        st.button(
+            value,
+            key=f"pks_btn_{i}",
+            use_container_width=True,
+            type="primary" if st.session_state.pks_filter == value else "secondary",
+            on_click=set_pks,
+            args=(value,),
+        )
 
 # ------------------------------------------------------------
 # ------------------------------------------------------------
