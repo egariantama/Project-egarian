@@ -214,6 +214,24 @@ div[data-testid="stSegmentedControl"] [role="radio"][aria-checked="true"] {
     box-shadow: 0 5px 15px rgba(37,99,235,.20) !important;
 }
 
+/* PKS filter sits neatly below the insurance category selector */
+div[data-testid="stSegmentedControl"] + div[data-testid="stSegmentedControl"] {
+    margin-top: 9px !important;
+}
+
+div[data-testid="stSegmentedControl"] + div[data-testid="stSegmentedControl"] [role="radio"] {
+    min-height: 48px !important;
+    font-size: 13px !important;
+}
+
+@media (max-width: 480px) {
+    div[data-testid="stSegmentedControl"] + div[data-testid="stSegmentedControl"] [role="radio"] {
+        min-height: 50px !important;
+        font-size: 13px !important;
+        border-radius: 13px !important;
+    }
+}
+
 div[data-testid="stSegmentedControl"] [role="radio"]:active {
     transform: scale(.97) !important;
 }
@@ -707,6 +725,42 @@ if new_category != st.session_state.category:
     st.rerun()
 
 # ------------------------------------------------------------
+# PKS FILTER
+# ------------------------------------------------------------
+if "pks_filter" not in st.session_state:
+    st.session_state.pks_filter = "Semua"
+
+pks_options = ["Semua", "PKS Kredit", "PKS Banca"]
+pks_index = {
+    "Semua": 0,
+    "PKS Kredit": 1,
+    "PKS Banca": 2,
+}.get(st.session_state.pks_filter, 0)
+
+if hasattr(st, "segmented_control"):
+    pks_choice = st.segmented_control(
+        "Filter PKS",
+        options=pks_options,
+        default=pks_options[pks_index],
+        label_visibility="collapsed",
+        key="pks_selector",
+    )
+else:
+    pks_choice = st.radio(
+        "Filter PKS",
+        pks_options,
+        index=pks_index,
+        horizontal=True,
+        label_visibility="collapsed",
+        key="pks_selector",
+    )
+
+if pks_choice and pks_choice != st.session_state.pks_filter:
+    st.session_state.pks_filter = pks_choice
+    st.session_state.selected_company = None
+    st.rerun()
+
+# ------------------------------------------------------------
 # Search
 # ------------------------------------------------------------
 st.markdown('<div class="search-label">Cari Asuradur</div>', unsafe_allow_html=True)
@@ -729,6 +783,23 @@ else:
     # data tetap ditampilkan saat kategori dipilih.
     filtered = df.copy()
 
+# Filter status PKS. Filter ini dapat dipakai bersamaan dengan
+# kategori Asuransi Umum / Jiwa dan pencarian nama.
+pks_filter = st.session_state.pks_filter
+
+if pks_filter == "PKS Kredit":
+    filtered = filtered[
+        filtered["PKS Rekanan Perkreditan"]
+        .apply(clean_yes_no)
+        .eq("Yes")
+    ].copy()
+elif pks_filter == "PKS Banca":
+    filtered = filtered[
+        filtered["PKS Bancassurance"]
+        .apply(clean_yes_no)
+        .eq("Yes")
+    ].copy()
+
 if search.strip():
     filtered = filtered[
         filtered["Nama Asuransi"].str.contains(
@@ -740,10 +811,11 @@ if search.strip():
 # Section
 # ------------------------------------------------------------
 count_label = "Semua Asuransi" if category == "All Asuransi" else category
+pks_label = "" if pks_filter == "Semua" else f" • {pks_filter}"
 
 st.markdown(
     f'<div class="section-title">Asuradur Partner</div>'
-    f'<div class="section-count">Total {len(filtered)} {count_label}</div>',
+    f'<div class="section-count">Total {len(filtered)} {count_label}{pks_label}</div>',
     unsafe_allow_html=True
 )
 
