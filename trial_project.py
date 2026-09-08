@@ -1986,7 +1986,7 @@ with st.container(key="sticky_filters"):
     st.markdown(
         '<div class="filter-section-title">'
         '<div class="main">Kategori Asuransi</div>'
-        '<div class="hint">Pilih jenis asuransi</div>'
+        '<div class="hint"><span style="padding-right:18px;">Pilih jenis asuransi</span></div>'
         '</div>',
         unsafe_allow_html=True
     )
@@ -2012,7 +2012,7 @@ with st.container(key="sticky_filters"):
     st.markdown(
         '<div class="filter-section-title">'
         '<div class="main">Jenis Kerja Sama</div>'
-        '<div class="hint">Pilih atau lepas filter PKS</div>'
+        '<div class="hint"><span style="padding-right:18px;">Pilih atau lepas filter PKS</span></div>'
         '</div>',
         unsafe_allow_html=True
     )
