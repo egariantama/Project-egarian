@@ -139,6 +139,23 @@ div[data-testid="stTextInput"] input:focus {
     outline: none !important;
 }
 
+
+/* Search input */
+div[data-testid="stTextInput"] input {
+    color: #17233d !important;
+    -webkit-text-fill-color: #17233d !important;
+    caret-color: #2563eb !important;
+}
+div[data-testid="stTextInput"] input::placeholder {
+    color: #94a3b8 !important;
+    -webkit-text-fill-color: #94a3b8 !important;
+    opacity: 1 !important;
+}
+div[data-testid="stTextInput"] input:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37,99,235,.10) !important;
+}
+
 /* Category buttons */
 div.stButton > button {
     border-radius: 14px !important;
@@ -626,29 +643,6 @@ if search.strip():
     ].copy()
 
 # ------------------------------------------------------------
-# Sort
-# ------------------------------------------------------------
-sort_options = [
-    "Nama Asuransi",
-    "Investasi",
-    "Aset",
-    "Ekuitas",
-    "Laba (Rugi)",
-]
-
-sort_by = st.selectbox(
-    "Urutkan",
-    sort_options,
-    index=0,
-    label_visibility="collapsed"
-)
-
-if sort_by == "Nama Asuransi":
-    filtered = filtered.sort_values("Nama Asuransi", key=lambda s: s.str.lower())
-else:
-    filtered = filtered.sort_values(sort_by, ascending=False, na_position="last")
-
-# ------------------------------------------------------------
 # Section
 # ------------------------------------------------------------
 st.markdown(
@@ -765,27 +759,3 @@ else:
                 '</div>',
                 unsafe_allow_html=True
             )
-
-# ------------------------------------------------------------
-# Bottom navigation
-# ------------------------------------------------------------
-st.markdown("""
-<div class="bottom-nav">
-    <div class="nav-item nav-active">
-        <div class="nav-icon">⌂</div>
-        Beranda
-    </div>
-    <div class="nav-item">
-        <div class="nav-icon">🏢</div>
-        Asuransi
-    </div>
-    <div class="nav-item">
-        <div class="nav-icon">▥</div>
-        Report
-    </div>
-    <div class="nav-item">
-        <div class="nav-icon">ⓘ</div>
-        Info
-    </div>
-</div>
-""", unsafe_allow_html=True)
