@@ -1374,6 +1374,254 @@ html, body, #root, .stApp,
     }
 }
 
+
+/* ============================================================
+   FINAL FILTER CARDS — MOBILE MOCKUP MATCH
+   Keyed containers make the two rows independently controllable.
+   ============================================================ */
+
+/* Kill the older segmented/radio styling if remnants exist. */
+.st-key-category_filters,
+.st-key-pks_filters {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+}
+
+.st-key-category_filters div[data-testid="stHorizontalBlock"],
+.st-key-pks_filters div[data-testid="stHorizontalBlock"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    display: grid !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+}
+
+.st-key-category_filters div[data-testid="stHorizontalBlock"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.st-key-pks_filters div[data-testid="stHorizontalBlock"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.st-key-category_filters div[data-testid="column"],
+.st-key-pks_filters div[data-testid="column"] {
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    flex: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+.st-key-category_filters .stButton,
+.st-key-pks_filters .stButton {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.st-key-category_filters button,
+.st-key-pks_filters button {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 112px !important;
+    min-height: 112px !important;
+    box-sizing: border-box !important;
+    padding: 16px 8px !important;
+    border-radius: 22px !important;
+    border: 1px solid #dbe6f4 !important;
+    background: rgba(255,255,255,.98) !important;
+    background-image: none !important;
+    color: #17233d !important;
+    -webkit-text-fill-color: #17233d !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 22px rgba(37,78,130,.08) !important;
+    transition: transform .16s ease, box-shadow .18s ease, background .18s ease !important;
+}
+
+/* Category cards */
+.st-key-category_filters button::before {
+    display: block !important;
+    margin-bottom: 6px !important;
+    font-size: 27px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    color: #526b8d !important;
+    -webkit-text-fill-color: #526b8d !important;
+}
+
+.st-key-category_filters div[data-testid="column"]:nth-child(1) button::before {
+    content: "▦" !important;
+}
+.st-key-category_filters div[data-testid="column"]:nth-child(2) button::before {
+    content: "▥" !important;
+}
+.st-key-category_filters div[data-testid="column"]:nth-child(3) button::before {
+    content: "♥" !important;
+}
+
+.st-key-category_filters button::after {
+    display: block !important;
+    margin-top: 5px !important;
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+    font-weight: 500 !important;
+    color: #7286a3 !important;
+    -webkit-text-fill-color: #7286a3 !important;
+}
+
+.st-key-category_filters div[data-testid="column"]:nth-child(1) button::after {
+    content: "Semua Asuransi" !important;
+}
+.st-key-category_filters div[data-testid="column"]:nth-child(2) button::after {
+    content: "Asuransi Umum" !important;
+}
+.st-key-category_filters div[data-testid="column"]:nth-child(3) button::after {
+    content: "Asuransi Jiwa" !important;
+}
+
+/* PKS cards */
+.st-key-pks_filters button {
+    height: 94px !important;
+    min-height: 94px !important;
+    text-align: left !important;
+    padding: 13px 20px 13px 70px !important;
+}
+
+.st-key-pks_filters button::before {
+    position: absolute !important;
+    left: 20px !important;
+    top: 50% !important;
+    transform: translateY(-55%) !important;
+    font-size: 31px !important;
+    line-height: 1 !important;
+    color: #607796 !important;
+    -webkit-text-fill-color: #607796 !important;
+}
+
+.st-key-pks_filters div[data-testid="column"]:nth-child(1) button::before {
+    content: "▤" !important;
+}
+.st-key-pks_filters div[data-testid="column"]:nth-child(2) button::before {
+    content: "♢" !important;
+}
+
+.st-key-pks_filters button::after {
+    display: block !important;
+    margin-top: 6px !important;
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+    font-weight: 500 !important;
+    color: #7286a3 !important;
+    -webkit-text-fill-color: #7286a3 !important;
+}
+
+.st-key-pks_filters div[data-testid="column"]:nth-child(1) button::after {
+    content: "Kerja Sama Kredit" !important;
+}
+.st-key-pks_filters div[data-testid="column"]:nth-child(2) button::after {
+    content: "Bancassurance" !important;
+}
+
+/* Active card */
+.st-key-category_filters button[kind="primary"],
+.st-key-pks_filters button[kind="primary"] {
+    background: linear-gradient(135deg,#1554c5 0%,#2563eb 55%,#3b82f6 100%) !important;
+    background-image: linear-gradient(135deg,#1554c5 0%,#2563eb 55%,#3b82f6 100%) !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 10px 26px rgba(37,99,235,.22) !important;
+}
+
+.st-key-category_filters button[kind="primary"]::before,
+.st-key-category_filters button[kind="primary"]::after,
+.st-key-pks_filters button[kind="primary"]::before,
+.st-key-pks_filters button[kind="primary"]::after {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+.st-key-category_filters button:hover,
+.st-key-pks_filters button:hover {
+    transform: translateY(-1px) !important;
+}
+
+.st-key-category_filters button:active,
+.st-key-pks_filters button:active {
+    transform: scale(.985) !important;
+}
+
+/* Desktop/tablet: keep the same clean proportions but use a wider content area. */
+@media (min-width: 601px) {
+    .st-key-category_filters button {
+        height: 118px !important;
+        min-height: 118px !important;
+    }
+    .st-key-pks_filters button {
+        height: 100px !important;
+        min-height: 100px !important;
+    }
+}
+
+/* iPhone / narrow screens */
+@media (max-width: 600px) {
+    .st-key-category_filters div[data-testid="stHorizontalBlock"],
+    .st-key-pks_filters div[data-testid="stHorizontalBlock"] {
+        gap: 9px !important;
+    }
+
+    .st-key-category_filters button {
+        height: 108px !important;
+        min-height: 108px !important;
+        border-radius: 20px !important;
+        padding: 13px 4px !important;
+        font-size: 18px !important;
+    }
+
+    .st-key-category_filters button::before {
+        font-size: 25px !important;
+    }
+
+    .st-key-category_filters button::after {
+        font-size: 10.5px !important;
+    }
+
+    .st-key-pks_filters button {
+        height: 88px !important;
+        min-height: 88px !important;
+        border-radius: 20px !important;
+        padding-left: 57px !important;
+        padding-right: 8px !important;
+        font-size: 16px !important;
+    }
+
+    .st-key-pks_filters button::before {
+        left: 16px !important;
+        font-size: 27px !important;
+    }
+
+    .st-key-pks_filters button::after {
+        font-size: 10px !important;
+    }
+
+    /* Remove excessive vertical whitespace from Streamlit's button wrappers. */
+    .st-key-category_filters [data-testid="stButton"],
+    .st-key-pks_filters [data-testid="stButton"] {
+        margin-bottom: 0 !important;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1599,17 +1847,20 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-cat_cols = st.columns(3, gap="small")
-for i, (label, value) in enumerate(category_items):
-    with cat_cols[i]:
-        st.button(
-            label,
-            key=f"category_btn_{i}",
-            use_container_width=True,
-            type="primary" if st.session_state.category == value else "secondary",
-            on_click=set_category,
-            args=(value,),
-        )
+with st.container(key="category_filters"):
+    cat_cols = st.columns(3, gap="small")
+    for i, (label, value) in enumerate(category_items):
+        with cat_cols[i]:
+            # Short label; CSS supplies the icon and subtitle for the card UI.
+            short_label = ["All", "Umum", "Jiwa"][i]
+            st.button(
+                short_label,
+                key=f"category_btn_{i}",
+                use_container_width=True,
+                type="primary" if st.session_state.category == value else "secondary",
+                on_click=set_category,
+                args=(value,),
+            )
 
 # ------------------------------------------------------------
 # Row 2 — PKS Kredit / PKS Banca
@@ -1622,17 +1873,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-pks_cols = st.columns([0.55, 1, 1, 0.55], gap="small")
-for i, value in enumerate(["PKS Kredit", "PKS Banca"]):
-    with pks_cols[i + 1]:
-        st.button(
-            value,
-            key=f"pks_btn_{i}",
-            use_container_width=True,
-            type="primary" if st.session_state.pks_filter == value else "secondary",
-            on_click=set_pks,
-            args=(value,),
-        )
+with st.container(key="pks_filters"):
+    pks_cols = st.columns(2, gap="small")
+    for i, value in enumerate(["PKS Kredit", "PKS Banca"]):
+        with pks_cols[i]:
+            st.button(
+                value,
+                key=f"pks_btn_{i}",
+                use_container_width=True,
+                type="primary" if st.session_state.pks_filter == value else "secondary",
+                on_click=set_pks,
+                args=(value,),
+            )
 
 # ------------------------------------------------------------
 # ------------------------------------------------------------
@@ -1802,3 +2054,4 @@ else:
                 '</div>',
                 unsafe_allow_html=True
             )
+
