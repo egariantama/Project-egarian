@@ -969,147 +969,124 @@ div[data-testid="stRadio"] {
 
 
 /* ============================================================
-   BANCAPOCKET - NATIVE STREAMLIT FILTER BUTTONS
-   Three equal segments, no browser navigation, mobile-safe.
+   BANCAPOCKET - MOBILE FILTERS
+   Use native horizontal radio controls instead of st.columns.
+   This prevents the 1st item from stretching and keeps all 3
+   options inside the phone viewport.
    ============================================================ */
 
-.bp-segment-wrap { width:100%; max-width:100%; }
+div[data-testid="stRadio"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-div[data-testid="stHorizontalBlock"] {
+div[data-testid="stRadio"] > label {
+    display: none !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     display: flex !important;
+    flex-direction: row !important;
     flex-wrap: nowrap !important;
+    align-items: stretch !important;
     gap: 0 !important;
-    box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
     overflow: hidden !important;
+    border: 1px solid #D7E3F3 !important;
+    border-radius: 22px !important;
+    background: #FFFFFF !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 5px 16px rgba(37,99,235,.07) !important;
 }
 
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+div[data-testid="stRadio"] [role="radiogroup"] > label {
     flex: 1 1 33.333333% !important;
     width: 33.333333% !important;
     min-width: 0 !important;
     max-width: 33.333333% !important;
-    padding: 0 !important;
+    height: 58px !important;
+    min-height: 58px !important;
     margin: 0 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-}
-
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div {
-    width: 100% !important;
-    min-width: 0 !important;
-}
-
-/* Every filter button fills its exact 1/3 segment.
-   This rule intentionally overrides the older global .stButton rule. */
-div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] > button {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    height: 56px !important;
-    min-height: 56px !important;
     padding: 0 4px !important;
-    margin: 0 !important;
-    border: 1px solid #D7E3F3 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-right: 1px solid #D7E3F3 !important;
     border-radius: 0 !important;
     background: #FFFFFF !important;
     color: #4D6584 !important;
     -webkit-text-fill-color: #4D6584 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-    box-shadow: none !important;
-    font-size: 16px !important;
-    font-weight: 650 !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
     white-space: nowrap !important;
-    text-overflow: clip !important;
-    transition: all .18s ease !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    cursor: pointer !important;
+    transition: background .20s ease, color .20s ease, box-shadow .20s ease !important;
 }
 
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child button {
-    border-radius: 20px 0 0 20px !important;
+div[data-testid="stRadio"] [role="radiogroup"] > label:last-child {
+    border-right: 0 !important;
 }
 
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child button {
-    border-radius: 0 20px 20px 0 !important;
-}
-
-/* Active segment: generated from the current session state. */
-div[data-testid="stHorizontalBlock"]:has(button[kind="secondary"][aria-pressed="true"]) button {
-    color: #4D6584 !important;
-}
-
-/* Button click feedback. */
-div[data-testid="stHorizontalBlock"] button[kind="secondary"]:active {
-    transform: scale(.985) !important;
-}
-
-/* Active filter button */
-div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] > button[kind="primary"] {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    height: 56px !important;
-    min-height: 56px !important;
-    padding: 0 4px !important;
-    margin: 0 !important;
-    border: 1px solid #2563EB !important;
-    border-radius: 0 !important;
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) {
     background: linear-gradient(135deg, #1554C5 0%, #2563EB 55%, #3B82F6 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 6px 16px rgba(37,99,235,.18) !important;
-    font-size: 16px !important;
-    font-weight: 700 !important;
-    white-space: nowrap !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    box-shadow: 0 6px 16px rgba(37,99,235,.18) inset !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked):hover {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    background: linear-gradient(135deg, #1554C5 0%, #2563EB 55%, #3B82F6 100%) !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label:hover {
+    background: #F4F8FF !important;
+    color: #2563EB !important;
+    -webkit-text-fill-color: #2563EB !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label input {
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+div[data-testid="stRadio"] [role="radiogroup"] > label > div {
+    min-width: 0 !important;
+    max-width: 100% !important;
     overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
-div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] > button[kind="primary"]:active {
-    transform: scale(.985) !important;
-}
-
-@media (max-width: 600px) {
-    div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] > button[kind="primary"] {
-        height: 56px !important;
-        min-height: 56px !important;
-        font-size: 15px !important;
-        padding: 0 2px !important;
-    }
-}
-
-
-/* First filter row active button */
-div[data-testid="stHorizontalBlock"]:nth-of-type(1) button[kind="secondary"] {
-    -webkit-tap-highlight-color: transparent !important;
-}
-
-/* Second filter row spacing */
-div[data-testid="stHorizontalBlock"] + div[data-testid="stHorizontalBlock"] {
+div[data-testid="stRadio"] + div[data-testid="stRadio"] {
     margin-top: 12px !important;
 }
 
 @media (max-width: 600px) {
-    div[data-testid="stHorizontalBlock"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        gap: 0 !important;
-        overflow: hidden !important;
+    div[data-testid="stRadio"] [role="radiogroup"] {
+        border-radius: 20px !important;
     }
 
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        width: 33.333333% !important;
-        min-width: 0 !important;
-        max-width: 33.333333% !important;
-        flex: 1 1 33.333333% !important;
-        padding: 0 !important;
-    }
-
-    div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
+    div[data-testid="stRadio"] [role="radiogroup"] > label {
         height: 56px !important;
         min-height: 56px !important;
-        font-size: 15px !important;
         padding: 0 2px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
     }
 }
 
@@ -1321,43 +1298,39 @@ if "category" not in st.session_state:
 if "pks_filter" not in st.session_state:
     st.session_state.pks_filter = "Semua"
 
-def set_category(value):
-    st.session_state.category = value
-
-def set_pks(value):
-    st.session_state.pks_filter = value
-
 category_items = [
-    ("All Asuransi", "▦  All"),
-    ("Asuransi Umum", "🏢  Umum"),
-    ("Asuransi Jiwa", "♥  Jiwa"),
+    "▦  All",
+    "🏢  Umum",
+    "♥  Jiwa",
+]
+category_values = [
+    "All Asuransi",
+    "Asuransi Umum",
+    "Asuransi Jiwa",
 ]
 
-cat_cols = st.columns(3, gap="small")
-for i, (value, label) in enumerate(category_items):
-    with cat_cols[i]:
-        st.button(
-            label,
-            key=f"category_btn_{i}",
-            use_container_width=True,
-            type="primary" if st.session_state.category == value else "secondary",
-            on_click=set_category,
-            args=(value,),
-        )
+cat_index = category_values.index(st.session_state.category)
+selected_category_label = st.radio(
+    "Kategori Asuransi",
+    category_items,
+    index=cat_index,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="category_radio",
+)
+st.session_state.category = category_values[category_items.index(selected_category_label)]
 
 pks_items = ["Semua", "PKS Kredit", "PKS Banca"]
-
-pks_cols = st.columns(3, gap="small")
-for i, value in enumerate(pks_items):
-    with pks_cols[i]:
-        st.button(
-            value,
-            key=f"pks_btn_{i}",
-            use_container_width=True,
-            type="primary" if st.session_state.pks_filter == value else "secondary",
-            on_click=set_pks,
-            args=(value,),
-        )
+pks_index = pks_items.index(st.session_state.pks_filter)
+selected_pks = st.radio(
+    "Filter PKS",
+    pks_items,
+    index=pks_index,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="pks_radio",
+)
+st.session_state.pks_filter = selected_pks
 
 # ------------------------------------------------------------
 # ------------------------------------------------------------
