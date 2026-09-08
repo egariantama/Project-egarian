@@ -1081,10 +1081,12 @@ div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) {
    END SIMPLE MOBILE FILTER BUTTONS
    ============================================================ */
 
-/* Prevent any horizontal document overflow on phones. */
+/* Prevent horizontal overflow without creating an overflow/scroll container.
+   `overflow-x:hidden` can break position:sticky on mobile Safari. */
 html, body, .stApp, [data-testid="stAppViewContainer"], section.main {
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
 }
 
 
@@ -1629,33 +1631,47 @@ html, body, #root, .stApp,
 
 /* ============================================================
    BANCAPOCKET — FREEZE TOP FILTER BAR
-   Category + PKS filters stay visible while scrolling.
+   Robust sticky implementation for Streamlit + mobile Safari.
    ============================================================ */
+
+/* Important: ancestors must not establish an overflow clipping context. */
+section.main,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stVerticalBlockBorderWrapper"] {
+    overflow-x: clip !important;
+}
+
+/* The actual keyed Streamlit container becomes the sticky toolbar. */
 .st-key-sticky_filters {
     position: -webkit-sticky !important;
     position: sticky !important;
-    top: 0 !important;
-    z-index: 1000 !important;
+    top: 0px !important;
+    z-index: 99999 !important;
+    align-self: flex-start !important;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
     margin: 0 0 18px 0 !important;
     padding: 10px 0 14px 0 !important;
-    background: rgba(239, 245, 253, 0.94) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
-    backdrop-filter: blur(16px) saturate(150%) !important;
-    border-bottom: 1px solid rgba(215, 227, 243, 0.85) !important;
-    box-shadow: 0 8px 24px rgba(37, 78, 130, 0.08) !important;
+    background: rgba(239,245,253,.97) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+    backdrop-filter: blur(18px) saturate(150%) !important;
+    border-bottom: 1px solid rgba(205,220,239,.95) !important;
+    box-shadow: 0 8px 24px rgba(37,78,130,.12) !important;
 }
 
-/* When sticky, keep the two rows compact enough not to dominate the screen. */
+/* Keep the sticky toolbar above every insurer card. */
+.st-key-sticky_filters,
+.st-key-sticky_filters > div,
+.st-key-sticky_filters [data-testid="stVerticalBlock"] {
+    isolation: isolate !important;
+}
+
+/* Compact controls while they are in the sticky region. */
 .st-key-sticky_filters .filter-section-title {
     margin-top: 4px !important;
-    margin-bottom: 8px !important;
-}
-
-.st-key-sticky_filters .filter-section-title + .st-key-category_filters {
-    margin-bottom: 8px !important;
+    margin-bottom: 7px !important;
 }
 
 .st-key-sticky_filters .filter-section-title .main {
@@ -1666,19 +1682,44 @@ html, body, #root, .stApp,
     font-size: 11px !important;
 }
 
+.st-key-sticky_filters .st-key-category_filters button {
+    height: 70px !important;
+    min-height: 70px !important;
+    border-radius: 16px !important;
+}
+
+.st-key-sticky_filters .st-key-category_filters button::after {
+    display: none !important;
+}
+
+.st-key-sticky_filters .st-key-pks_filters button {
+    height: 64px !important;
+    min-height: 64px !important;
+    border-radius: 16px !important;
+    font-size: 14px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    text-align: center !important;
+}
+
+.st-key-sticky_filters .st-key-pks_filters button::before,
+.st-key-sticky_filters .st-key-pks_filters button::after {
+    display: none !important;
+}
+
 @media (max-width: 600px) {
     .st-key-sticky_filters {
-        top: 0 !important;
+        top: 0px !important;
+        width: calc(100% + 4px) !important;
         margin-left: -2px !important;
         margin-right: -2px !important;
-        width: calc(100% + 4px) !important;
-        padding: 8px 2px 12px 2px !important;
+        padding: 7px 2px 10px 2px !important;
         border-radius: 0 0 18px 18px !important;
     }
 
     .st-key-sticky_filters .filter-section-title {
-        margin-top: 3px !important;
-        margin-bottom: 6px !important;
+        margin-top: 2px !important;
+        margin-bottom: 5px !important;
     }
 
     .st-key-sticky_filters .filter-section-title .main {
@@ -1690,39 +1731,23 @@ html, body, #root, .stApp,
     }
 
     .st-key-sticky_filters .st-key-category_filters button {
-        height: 70px !important;
-        min-height: 70px !important;
-        border-radius: 16px !important;
-        padding: 8px 3px !important;
+        height: 66px !important;
+        min-height: 66px !important;
+        border-radius: 15px !important;
         font-size: 15px !important;
+        padding: 7px 3px !important;
     }
 
     .st-key-sticky_filters .st-key-category_filters button::before {
-        font-size: 20px !important;
-        margin-bottom: 3px !important;
-    }
-
-    .st-key-sticky_filters .st-key-category_filters button::after {
-        display: none !important;
+        font-size: 19px !important;
+        margin-bottom: 2px !important;
     }
 
     .st-key-sticky_filters .st-key-pks_filters button {
-        height: 64px !important;
-        min-height: 64px !important;
-        border-radius: 16px !important;
-        padding: 0 4px !important;
-        font-size: 14px !important;
-        text-align: center !important;
-    }
-
-    .st-key-sticky_filters .st-key-pks_filters button::before,
-    .st-key-sticky_filters .st-key-pks_filters button::after {
-        display: none !important;
-    }
-
-    .st-key-sticky_filters .st-key-pks_filters div[data-testid="stHorizontalBlock"] {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 8px !important;
+        height: 58px !important;
+        min-height: 58px !important;
+        border-radius: 15px !important;
+        font-size: 13px !important;
     }
 }
 
