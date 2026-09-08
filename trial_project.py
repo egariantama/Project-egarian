@@ -1085,7 +1085,7 @@ div[data-testid="stHorizontalBlock"]:has(button[data-testid*="pks_btn"]) {
    `overflow-x:hidden` can break position:sticky on mobile Safari. */
 html, body, .stApp, [data-testid="stAppViewContainer"] {
     max-width: 100% !important;
-    overflow-x: clip !important;
+    overflow-x: visible !important;
 }
 
 /* Streamlit's main section is the actual scrolling viewport.
@@ -1093,8 +1093,7 @@ html, body, .stApp, [data-testid="stAppViewContainer"] {
    container on desktop and especially iOS Safari. */
 section.main {
     max-width: 100% !important;
-    overflow-x: clip !important;
-    overflow-y: auto !important;
+    overflow: visible !important;
 }
 
 
@@ -1638,45 +1637,51 @@ html, body, #root, .stApp,
 }
 
 /* ============================================================
-   BANCAPOCKET — FREEZE TOP FILTER BAR
-   Robust sticky implementation for Streamlit + mobile Safari.
+   BANCAPOCKET - FREEZE TOP FILTER BAR
    ============================================================ */
 
-/* Important: ancestors must not establish an overflow clipping context. */
-section.main,
+/* No Streamlit ancestor is allowed to clip the sticky element. */
+html, body, .stApp,
 [data-testid="stAppViewContainer"],
 [data-testid="stAppViewBlockContainer"],
-[data-testid="stVerticalBlockBorderWrapper"] {
-    overflow-x: clip !important;
+section.main,
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stVerticalBlock"] {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
 }
 
-/* The actual keyed Streamlit container becomes the sticky toolbar. */
+/* Actual Streamlit keyed container used by the two filter rows. */
 .st-key-sticky_filters {
     position: -webkit-sticky !important;
     position: sticky !important;
     top: 0 !important;
-    align-self: stretch !important;
-    z-index: 99999 !important;
+    z-index: 999999 !important;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
+    align-self: stretch !important;
+
     margin: 0 0 18px 0 !important;
     padding: 10px 0 14px 0 !important;
-    background: rgba(239,245,253,.97) !important;
+
+    background: rgba(239,245,253,.98) !important;
     -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
     backdrop-filter: blur(18px) saturate(150%) !important;
+
     border-bottom: 1px solid rgba(205,220,239,.95) !important;
     box-shadow: 0 8px 24px rgba(37,78,130,.12) !important;
 }
 
-/* Keep the sticky toolbar above every insurer card. */
+/* Make sure Streamlit's generated children do not create another scroll context. */
 .st-key-sticky_filters,
 .st-key-sticky_filters > div,
-.st-key-sticky_filters [data-testid="stVerticalBlock"] {
-    isolation: isolate !important;
+.st-key-sticky_filters [data-testid="stVerticalBlock"],
+.st-key-sticky_filters [data-testid="stVerticalBlockBorderWrapper"] {
+    overflow: visible !important;
 }
 
-/* Compact controls while they are in the sticky region. */
+/* Keep the filter controls compact while frozen. */
 .st-key-sticky_filters .filter-section-title {
     margin-top: 4px !important;
     margin-bottom: 7px !important;
@@ -1705,9 +1710,6 @@ section.main,
     min-height: 64px !important;
     border-radius: 16px !important;
     font-size: 14px !important;
-    padding-left: 4px !important;
-    padding-right: 4px !important;
-    text-align: center !important;
 }
 
 .st-key-sticky_filters .st-key-pks_filters button::before,
@@ -1717,11 +1719,11 @@ section.main,
 
 @media (max-width: 600px) {
     .st-key-sticky_filters {
-        top: 0px !important;
-        width: calc(100% + 4px) !important;
-        margin-left: -2px !important;
-        margin-right: -2px !important;
-        padding: 7px 2px 10px 2px !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 7px 0 10px 0 !important;
         border-radius: 0 0 18px 18px !important;
     }
 
