@@ -165,6 +165,12 @@ div.stButton > button {
     background: white !important;
     color: #4b5f7d !important;
     box-shadow: 0 4px 12px rgba(30,60,100,.04);
+    white-space: nowrap !important;
+}
+
+
+.category-row {
+    margin-bottom: 8px;
 }
 
 div.stButton > button:hover {
@@ -592,11 +598,22 @@ st.markdown("""
 # Category state
 # ------------------------------------------------------------
 if "category" not in st.session_state:
-    st.session_state.category = "Asuransi Umum"
+    st.session_state.category = "All Asuransi"
 
-c1, c2 = st.columns(2)
+# Three buttons stay side-by-side.
+c1, c2, c3 = st.columns(3)
 
 with c1:
+    if st.session_state.category == "All Asuransi":
+        st.markdown('<div class="category-active">', unsafe_allow_html=True)
+    if st.button("▦  All Asuransi", use_container_width=True):
+        st.session_state.category = "All Asuransi"
+        st.session_state.selected_company = None
+        st.rerun()
+    if st.session_state.category == "All Asuransi":
+        st.markdown('</div>', unsafe_allow_html=True)
+
+with c2:
     if st.session_state.category == "Asuransi Umum":
         st.markdown('<div class="category-active">', unsafe_allow_html=True)
     if st.button("🏢  Asuransi Umum", use_container_width=True):
@@ -606,7 +623,7 @@ with c1:
     if st.session_state.category == "Asuransi Umum":
         st.markdown('</div>', unsafe_allow_html=True)
 
-with c2:
+with c3:
     if st.session_state.category == "Asuransi Jiwa":
         st.markdown('<div class="category-active">', unsafe_allow_html=True)
     if st.button("♥  Asuransi Jiwa", use_container_width=True):
@@ -628,11 +645,15 @@ search = st.text_input(
 
 category = st.session_state.category
 
-# Infer category when the Excel has no explicit category column
-if column_mapping["type"]:
+# All Asuransi = tampilkan semua perusahaan.
+# Jika memilih kategori tertentu, filter berdasarkan Jenis Asuransi.
+if category == "All Asuransi":
+    filtered = df.copy()
+elif column_mapping["type"]:
     filtered = df[df["Jenis Asuransi"].apply(infer_type).eq(category)].copy()
 else:
-    # If no type column exists, show all data under the selected category.
+    # Jika Excel belum memiliki kolom Jenis Asuransi,
+    # data tetap ditampilkan saat kategori dipilih.
     filtered = df.copy()
 
 if search.strip():
@@ -645,9 +666,11 @@ if search.strip():
 # ------------------------------------------------------------
 # Section
 # ------------------------------------------------------------
+count_label = "Semua Asuransi" if category == "All Asuransi" else category
+
 st.markdown(
     f'<div class="section-title">Asuradur Partner</div>'
-    f'<div class="section-count">Total {len(filtered)} {category}</div>',
+    f'<div class="section-count">Total {len(filtered)} {count_label}</div>',
     unsafe_allow_html=True
 )
 
@@ -682,7 +705,7 @@ else:
             f'<div class="company-logo">{html.escape(initials)}</div>'
             '<div style="min-width:0;">'
             f'<div class="company-name">{html.escape(name)}</div>'
-            f'<div class="company-type">{html.escape(category)}</div>'
+            f'<div class="company-type">{html.escape(str(row["Jenis Asuransi"]) if category == "All Asuransi" else category)}</div>'
             '</div>'
             '<div class="arrow">›</div>'
             '</div>'
@@ -725,7 +748,7 @@ else:
             st.markdown(
                 '<div class="detail-card">'
                 f'<div class="detail-title">{html.escape(name)}</div>'
-                f'<div class="detail-sub">{html.escape(category)}</div>'
+                f'<div class="detail-sub">{html.escape(str(row["Jenis Asuransi"]) if category == "All Asuransi" else category)}</div>'
                 '<div class="detail-grid">'
                 '<div class="detail-metric">'
                 '<div class="label">Investasi</div>'
