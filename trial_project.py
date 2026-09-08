@@ -156,45 +156,97 @@ div[data-testid="stTextInput"] input:focus {
     box-shadow: 0 0 0 2px rgba(37,99,235,.10) !important;
 }
 
-/* Category buttons */
-div.stButton > button {
-    border-radius: 14px !important;
-    min-height: 44px !important;
-    font-weight: 700 !important;
+/* Category buttons / segmented control */
+div[data-testid="stHorizontalBlock"]:has(div.category-active),
+div[data-testid="stHorizontalBlock"] {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+}
+
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div {
+    width: 100% !important;
+}
+
+div[data-testid="stHorizontalBlock"] .category-active {
+    width: 100% !important;
+}
+
+div[data-testid="stHorizontalBlock"] div.stButton {
+    width: 100% !important;
+}
+
+div[data-testid="stHorizontalBlock"] div.stButton > button {
+    width: 100% !important;
+    min-height: 48px !important;
+    padding: 7px 5px !important;
+    border-radius: 16px !important;
     border: 1px solid #dce5f1 !important;
-    background: white !important;
-    color: #4b5f7d !important;
-    box-shadow: 0 4px 12px rgba(30,60,100,.04);
+    background: rgba(255,255,255,.92) !important;
+    color: #536987 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
     white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    box-shadow: 0 4px 14px rgba(30,60,100,.045) !important;
+    transition:
+        transform .18s ease,
+        background .22s ease,
+        color .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease !important;
 }
 
-
-.category-row {
-    margin-bottom: 8px;
-}
-
-div.stButton > button:hover {
-    border-color: #2563eb !important;
+div[data-testid="stHorizontalBlock"] div.stButton > button:hover {
+    transform: translateY(-1px) !important;
+    border-color: #9bb9e8 !important;
     color: #2563eb !important;
+    box-shadow: 0 7px 18px rgba(37,99,235,.09) !important;
 }
 
-.category-active div.stButton > button {
+div[data-testid="stHorizontalBlock"] div.stButton > button:active {
+    transform: scale(.97) !important;
+}
+
+div[data-testid="stHorizontalBlock"] .category-active div.stButton > button {
     background: linear-gradient(135deg,#1555c8,#2563eb) !important;
-    color: white !important;
+    color: #ffffff !important;
     border-color: #1555c8 !important;
+    box-shadow: 0 7px 18px rgba(37,99,235,.18) !important;
 }
 
-.section-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: #14213d;
-    margin: 20px 0 3px;
-}
+/* Prevent Streamlit's narrow-screen column stacking */
+@media (max-width: 640px) {
+    div[data-testid="stHorizontalBlock"] {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+    }
 
-.section-count {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 12px;
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        flex: 1 1 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+    }
+
+    div[data-testid="stHorizontalBlock"] div.stButton > button {
+        min-height: 46px !important;
+        padding: 6px 3px !important;
+        font-size: 11px !important;
+        border-radius: 14px !important;
+    }
 }
 
 /* Company card */
@@ -606,7 +658,7 @@ c1, c2, c3 = st.columns(3)
 with c1:
     if st.session_state.category == "All Asuransi":
         st.markdown('<div class="category-active">', unsafe_allow_html=True)
-    if st.button("▦  All Asuransi", use_container_width=True):
+    if st.button("▦  All", use_container_width=True):
         st.session_state.category = "All Asuransi"
         st.session_state.selected_company = None
         st.rerun()
@@ -616,7 +668,7 @@ with c1:
 with c2:
     if st.session_state.category == "Asuransi Umum":
         st.markdown('<div class="category-active">', unsafe_allow_html=True)
-    if st.button("🏢  Asuransi Umum", use_container_width=True):
+    if st.button("🏢  Umum", use_container_width=True):
         st.session_state.category = "Asuransi Umum"
         st.session_state.selected_company = None
         st.rerun()
@@ -626,7 +678,7 @@ with c2:
 with c3:
     if st.session_state.category == "Asuransi Jiwa":
         st.markdown('<div class="category-active">', unsafe_allow_html=True)
-    if st.button("♥  Asuransi Jiwa", use_container_width=True):
+    if st.button("♥  Jiwa", use_container_width=True):
         st.session_state.category = "Asuransi Jiwa"
         st.session_state.selected_company = None
         st.rerun()
