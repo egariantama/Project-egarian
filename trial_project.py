@@ -1793,12 +1793,18 @@ def find_column(df, aliases):
 
 def format_number(value):
     if pd.isna(value):
-        return "-"
+        return "—"
+
     try:
         value = float(value)
-        if value.is_integer():
-            return f"{value:,.0f}".replace(",", ".")
-        return f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+        # Tampilkan angka tanpa desimal
+        # Contoh:
+        # 6913.412  -> 6.913
+        # 18184.582 -> 18.184
+        # 5770.571  -> 5.770
+        return f"{int(value):,}".replace(",", ".")
+
     except Exception:
         return str(value)
 
