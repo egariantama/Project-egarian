@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 import html
 import re
-from urllib.parse import urlencodeƒ
+from urllib.parse import urlencode
 
 # ============================================================
 # BANCASSPOCKET - MOBILE INSURANCE PARTNER DIRECTORY
@@ -1791,31 +1791,56 @@ def find_column(df, aliases):
     return None
 
 
+def parse_excel_number(value):
+    """
+    Membaca angka dari Excel tanpa merusak nilai desimal.
+
+    Excel/Pandas biasanya sudah membaca nilai seperti 6913,412
+    sebagai float 6913.412. Nilai numerik seperti itu TIDAK boleh
+    diproses lagi dengan menghapus titik, karena titik tersebut adalah
+    pemisah desimal Python, bukan pemisah ribuan.
+    """
+    if pd.isna(value):
+        return pd.NA
+
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return float(value)
+
+    text = str(value).strip()
+    if not text:
+        return pd.NA
+
+    try:
+        # Format Indonesia dengan koma sebagai desimal: 6913,412
+        if "," in text:
+            return float(text.replace(".", "").replace(",", "."))
+
+        # String angka biasa dari Excel/Pandas: 6913.412
+        return float(text)
+    except (ValueError, TypeError):
+        return pd.NA
+
+
 def format_number(value):
+    """
+    Tampilkan angka dalam format Indonesia tanpa angka desimal.
+
+    Contoh:
+      6913.412   -> 6.913
+      18184.582  -> 18.184
+      5770.571   -> 5.770
+
+    Angka di belakang koma dipotong (bukan dibulatkan).
+    """
     if pd.isna(value):
         return "—"
 
     try:
-        # Excel bisa membaca angka sebagai 6913.412,
-        # sedangkan tampilan yang diinginkan adalah 6.913.
-        if isinstance(value, (int, float)):
-            number = float(value)
-        else:
-            text = str(value).strip()
-
-            # Format Indonesia: 6.913,412 -> 6913.412
-            if "," in text:
-                text = text.replace(".", "").replace(",", ".")
-                number = float(text)
-            else:
-                number = float(text)
-
-        # Tampilkan tanpa angka desimal.
-        # Contoh: 6913.412 -> 6.913
-        return f"{int(number):,}".replace(",", "TEMP").replace(".", ",").replace("TEMP", ".")
-
+        number = float(value)
+        return f"{int(number):,}".replace(",", ".")
     except (ValueError, TypeError):
         return str(value)
+
 
 def clean_yes_no(value):
     if pd.isna(value):
@@ -1907,10 +1932,7 @@ def prepare_data(df):
         ("profit", "Laba (Rugi)"),
     ]:
         if mapping[key]:
-            out[label] = pd.to_numeric(
-                df[mapping[key]].astype(str).str.replace(".", "", regex=False).str.replace(",", ".", regex=False),
-                errors="coerce"
-            )
+            out[label] = df[mapping[key]].apply(parse_excel_number)
         else:
             out[label] = pd.NA
 
