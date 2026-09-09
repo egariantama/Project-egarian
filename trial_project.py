@@ -1796,48 +1796,26 @@ def format_number(value):
         return "—"
 
     try:
-        # Jika sudah berupa angka dari Excel/Pandas
+        # Excel bisa membaca angka sebagai 6913.412,
+        # sedangkan tampilan yang diinginkan adalah 6.913.
         if isinstance(value, (int, float)):
             number = float(value)
-
         else:
-            # Ubah menjadi string
             text = str(value).strip()
 
-            # Format seperti:
-            # 6913,412
-            # 18184,582
+            # Format Indonesia: 6.913,412 -> 6913.412
             if "," in text:
                 text = text.replace(".", "").replace(",", ".")
                 number = float(text)
-
-            # Format seperti:
-            # 6.913.412
-            # 18.184.582
-            #
-            # Ini dianggap sebagai:
-            # 6.913,412
-            # 18.184,582
-            elif text.count(".") >= 2:
-                parts = text.split(".")
-                number = float(
-                    "".join(parts[:-1]) + "." + parts[-1]
-                )
-
             else:
                 number = float(text)
 
-        # Format 2 angka desimal Indonesia
-        return (
-            f"{number:,.2f}"
-            .replace(",", "TEMP")
-            .replace(".", ",")
-            .replace("TEMP", ".")
-        )
+        # Tampilkan tanpa angka desimal.
+        # Contoh: 6913.412 -> 6.913
+        return f"{int(number):,}".replace(",", "TEMP").replace(".", ",").replace("TEMP", ".")
 
-    except Exception:
+    except (ValueError, TypeError):
         return str(value)
-
 
 def clean_yes_no(value):
     if pd.isna(value):
