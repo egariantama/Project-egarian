@@ -1982,7 +1982,7 @@ st.markdown("""
 <div class="bp-header">
     <div class="bp-brand">BancassPocket</div>
     <div class="bp-subtitle">Daftar Perusahaan Asuransi</div>
-    <div class="bp-caption">Informasi Mitra Asuransi dalam Genggaman Anda</div>
+    <div class="bp-caption">Informasi Rekanan Asuransi dalam Genggaman Anda</div>
     <div class="bp-shield">🛡️</div>
 </div>
 """, unsafe_allow_html=True)
