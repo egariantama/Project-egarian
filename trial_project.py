@@ -1798,12 +1798,18 @@ def format_number(value):
     try:
         value = float(value)
 
-        # Tampilkan angka tanpa desimal
+        # Tampilkan 2 angka desimal
         # Contoh:
-        # 6913.412  -> 6.913
-        # 18184.582 -> 18.184
-        # 5770.571  -> 5.770
-        return f"{int(value):,}".replace(",", ".")
+        # 6913.412  -> 6.913,41
+        # 18184.582 -> 18.184,58
+        # 5770.571  -> 5.770,57
+
+        return (
+            f"{value:,.2f}"
+            .replace(",", "TEMP")
+            .replace(".", ",")
+            .replace("TEMP", ".")
+        )
 
     except Exception:
         return str(value)
