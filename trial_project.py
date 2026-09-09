@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 import html
 import re
-from urllib.parse import urlencodeƒ
+from urllib.parse import urlencode
 
 # ============================================================
 # BANCASSPOCKET - MOBILE INSURANCE PARTNER DIRECTORY
@@ -1792,16 +1792,22 @@ def find_column(df, aliases):
 
 
 def format_number(value):
+    """Format angka Excel menjadi format Indonesia tanpa angka desimal.
+
+    Contoh:
+    6913,412   -> 6.913
+    18184,582  -> 18.184
+    5770,571   -> 5.770
+    672,176    -> 672
+    """
     if pd.isna(value):
         return "—"
 
     try:
-        # Excel bisa membaca angka sebagai 6913.412,
-        # sedangkan tampilan yang diinginkan adalah 6.913.
         if isinstance(value, (int, float)):
             number = float(value)
         else:
-            text = str(value).strip()
+            text = str(value).strip().replace("Rp", "").strip()
 
             # Format Indonesia: 6.913,412 -> 6913.412
             if "," in text:
@@ -1810,9 +1816,11 @@ def format_number(value):
             else:
                 number = float(text)
 
-        # Tampilkan tanpa angka desimal.
-        # Contoh: 6913.412 -> 6.913
-        return f"{int(number):,}".replace(",", "TEMP").replace(".", ",").replace("TEMP", ".")
+        # Buang angka di belakang koma (bukan pembulatan)
+        number = int(number)
+
+        # Format ribuan Indonesia: 6913 -> 6.913
+        return f"{number:,}".replace(",", ".")
 
     except (ValueError, TypeError):
         return str(value)
