@@ -2803,51 +2803,28 @@ elif st.session_state.active_menu == "Fee Based Income":
 # BOTTOM NAVIGATION — Dashboard, Kerja Sama, Fee Based Income
 # ------------------------------------------------------------
 # ------------------------------------------------------------
-# BOTTOM NAVIGATION — PRECISE VISUAL + STREAMLIT INTERACTION
+# CUSTOM BOTTOM NAVIGATION — EXACT 3-SHAPE GRID
 # ------------------------------------------------------------
-# The visible navigation is a CSS grid (exactly three equal shapes).
-# A hidden native Streamlit radio supplies the click/rerun mechanism.
-# This keeps the approved geometry while preserving Streamlit interaction.
-
-_nav_options = ["Dashboard", "Kerja Sama", "Fee Based Income"]
-
-if "_nav_selector" not in st.session_state:
-    st.session_state._nav_selector = st.session_state.active_menu
-
-st.radio(
-    "Navigation",
-    _nav_options,
-    key="_nav_selector",
-    horizontal=True,
-    label_visibility="collapsed",
-)
-
-if st.session_state._nav_selector != st.session_state.active_menu:
-    st.session_state.active_menu = st.session_state._nav_selector
-    st.session_state.selected_company = None
-
 _nav_active = st.session_state.active_menu
 
 st.markdown(
     f"""
     <div class="bp-bottom-nav">
-        <div class="bp-nav-item {'active' if _nav_active == 'Dashboard' else ''}"
-             data-nav="Dashboard" role="button" tabindex="0">
+        <a class="bp-nav-item {'active' if _nav_active == 'Dashboard' else ''}"
+           href="?menu=Dashboard" aria-label="Dashboard">
             <span class="bp-nav-icon">▦</span>
             <span class="bp-nav-label">Dashboard</span>
-        </div>
-
-        <div class="bp-nav-item {'active' if _nav_active == 'Kerja Sama' else ''}"
-             data-nav="Kerja Sama" role="button" tabindex="0">
+        </a>
+        <a class="bp-nav-item {'active' if _nav_active == 'Kerja Sama' else ''}"
+           href="?menu=Kerja%20Sama" aria-label="Kerja Sama">
             <span class="bp-nav-icon">▤</span>
             <span class="bp-nav-label">Kerja Sama</span>
-        </div>
-
-        <div class="bp-nav-item {'active' if _nav_active == 'Fee Based Income' else ''}"
-             data-nav="Fee Based Income" role="button" tabindex="0">
+        </a>
+        <a class="bp-nav-item {'active' if _nav_active == 'Fee Based Income' else ''}"
+           href="?menu=Fee%20Based%20Income" aria-label="Fee Based Income">
             <span class="bp-nav-icon">💰</span>
             <span class="bp-nav-label">Fee Based Income</span>
-        </div>
+        </a>
     </div>
     """,
     unsafe_allow_html=True,
@@ -2856,44 +2833,27 @@ st.markdown(
 st.markdown(
     """
     <style>
-    /* Hide the interaction layer visually but keep it active. */
-    div[data-testid="stRadio"] {
-        position: fixed !important;
-        left: -10000px !important;
-        top: -10000px !important;
-        width: 1px !important;
-        height: 1px !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        overflow: hidden !important;
-    }
-
-    /* ============================================================
-       APPROVED VISUAL NAVIGATION
-       Exactly three equal slots. No st.columns() controls this.
-       ============================================================ */
+    /* Custom navigation: exactly three real grid items. */
     .bp-bottom-nav {
         position: fixed;
         z-index: 99999;
         left: 50%;
         bottom: 10px;
         transform: translateX(-50%);
-
         width: min(720px, calc(100vw - 24px));
         height: 76px;
         padding: 8px;
         box-sizing: border-box;
-
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 8px;
-
         border: 1px solid #d7e3f2;
         border-radius: 24px;
         background: rgba(255,255,255,.97);
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
         box-shadow: 0 12px 34px rgba(20,45,85,.16);
+        overflow: hidden;
     }
 
     .bp-nav-item {
@@ -2901,30 +2861,23 @@ st.markdown(
         min-width: 0;
         height: 100%;
         box-sizing: border-box;
-
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 7px;
-
         padding: 0 6px;
         margin: 0;
-
         border: 1px solid #d6e2f0;
         border-radius: 18px;
         background: #edf3fa;
         color: #526783;
-
+        text-decoration: none !important;
         font-family: 'Inter', sans-serif;
         font-size: 12px;
         font-weight: 600;
         line-height: 1;
-
         white-space: nowrap;
         overflow: hidden;
-        cursor: pointer;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
     }
 
     .bp-nav-item.active {
@@ -2934,8 +2887,10 @@ st.markdown(
         box-shadow: 0 7px 18px rgba(37,99,235,.22);
     }
 
+    .bp-nav-item:hover,
+    .bp-nav-item:focus,
     .bp-nav-item:active {
-        transform: scale(.985);
+        text-decoration: none !important;
     }
 
     .bp-nav-icon {
@@ -2981,53 +2936,6 @@ st.markdown(
         padding-bottom: 6rem !important;
     }
     </style>
-
-    <script>
-    (function () {
-        function connectNav() {
-            const nav = document.querySelector('.bp-bottom-nav');
-            if (!nav) return;
-
-            const items = nav.querySelectorAll('.bp-nav-item[data-nav]');
-            const radios = Array.from(
-                document.querySelectorAll('div[data-testid="stRadio"] input[type="radio"]')
-            );
-
-            if (!radios.length) return;
-
-            items.forEach(function(item) {
-                if (item.dataset.connected === "1") return;
-                item.dataset.connected = "1";
-
-                function activate() {
-                    const value = item.dataset.nav;
-                    const radio = radios.find(function(r) {
-                        return r.value === value;
-                    });
-
-                    if (!radio) return;
-
-                    radio.click();
-                    radio.dispatchEvent(new Event('change', {bubbles: true}));
-                }
-
-                item.addEventListener('click', activate);
-                item.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        activate();
-                    }
-                });
-            });
-        }
-
-        connectNav();
-        new MutationObserver(connectNav).observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    })();
-    </script>
     """,
     unsafe_allow_html=True,
 )
