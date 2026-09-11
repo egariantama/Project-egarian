@@ -1888,11 +1888,10 @@ section.main,
     padding: 8px !important;
 }
 
-/* Precisely equal 3-column layout: identical left, inter-button and right spacing. */
+/* Mobile-safe 3-column layout: force each column to exactly 1/3 of the available width. */
 .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: stretch !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
@@ -1900,22 +1899,25 @@ section.main,
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
+    overflow: hidden !important;
 }
 
 .st-key-bottom_nav div[data-testid="column"] {
-    flex: 1 1 0% !important;
-    width: 0 !important;
+    width: auto !important;
     min-width: 0 !important;
-    max-width: none !important;
+    max-width: 100% !important;
+    flex: none !important;
     padding: 0 !important;
     margin: 0 !important;
     box-sizing: border-box !important;
+    overflow: hidden !important;
 }
 
-.st-key-bottom_nav div[data-testid="column"] > div {
+.st-key-bottom_nav div[data-testid="column"] > div,
+.st-key-bottom_nav div[data-testid="column"] > div > div {
     width: 100% !important;
     min-width: 0 !important;
-    max-width: none !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
 }
 
@@ -1991,17 +1993,34 @@ section.main,
     }
 
     .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
-        gap: 6px !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-bottom_nav div[data-testid="column"] {
+        min-width: 0 !important;
+        width: auto !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
     }
 
     .st-key-bottom_nav button {
         height: 53px !important;
         min-height: 53px !important;
         max-height: 53px !important;
-        padding: 6px 3px !important;
+        padding: 6px 2px !important;
         border-radius: 16px !important;
-        font-size: 10.5px !important;
+        font-size: 10px !important;
         line-height: 1.05 !important;
+    }
+
+    .st-key-bottom_nav button p {
+        font-size: 10px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: clip !important;
+        width: 100% !important;
     }
 }
 
