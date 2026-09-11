@@ -2296,6 +2296,18 @@ if st.session_state.active_menu == "Dashboard":
         unsafe_allow_html=True
     )
 
+    # Donut 3 warna. Karena status PKS dapat overlap (satu asuradur
+    # dapat memiliki PKS Rekanan dan PKS Bancass sekaligus), segmen
+    # donut dinormalisasi dari total ketiga hitungan. Angka asli dan
+    # persentase terhadap total asuradur tetap ditampilkan di legend.
+    donut_total = rekanan + no_pks + bancass
+    if donut_total > 0:
+        donut_rekanan_pct = rekanan / donut_total * 100
+        donut_no_pks_end = donut_rekanan_pct + (no_pks / donut_total * 100)
+    else:
+        donut_rekanan_pct = 0
+        donut_no_pks_end = 0
+
     st.markdown(
         '<div class="donut-card">'
         '<div class="donut-layout">'
@@ -2322,18 +2334,6 @@ if st.session_state.active_menu == "Dashboard":
         '</div>',
         unsafe_allow_html=True
     )
-
-    # Donut 3 warna. Karena status PKS dapat overlap (satu asuradur
-    # dapat memiliki PKS Rekanan dan PKS Bancass sekaligus), segmen
-    # donut dinormalisasi dari total ketiga hitungan. Angka asli dan
-    # persentase terhadap total asuradur tetap ditampilkan di legend.
-    donut_total = rekanan + no_pks + bancass
-    if donut_total > 0:
-        donut_rekanan_pct = rekanan / donut_total * 100
-        donut_no_pks_end = donut_rekanan_pct + (no_pks / donut_total * 100)
-    else:
-        donut_rekanan_pct = 0
-        donut_no_pks_end = 0
 
     max_pks = max(rekanan, bancass, 1)
     st.markdown(
