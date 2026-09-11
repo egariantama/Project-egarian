@@ -2801,72 +2801,6 @@ elif st.session_state.active_menu == "Fee Based Income":
 
 # ------------------------------------------------------------
 
-# ============================================================
-# DESKTOP = MOBILE PHONE CANVAS
-# On desktop/PC the entire app stays narrow and centered,
-# matching the mobile composition. On real phones it is full width.
-# ============================================================
-st.markdown(
-    """
-    <style>
-    /* Desktop / laptop / PC */
-    @media (min-width: 601px) {
-        .stApp {
-            background:
-                radial-gradient(circle at 50% -10%, rgba(37,99,235,.12), transparent 32%),
-                linear-gradient(180deg, #eef4fc 0%, #e7eef8 100%) !important;
-        }
-
-        .block-container {
-            width: 430px !important;
-            max-width: 430px !important;
-            min-width: 430px !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-            padding: 18px 16px 96px !important;
-            box-sizing: border-box !important;
-        }
-
-        /* Keep every main content element inside the phone canvas. */
-        .block-container > div {
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-        }
-
-        /* Bottom nav has exactly the same phone width. */
-        .st-key-bottom_nav_clickable {
-            width: 430px !important;
-            max-width: 430px !important;
-            left: 50% !important;
-            right: auto !important;
-            transform: translateX(-50%) !important;
-        }
-    }
-
-    /* Real phones / narrow screens */
-    @media (max-width: 600px) {
-        .block-container {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            margin: 0 !important;
-            padding-left: 16px !important;
-            padding-right: 16px !important;
-        }
-
-        .st-key-bottom_nav_clickable {
-            left: 12px !important;
-            right: 12px !important;
-            width: auto !important;
-            max-width: none !important;
-            transform: none !important;
-        }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
 # FINAL BOTTOM NAVIGATION
 # Native Streamlit buttons, responsive for desktop and mobile.
 
@@ -2897,7 +2831,8 @@ st.markdown(
         bottom: 12px !important;
         transform: translateX(-50%) !important;
 
-        width: min(760px, calc(100vw - 32px)) !important;
+        width: 430px !important;
+        max-width: 430px !important;
         height: 72px !important;
         padding: 6px !important;
         box-sizing: border-box !important;
@@ -3023,13 +2958,7 @@ st.markdown(
         -webkit-text-fill-color: #ffffff !important;
     }
 
-    @media (min-width: 1100px) {
-        .st-key-bottom_nav_clickable {
-            width: 760px !important;
-        }
-    }
-
-    @media (max-width: 600px) {
+    @media (max-width: 430px) {
         .st-key-bottom_nav_clickable {
             left: 12px !important;
             right: 12px !important;
@@ -3099,3 +3028,69 @@ with st.container(key="bottom_nav_clickable"):
             type="primary" if _active == "Fee Based Income" else "secondary",
             use_container_width=True,
         )
+
+
+# ============================================================
+# DEFINITIVE APP FRAME
+# Desktop/PC = centered 430px phone-style application.
+# Phone = full available width.
+# This block is intentionally LAST so it wins over previous CSS.
+# ============================================================
+st.markdown(
+    """
+    <style>
+    html, body, #root, .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewBlockContainer"] {
+        overflow-x: hidden !important;
+    }
+
+    /* PC / laptop / tablet wider than the phone canvas */
+    @media (min-width: 431px) {
+        .block-container {
+            width: 430px !important;
+            max-width: 430px !important;
+            min-width: 430px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            padding-bottom: 96px !important;
+            box-sizing: border-box !important;
+        }
+
+        .st-key-bottom_nav_clickable {
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            width: 430px !important;
+            max-width: 430px !important;
+        }
+    }
+
+    /* Phone */
+    @media (max-width: 430px) {
+        .block-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            padding-bottom: 96px !important;
+            box-sizing: border-box !important;
+        }
+
+        .st-key-bottom_nav_clickable {
+            left: 12px !important;
+            right: 12px !important;
+            transform: none !important;
+            width: auto !important;
+            max-width: none !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
