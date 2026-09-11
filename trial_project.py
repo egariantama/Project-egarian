@@ -1928,6 +1928,13 @@ section.main,
     overflow: hidden !important;
 }
 
+/* Never allow a trailing Streamlit layout/spacer cell to create a blank
+   area after the third navigation item. The bottom navigation has exactly
+   three real buttons. */
+.st-key-bottom_nav div[data-testid="column"]:nth-child(n+4) {
+    display: none !important;
+}
+
 .st-key-bottom_nav div[data-testid="column"] > div,
 .st-key-bottom_nav div[data-testid="column"] > div > div {
     width: 100% !important;
@@ -2043,6 +2050,19 @@ section.main,
         width: auto !important;
         max-width: 100% !important;
         overflow: hidden !important;
+    }
+
+    /* Mobile: exactly 3 visible cells, each with identical width. */
+    .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 6px !important;
+    }
+
+    .st-key-bottom_nav div[data-testid="column"]:nth-child(n+4) {
+        display: none !important;
     }
 
     .st-key-bottom_nav button {
