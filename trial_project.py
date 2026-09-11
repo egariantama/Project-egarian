@@ -2810,21 +2810,27 @@ _nav_active = st.session_state.active_menu
 st.markdown(
     f"""
     <div class="bp-bottom-nav">
-        <a class="bp-nav-item {'active' if _nav_active == 'Dashboard' else ''}"
-           href="?menu=Dashboard" aria-label="Dashboard">
+        <button type="button"
+                class="bp-nav-item {'active' if _nav_active == 'Dashboard' else ''}"
+                onclick="window.parent.location.href='?menu=Dashboard'"
+                aria-label="Dashboard">
             <span class="bp-nav-icon">▦</span>
             <span class="bp-nav-label">Dashboard</span>
-        </a>
-        <a class="bp-nav-item {'active' if _nav_active == 'Kerja Sama' else ''}"
-           href="?menu=Kerja%20Sama" aria-label="Kerja Sama">
+        </button>
+        <button type="button"
+                class="bp-nav-item {'active' if _nav_active == 'Kerja Sama' else ''}"
+                onclick="window.parent.location.href='?menu=Kerja%20Sama'"
+                aria-label="Kerja Sama">
             <span class="bp-nav-icon">▤</span>
             <span class="bp-nav-label">Kerja Sama</span>
-        </a>
-        <a class="bp-nav-item {'active' if _nav_active == 'Fee Based Income' else ''}"
-           href="?menu=Fee%20Based%20Income" aria-label="Fee Based Income">
+        </button>
+        <button type="button"
+                class="bp-nav-item {'active' if _nav_active == 'Fee Based Income' else ''}"
+                onclick="window.parent.location.href='?menu=Fee%20Based%20Income'"
+                aria-label="Fee Based Income">
             <span class="bp-nav-icon">💰</span>
             <span class="bp-nav-label">Fee Based Income</span>
-        </a>
+        </button>
     </div>
     """,
     unsafe_allow_html=True,
@@ -2857,6 +2863,9 @@ st.markdown(
     }
 
     .bp-nav-item {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
         width: 100%;
         min-width: 0;
         height: 100%;
@@ -2874,6 +2883,7 @@ st.markdown(
         text-decoration: none !important;
         font-family: 'Inter', sans-serif;
         font-size: 12px;
+        font-style: normal;
         font-weight: 600;
         line-height: 1;
         white-space: nowrap;
