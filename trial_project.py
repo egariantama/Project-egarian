@@ -1763,101 +1763,10 @@ section.main,
 
 
 /* ============================================================
-   BANCAPOCKET - DASHBOARD + KERJA SAMA NAVIGATION
-   MOBILE WIDTH FIX
+   BANCAPOCKET - MOBILE NAVIGATION
+   Menu hanya di bagian bawah layar.
    ============================================================ */
-.st-key-top_nav {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    overflow: visible !important;
-    margin: -4px 0 16px !important;
-}
-
-/* Force the two menu items into a true 50/50 mobile grid. */
-.st-key-top_nav div[data-testid="stHorizontalBlock"] {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    gap: 8px !important;
-    align-items: stretch !important;
-    box-sizing: border-box !important;
-}
-
-.st-key-top_nav div[data-testid="column"] {
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    flex: none !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-}
-
-.st-key-top_nav div[data-testid="stButton"],
-.st-key-top_nav div[data-testid="stButton"] > div {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-}
-
-.st-key-top_nav button {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    border-radius: 16px !important;
-    min-height: 52px !important;
-    font-weight: 700 !important;
-    font-size: 13px !important;
-    border: 1px solid #d9e5f4 !important;
-    box-shadow: 0 5px 16px rgba(37,99,235,.07) !important;
-    box-sizing: border-box !important;
-}
-
-/* Bottom navigation: two equal-width items inside the mobile shell. */
-.st-key-bottom_nav {
-    width: min(760px, calc(100% - 22px)) !important;
-    max-width: calc(100% - 22px) !important;
-    box-sizing: border-box !important;
-}
-.st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    gap: 6px !important;
-    box-sizing: border-box !important;
-}
-.st-key-bottom_nav div[data-testid="column"] {
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    flex: none !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-}
-.st-key-bottom_nav div[data-testid="stButton"],
-.st-key-bottom_nav div[data-testid="stButton"] > div,
-.st-key-bottom_nav button {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-}
-
-@media (max-width: 600px) {
-    .st-key-top_nav div[data-testid="stHorizontalBlock"] {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-    .st-key-top_nav button {
-        min-height: 50px !important;
-        font-size: 12px !important;
-        padding: 8px 6px !important;
-    }
-}
+.st-key-top_nav { display:none !important; }
 
 /* Dashboard */
 .dashboard-wrap { margin-top: 2px; }
@@ -1966,20 +1875,89 @@ section.main,
     left: 50% !important;
     transform: translateX(-50%) !important;
     bottom: 10px !important;
-    width: min(720px, calc(100% - 22px)) !important;
-    background: rgba(255,255,255,.95) !important;
-    backdrop-filter: blur(16px) !important;
-    border: 1px solid #dce6f1 !important;
+    width: min(720px, calc(100% - 24px)) !important;
+    max-width: calc(100% - 24px) !important;
+    box-sizing: border-box !important;
+    background: rgba(255,255,255,.97) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    border: 1px solid #d9e5f3 !important;
     border-radius: 22px !important;
-    box-shadow: 0 10px 35px rgba(20,45,85,.14) !important;
+    box-shadow: 0 12px 34px rgba(20,45,85,.16) !important;
     padding: 7px !important;
 }
-.st-key-bottom_nav [data-testid="column"] { padding:0 3px !important; }
+
+.st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.st-key-bottom_nav div[data-testid="column"] {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: none !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.st-key-bottom_nav div[data-testid="stButton"],
+.st-key-bottom_nav div[data-testid="stButton"] > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
 .st-key-bottom_nav button {
-    min-height:42px !important;
-    border-radius:16px !important;
-    font-size:11px !important;
-    font-weight:700 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 54px !important;
+    padding: 8px 5px !important;
+    border-radius: 17px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: .05px !important;
+    box-sizing: border-box !important;
+    border: 1px solid #d9e5f3 !important;
+    box-shadow: none !important;
+    white-space: nowrap !important;
+}
+
+/* Active tab: blue so it reads clearly as the current menu. */
+.st-key-bottom_nav button[kind="primary"] {
+    color: #fff !important;
+    background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 7px 18px rgba(37,99,235,.22) !important;
+}
+
+/* Inactive tab: soft neutral blue/white. */
+.st-key-bottom_nav button[kind="secondary"] {
+    color: #5d6f89 !important;
+    background: #f7faff !important;
+    border-color: #dce7f4 !important;
+}
+
+@media (max-width: 480px) {
+    .st-key-bottom_nav {
+        bottom: 8px !important;
+        width: calc(100% - 22px) !important;
+        max-width: calc(100% - 22px) !important;
+        padding: 6px !important;
+        border-radius: 21px !important;
+    }
+    .st-key-bottom_nav button {
+        min-height: 52px !important;
+        border-radius: 16px !important;
+        font-size: 12px !important;
+    }
 }
 
 /* Keep content clear of the fixed bottom navigation. */
@@ -2223,37 +2201,16 @@ st.markdown("""
 
 
 # ------------------------------------------------------------
-# APP NAVIGATION — hanya Dashboard & Kerja Sama
+# APP NAVIGATION STATE — hanya Dashboard & Kerja Sama
+# Navigasi ditampilkan hanya pada bottom navigation.
 # ------------------------------------------------------------
 if "active_menu" not in st.session_state:
     st.session_state.active_menu = "Dashboard"
-
 
 def set_active_menu(value):
     st.session_state.active_menu = value
     # Detail perusahaan tidak dibawa ketika berpindah menu.
     st.session_state.selected_company = None
-
-with st.container(key="top_nav"):
-    nav_cols = st.columns(2, gap="small")
-    with nav_cols[0]:
-        st.button(
-            "▦  Dashboard",
-            key="top_dashboard",
-            use_container_width=True,
-            type="primary" if st.session_state.active_menu == "Dashboard" else "secondary",
-            on_click=set_active_menu,
-            args=("Dashboard",),
-        )
-    with nav_cols[1]:
-        st.button(
-            "▤  Kerja Sama",
-            key="top_kerja_sama",
-            use_container_width=True,
-            type="primary" if st.session_state.active_menu == "Kerja Sama" else "secondary",
-            on_click=set_active_menu,
-            args=("Kerja Sama",),
-        )
 
 # ------------------------------------------------------------
 # DASHBOARD
@@ -2688,3 +2645,4 @@ with st.container(key="bottom_nav"):
             on_click=set_active_menu,
             args=("Kerja Sama",),
         )
+
