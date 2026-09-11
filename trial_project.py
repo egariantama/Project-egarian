@@ -2800,14 +2800,11 @@ elif st.session_state.active_menu == "Fee Based Income":
     )
 
 # ------------------------------------------------------------
-# BOTTOM NAVIGATION — Dashboard, Kerja Sama, Fee Based Income
+# FINAL BOTTOM NAVIGATION
+# Native Streamlit buttons + locked equal-width 3-column layout.
+# Text is rendered with CSS pseudo-elements so long labels can NEVER
+# determine the button width or overflow outside its shape.
 # ------------------------------------------------------------
-# ------------------------------------------------------------
-# FINAL BOTTOM NAVIGATION — REAL CLICKABLE STREAMLIT BUTTONS
-# ------------------------------------------------------------
-# Important: the three buttons are NOT placed in st.columns().
-# Each button is positioned independently with CSS, giving us the
-# exact same three equal visual slots while retaining native clicks.
 
 def _go_dashboard():
     st.session_state.active_menu = "Dashboard"
@@ -2824,97 +2821,11 @@ def _go_fee_based():
 st.markdown(
     """
     <style>
-    /* ---------------------------------------------------------
-       NAVIGATION SHELL
-       Exact geometry: 12px side margin, 8px bottom,
-       74px total height, 3 equal slots.
-       --------------------------------------------------------- */
+    /* ============================================================
+       BOTTOM NAV — ONE LOCKED SHELL
+       ============================================================ */
 
-    .st-key-nav_dashboard,
-    .st-key-nav_kerja_sama,
-    .st-key-nav_fee_based {
-        position: fixed !important;
-        z-index: 100001 !important;
-        bottom: 14px !important;
-        height: 58px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    .st-key-nav_dashboard {
-        left: calc(50% - min(360px, 50vw - 12px)) !important;
-        width: calc((min(720px, 100vw - 24px) - 28px) / 3) !important;
-    }
-
-    .st-key-nav_kerja_sama {
-        left: calc(50% - min(360px, 50vw - 12px) + (min(720px, 100vw - 24px) - 28px) / 3 + 8px) !important;
-        width: calc((min(720px, 100vw - 24px) - 28px) / 3) !important;
-    }
-
-    .st-key-nav_fee_based {
-        right: calc(50% - min(360px, 50vw - 12px)) !important;
-        width: calc((min(720px, 100vw - 24px) - 28px) / 3) !important;
-    }
-
-    /* The native Streamlit button IS the visible navigation item. */
-    .st-key-nav_dashboard button,
-    .st-key-nav_kerja_sama button,
-    .st-key-nav_fee_based button {
-        width: 100% !important;
-        height: 58px !important;
-        min-height: 58px !important;
-        margin: 0 !important;
-        padding: 0 5px !important;
-        box-sizing: border-box !important;
-
-        border-radius: 17px !important;
-        border: 1px solid #d6e2f0 !important;
-        background: #edf3fa !important;
-        color: #526783 !important;
-        -webkit-text-fill-color: #526783 !important;
-
-        font-family: 'Inter', sans-serif !important;
-        font-size: 10.5px !important;
-        font-weight: 700 !important;
-        line-height: 1 !important;
-        white-space: nowrap !important;
-
-        box-shadow: none !important;
-        transition: transform .12s ease, background .16s ease,
-                    color .16s ease, box-shadow .16s ease !important;
-    }
-
-    .st-key-nav_dashboard button:hover,
-    .st-key-nav_kerja_sama button:hover,
-    .st-key-nav_fee_based button:hover {
-        background: #e7f0fb !important;
-        color: #2563eb !important;
-        -webkit-text-fill-color: #2563eb !important;
-        border-color: #c9d9ed !important;
-    }
-
-    .st-key-nav_dashboard button:active,
-    .st-key-nav_kerja_sama button:active,
-    .st-key-nav_fee_based button:active {
-        transform: scale(.985) !important;
-    }
-
-    /* Active menu */
-    .st-key-nav_dashboard.active-nav button,
-    .st-key-nav_kerja_sama.active-nav button,
-    .st-key-nav_fee_based.active-nav button {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        background: linear-gradient(
-            135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%
-        ) !important;
-        border-color: #2563eb !important;
-        box-shadow: 0 7px 18px rgba(37,99,235,.22) !important;
-    }
-
-    /* Fixed white navigation background behind the three buttons. */
-    .bp-nav-background-final {
+    .st-key-bottom_nav_clickable {
         position: fixed !important;
         z-index: 100000 !important;
         left: 50% !important;
@@ -2932,30 +2843,157 @@ st.markdown(
         backdrop-filter: blur(18px) !important;
         -webkit-backdrop-filter: blur(18px) !important;
         box-shadow: 0 12px 34px rgba(20,45,85,.16) !important;
-        pointer-events: none !important;
+    }
+
+    /* Three columns: mathematically equal. */
+    .st-key-bottom_nav_clickable div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+        height: 60px !important;
+        min-height: 60px !important;
+
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+        align-items: stretch !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .st-key-bottom_nav_clickable div[data-testid="column"] {
+        flex: 1 1 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .st-key-bottom_nav_clickable div[data-testid="stButton"] {
+        width: 100% !important;
+        height: 58px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .st-key-bottom_nav_clickable button {
+        width: 100% !important;
+        height: 58px !important;
+        min-height: 58px !important;
+        max-height: 58px !important;
+
+        margin: 0 !important;
+        padding: 0 4px !important;
+        box-sizing: border-box !important;
+
+        border-radius: 17px !important;
+        border: 1px solid #d6e2f0 !important;
+        background: #edf3fa !important;
+
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+        font-size: 0 !important;
+        line-height: 1 !important;
+
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: clip !important;
+
+        box-shadow: none !important;
+        cursor: pointer !important;
+        transition: transform .12s ease, background .16s ease,
+                    box-shadow .16s ease !important;
+    }
+
+    /* Each label is deliberately generated inside the fixed shape.
+       The original Streamlit text is hidden, so its length cannot
+       push or stretch the button. */
+    .st-key-bottom_nav_clickable div[data-testid="column"]:nth-child(1) button::after {
+        content: "▦  Dashboard";
+    }
+
+    .st-key-bottom_nav_clickable div[data-testid="column"]:nth-child(2) button::after {
+        content: "▤  Kerja Sama";
+    }
+
+    .st-key-bottom_nav_clickable div[data-testid="column"]:nth-child(3) button::after {
+        content: "💰  Fee Based Income";
+    }
+
+    .st-key-bottom_nav_clickable button::after {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+
+        color: #526783 !important;
+        -webkit-text-fill-color: #526783 !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 10.5px !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+
+        white-space: nowrap !important;
+        text-overflow: ellipsis !important;
+        text-align: center !important;
+    }
+
+    .st-key-bottom_nav_clickable button:hover {
+        background: #e7f0fb !important;
+        border-color: #c9d9ed !important;
+    }
+
+    .st-key-bottom_nav_clickable button:hover::after {
+        color: #2563eb !important;
+        -webkit-text-fill-color: #2563eb !important;
+    }
+
+    .st-key-bottom_nav_clickable button:active {
+        transform: scale(.985) !important;
+    }
+
+    /* Active state is applied using the button kind assigned below. */
+    .st-key-bottom_nav_clickable button[kind="primary"] {
+        background: linear-gradient(
+            135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%
+        ) !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 7px 18px rgba(37,99,235,.22) !important;
+    }
+
+    .st-key-bottom_nav_clickable button[kind="primary"]::after {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
 
     @media (max-width: 600px) {
-        .bp-nav-background-final {
+        .st-key-bottom_nav_clickable {
             left: 12px !important;
             right: 12px !important;
             transform: none !important;
             width: auto !important;
+            height: 74px !important;
+            bottom: 8px !important;
+            padding: 6px !important;
         }
 
-        .st-key-nav_dashboard {
-            left: 18px !important;
-            width: calc((100vw - 60px) / 3) !important;
+        .st-key-bottom_nav_clickable div[data-testid="stHorizontalBlock"] {
+            gap: 6px !important;
         }
 
-        .st-key-nav_kerja_sama {
-            left: calc(18px + (100vw - 60px) / 3 + 6px) !important;
-            width: calc((100vw - 60px) / 3) !important;
+        .st-key-bottom_nav_clickable button {
+            height: 58px !important;
+            min-height: 58px !important;
+            max-height: 58px !important;
+            border-radius: 17px !important;
+            padding: 0 3px !important;
         }
 
-        .st-key-nav_fee_based {
-            right: 18px !important;
-            width: calc((100vw - 60px) / 3) !important;
+        .st-key-bottom_nav_clickable button::after {
+            font-size: 10px !important;
         }
     }
 
@@ -2963,28 +3001,38 @@ st.markdown(
         padding-bottom: 6rem !important;
     }
     </style>
-    """,
-    unsafe_allow_html=True,
+    """
 )
-
-# Background is deliberately non-interactive; the native Streamlit buttons
-# above it receive all clicks.
-st.markdown('<div class="bp-nav-background-final"></div>', unsafe_allow_html=True)
 
 _active = st.session_state.get("active_menu", "Dashboard")
 
-# Add an active class to each keyed wrapper after rendering via CSS-compatible
-# state-specific selectors. Buttons remain real Streamlit widgets.
-if _active == "Dashboard":
-    st.button("▦  Dashboard", key="nav_dashboard", on_click=_go_dashboard, type="primary")
-    st.button("▤  Kerja Sama", key="nav_kerja_sama", on_click=_go_kerja_sama, type="secondary")
-    st.button("💰  Fee Based Income", key="nav_fee_based", on_click=_go_fee_based, type="secondary")
-elif _active == "Kerja Sama":
-    st.button("▦  Dashboard", key="nav_dashboard", on_click=_go_dashboard, type="secondary")
-    st.button("▤  Kerja Sama", key="nav_kerja_sama", on_click=_go_kerja_sama, type="primary")
-    st.button("💰  Fee Based Income", key="nav_fee_based", on_click=_go_fee_based, type="secondary")
-else:
-    st.button("▦  Dashboard", key="nav_dashboard", on_click=_go_dashboard, type="secondary")
-    st.button("▤  Kerja Sama", key="nav_kerja_sama", on_click=_go_kerja_sama, type="secondary")
-    st.button("💰  Fee Based Income", key="nav_fee_based", on_click=_go_fee_based, type="primary")
+with st.container(key="bottom_nav_clickable"):
+    c1, c2, c3 = st.columns(3, gap="small")
+
+    with c1:
+        st.button(
+            "Dashboard",
+            key="bottom_nav_dashboard",
+            on_click=_go_dashboard,
+            type="primary" if _active == "Dashboard" else "secondary",
+            use_container_width=True,
+        )
+
+    with c2:
+        st.button(
+            "Kerja Sama",
+            key="bottom_nav_kerja_sama",
+            on_click=_go_kerja_sama,
+            type="primary" if _active == "Kerja Sama" else "secondary",
+            use_container_width=True,
+        )
+
+    with c3:
+        st.button(
+            "Fee Based Income",
+            key="bottom_nav_fee_based",
+            on_click=_go_fee_based,
+            type="primary" if _active == "Fee Based Income" else "secondary",
+            use_container_width=True,
+        )
 
