@@ -2803,181 +2803,177 @@ elif st.session_state.active_menu == "Fee Based Income":
 # BOTTOM NAVIGATION — Dashboard, Kerja Sama, Fee Based Income
 # ------------------------------------------------------------
 # ------------------------------------------------------------
-# BOTTOM NAVIGATION — NATIVE STREAMLIT BUTTONS, CUSTOM 3-SHAPE LAYOUT
+# BOTTOM NAVIGATION — PRECISE VISUAL + STREAMLIT INTERACTION
 # ------------------------------------------------------------
-with st.container(key="bottom_nav"):
-    bottom_cols = st.columns(3, gap=None)
+# The visible navigation is a CSS grid (exactly three equal shapes).
+# A hidden native Streamlit radio supplies the click/rerun mechanism.
+# This keeps the approved geometry while preserving Streamlit interaction.
 
-    with bottom_cols[0]:
-        st.button(
-            "▦  Dashboard",
-            key="bottom_dashboard_native",
-            use_container_width=True,
-            type="primary" if st.session_state.active_menu == "Dashboard" else "secondary",
-            on_click=set_active_menu,
-            args=("Dashboard",),
-        )
+_nav_options = ["Dashboard", "Kerja Sama", "Fee Based Income"]
 
-    with bottom_cols[1]:
-        st.button(
-            "▤  Kerja Sama",
-            key="bottom_kerja_sama_native",
-            use_container_width=True,
-            type="primary" if st.session_state.active_menu == "Kerja Sama" else "secondary",
-            on_click=set_active_menu,
-            args=("Kerja Sama",),
-        )
+if "_nav_selector" not in st.session_state:
+    st.session_state._nav_selector = st.session_state.active_menu
 
-    with bottom_cols[2]:
-        st.button(
-            "💰  Fee Based Income",
-            key="bottom_fee_based_income_native",
-            use_container_width=True,
-            type="primary" if st.session_state.active_menu == "Fee Based Income" else "secondary",
-            on_click=set_active_menu,
-            args=("Fee Based Income",),
-        )
+st.radio(
+    "Navigation",
+    _nav_options,
+    key="_nav_selector",
+    horizontal=True,
+    label_visibility="collapsed",
+)
+
+if st.session_state._nav_selector != st.session_state.active_menu:
+    st.session_state.active_menu = st.session_state._nav_selector
+    st.session_state.selected_company = None
+
+_nav_active = st.session_state.active_menu
+
+st.markdown(
+    f"""
+    <div class="bp-bottom-nav">
+        <div class="bp-nav-item {'active' if _nav_active == 'Dashboard' else ''}"
+             data-nav="Dashboard" role="button" tabindex="0">
+            <span class="bp-nav-icon">▦</span>
+            <span class="bp-nav-label">Dashboard</span>
+        </div>
+
+        <div class="bp-nav-item {'active' if _nav_active == 'Kerja Sama' else ''}"
+             data-nav="Kerja Sama" role="button" tabindex="0">
+            <span class="bp-nav-icon">▤</span>
+            <span class="bp-nav-label">Kerja Sama</span>
+        </div>
+
+        <div class="bp-nav-item {'active' if _nav_active == 'Fee Based Income' else ''}"
+             data-nav="Fee Based Income" role="button" tabindex="0">
+            <span class="bp-nav-icon">💰</span>
+            <span class="bp-nav-label">Fee Based Income</span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown(
     """
     <style>
-    /* ============================================================
-       CLICKABLE BOTTOM NAV
-       Native Streamlit buttons = reliable click/rerun.
-       CSS only controls the shape and geometry.
-       ============================================================ */
-
-    .st-key-bottom_nav {
+    /* Hide the interaction layer visually but keep it active. */
+    div[data-testid="stRadio"] {
         position: fixed !important;
-        z-index: 99999 !important;
-        left: 50% !important;
-        bottom: 10px !important;
-        transform: translateX(-50%) !important;
-
-        width: min(720px, calc(100vw - 24px)) !important;
-        max-width: min(720px, calc(100vw - 24px)) !important;
-        box-sizing: border-box !important;
-
-        padding: 8px !important;
-        border: 1px solid #d7e3f2 !important;
-        border-radius: 24px !important;
-        background: rgba(255,255,255,.97) !important;
-        backdrop-filter: blur(18px) !important;
-        -webkit-backdrop-filter: blur(18px) !important;
-        box-shadow: 0 12px 34px rgba(20,45,85,.16) !important;
-    }
-
-    .st-key-bottom_nav > div,
-    .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 8px !important;
-    }
-
-    .st-key-bottom_nav div[data-testid="column"] {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        flex: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
+        left: -10000px !important;
+        top: -10000px !important;
+        width: 1px !important;
+        height: 1px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
         overflow: hidden !important;
     }
 
-    .st-key-bottom_nav div[data-testid="stButton"],
-    .st-key-bottom_nav div[data-testid="stButton"] > div {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
+    /* ============================================================
+       APPROVED VISUAL NAVIGATION
+       Exactly three equal slots. No st.columns() controls this.
+       ============================================================ */
+    .bp-bottom-nav {
+        position: fixed;
+        z-index: 99999;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+
+        width: min(720px, calc(100vw - 24px));
+        height: 76px;
+        padding: 8px;
+        box-sizing: border-box;
+
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+
+        border: 1px solid #d7e3f2;
+        border-radius: 24px;
+        background: rgba(255,255,255,.97);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 12px 34px rgba(20,45,85,.16);
     }
 
-    .st-key-bottom_nav button {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+    .bp-nav-item {
+        width: 100%;
+        min-width: 0;
+        height: 100%;
+        box-sizing: border-box;
 
-        width: 100% !important;
-        height: 58px !important;
-        min-height: 58px !important;
-        max-height: 58px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
 
-        padding: 0 6px !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
+        padding: 0 6px;
+        margin: 0;
 
-        border-radius: 18px !important;
-        border: 1px solid #d6e2f0 !important;
+        border: 1px solid #d6e2f0;
+        border-radius: 18px;
+        background: #edf3fa;
+        color: #526783;
 
-        font-family: 'Inter', sans-serif !important;
-        font-size: 12px !important;
-        font-weight: 600 !important;
-        line-height: 1 !important;
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1;
 
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        box-shadow: none !important;
+        white-space: nowrap;
+        overflow: hidden;
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    .st-key-bottom_nav button p {
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        text-align: center !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
+    .bp-nav-item.active {
+        color: #fff;
+        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%);
+        border-color: #2563eb;
+        box-shadow: 0 7px 18px rgba(37,99,235,.22);
     }
 
-    .st-key-bottom_nav button[kind="primary"] {
-        color: #fff !important;
-        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
-        border-color: #2563eb !important;
-        box-shadow: 0 7px 18px rgba(37,99,235,.22) !important;
+    .bp-nav-item:active {
+        transform: scale(.985);
     }
 
-    .st-key-bottom_nav button[kind="secondary"] {
-        color: #526783 !important;
-        background: #edf3fa !important;
-        border-color: #d6e2f0 !important;
+    .bp-nav-icon {
+        flex: 0 0 auto;
+        font-size: 17px;
+        line-height: 1;
+    }
+
+    .bp-nav-label {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     @media (max-width: 480px) {
-        .st-key-bottom_nav {
-            left: 12px !important;
-            right: 12px !important;
-            transform: none !important;
-            width: auto !important;
-            max-width: none !important;
-            bottom: 8px !important;
-            padding: 6px !important;
-            border-radius: 22px !important;
+        .bp-bottom-nav {
+            left: 12px;
+            right: 12px;
+            transform: none;
+            width: auto;
+            max-width: none;
+            height: 74px;
+            bottom: 8px;
+            padding: 6px;
+            gap: 6px;
+            border-radius: 22px;
         }
 
-        .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            gap: 6px !important;
+        .bp-nav-item {
+            border-radius: 17px;
+            gap: 5px;
+            padding: 0 4px;
+            font-size: 10.5px;
         }
 
-        .st-key-bottom_nav button {
-            height: 58px !important;
-            min-height: 58px !important;
-            max-height: 58px !important;
-            padding: 0 4px !important;
-            border-radius: 17px !important;
-            font-size: 10.5px !important;
+        .bp-nav-icon {
+            font-size: 15px;
         }
     }
 
@@ -2985,6 +2981,53 @@ st.markdown(
         padding-bottom: 6rem !important;
     }
     </style>
+
+    <script>
+    (function () {
+        function connectNav() {
+            const nav = document.querySelector('.bp-bottom-nav');
+            if (!nav) return;
+
+            const items = nav.querySelectorAll('.bp-nav-item[data-nav]');
+            const radios = Array.from(
+                document.querySelectorAll('div[data-testid="stRadio"] input[type="radio"]')
+            );
+
+            if (!radios.length) return;
+
+            items.forEach(function(item) {
+                if (item.dataset.connected === "1") return;
+                item.dataset.connected = "1";
+
+                function activate() {
+                    const value = item.dataset.nav;
+                    const radio = radios.find(function(r) {
+                        return r.value === value;
+                    });
+
+                    if (!radio) return;
+
+                    radio.click();
+                    radio.dispatchEvent(new Event('change', {bubbles: true}));
+                }
+
+                item.addEventListener('click', activate);
+                item.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        activate();
+                    }
+                });
+            });
+        }
+
+        connectNav();
+        new MutationObserver(connectNav).observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    })();
+    </script>
     """,
     unsafe_allow_html=True,
 )
