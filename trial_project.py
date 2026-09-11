@@ -1890,7 +1890,7 @@ section.main,
 
 .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
@@ -1957,7 +1957,9 @@ section.main,
     .st-key-bottom_nav button {
         min-height: 52px !important;
         border-radius: 16px !important;
-        font-size: 12px !important;
+        font-size: 10px !important;
+        line-height: 1.15 !important;
+        white-space: normal !important;
     }
 }
 
@@ -2379,7 +2381,7 @@ if st.session_state.active_menu == "Dashboard":
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-else:
+elif st.session_state.active_menu == "Kerja Sama":
     # ------------------------------------------------------------
     # MOBILE FILTERS — STICKY / FREEZE TOP
     # ------------------------------------------------------------
@@ -2633,10 +2635,28 @@ else:
 
 
 # ------------------------------------------------------------
-# BOTTOM NAVIGATION — hanya 2 menu
+# FEE BASED INCOME — TAHAP PENGEMBANGAN
+# ------------------------------------------------------------
+elif st.session_state.active_menu == "Fee Based Income":
+    st.markdown(
+        '<div class="dashboard-wrap">'
+        '<div class="dashboard-section">'
+        '<div class="dashboard-section-title">Fee Based Income</div>'
+        '<div class="dashboard-section-sub">Modul sedang dalam tahap pengembangan</div>'
+        '</div>'
+        '<div class="financial-card" style="text-align:center;padding:32px 18px;">'
+        '<div style="font-size:42px;">💰</div>'
+        '<div style="font-size:16px;font-weight:800;color:#17233d;margin-top:10px;">Fee Based Income</div>'
+        '<div style="font-size:11px;color:#8190a8;margin-top:6px;">Fitur monitoring dan analisis pendapatan berbasis fee akan dikembangkan pada tahap berikutnya.</div>'
+        '</div></div>',
+        unsafe_allow_html=True
+    )
+
+# ------------------------------------------------------------
+# BOTTOM NAVIGATION — Dashboard, Kerja Sama, Fee Based Income
 # ------------------------------------------------------------
 with st.container(key="bottom_nav"):
-    bottom_cols = st.columns(2, gap="small")
+    bottom_cols = st.columns(3, gap="small")
     with bottom_cols[0]:
         st.button(
             "▦  Dashboard",
@@ -2654,5 +2674,14 @@ with st.container(key="bottom_nav"):
             type="primary" if st.session_state.active_menu == "Kerja Sama" else "secondary",
             on_click=set_active_menu,
             args=("Kerja Sama",),
+        )
+    with bottom_cols[2]:
+        st.button(
+            "💰  Fee Based Income",
+            key="bottom_fee_based_income",
+            use_container_width=True,
+            type="primary" if st.session_state.active_menu == "Fee Based Income" else "secondary",
+            on_click=set_active_menu,
+            args=("Fee Based Income",),
         )
 
