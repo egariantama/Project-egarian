@@ -2803,142 +2803,181 @@ elif st.session_state.active_menu == "Fee Based Income":
 # BOTTOM NAVIGATION — Dashboard, Kerja Sama, Fee Based Income
 # ------------------------------------------------------------
 # ------------------------------------------------------------
-# CUSTOM BOTTOM NAVIGATION — EXACT 3-SHAPE GRID
+# BOTTOM NAVIGATION — NATIVE STREAMLIT BUTTONS, CUSTOM 3-SHAPE LAYOUT
 # ------------------------------------------------------------
-_nav_active = st.session_state.active_menu
+with st.container(key="bottom_nav"):
+    bottom_cols = st.columns(3, gap=None)
 
-st.markdown(
-    f"""
-    <div class="bp-bottom-nav">
-        <button type="button"
-                class="bp-nav-item {'active' if _nav_active == 'Dashboard' else ''}"
-                onclick="window.parent.location.href='?menu=Dashboard'"
-                aria-label="Dashboard">
-            <span class="bp-nav-icon">▦</span>
-            <span class="bp-nav-label">Dashboard</span>
-        </button>
-        <button type="button"
-                class="bp-nav-item {'active' if _nav_active == 'Kerja Sama' else ''}"
-                onclick="window.parent.location.href='?menu=Kerja%20Sama'"
-                aria-label="Kerja Sama">
-            <span class="bp-nav-icon">▤</span>
-            <span class="bp-nav-label">Kerja Sama</span>
-        </button>
-        <button type="button"
-                class="bp-nav-item {'active' if _nav_active == 'Fee Based Income' else ''}"
-                onclick="window.parent.location.href='?menu=Fee%20Based%20Income'"
-                aria-label="Fee Based Income">
-            <span class="bp-nav-icon">💰</span>
-            <span class="bp-nav-label">Fee Based Income</span>
-        </button>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+    with bottom_cols[0]:
+        st.button(
+            "▦  Dashboard",
+            key="bottom_dashboard_native",
+            use_container_width=True,
+            type="primary" if st.session_state.active_menu == "Dashboard" else "secondary",
+            on_click=set_active_menu,
+            args=("Dashboard",),
+        )
+
+    with bottom_cols[1]:
+        st.button(
+            "▤  Kerja Sama",
+            key="bottom_kerja_sama_native",
+            use_container_width=True,
+            type="primary" if st.session_state.active_menu == "Kerja Sama" else "secondary",
+            on_click=set_active_menu,
+            args=("Kerja Sama",),
+        )
+
+    with bottom_cols[2]:
+        st.button(
+            "💰  Fee Based Income",
+            key="bottom_fee_based_income_native",
+            use_container_width=True,
+            type="primary" if st.session_state.active_menu == "Fee Based Income" else "secondary",
+            on_click=set_active_menu,
+            args=("Fee Based Income",),
+        )
 
 st.markdown(
     """
     <style>
-    /* Custom navigation: exactly three real grid items. */
-    .bp-bottom-nav {
-        position: fixed;
-        z-index: 99999;
-        left: 50%;
-        bottom: 10px;
-        transform: translateX(-50%);
-        width: min(720px, calc(100vw - 24px));
-        height: 76px;
-        padding: 8px;
-        box-sizing: border-box;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-        border: 1px solid #d7e3f2;
-        border-radius: 24px;
-        background: rgba(255,255,255,.97);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        box-shadow: 0 12px 34px rgba(20,45,85,.16);
-        overflow: hidden;
+    /* ============================================================
+       CLICKABLE BOTTOM NAV
+       Native Streamlit buttons = reliable click/rerun.
+       CSS only controls the shape and geometry.
+       ============================================================ */
+
+    .st-key-bottom_nav {
+        position: fixed !important;
+        z-index: 99999 !important;
+        left: 50% !important;
+        bottom: 10px !important;
+        transform: translateX(-50%) !important;
+
+        width: min(720px, calc(100vw - 24px)) !important;
+        max-width: min(720px, calc(100vw - 24px)) !important;
+        box-sizing: border-box !important;
+
+        padding: 8px !important;
+        border: 1px solid #d7e3f2 !important;
+        border-radius: 24px !important;
+        background: rgba(255,255,255,.97) !important;
+        backdrop-filter: blur(18px) !important;
+        -webkit-backdrop-filter: blur(18px) !important;
+        box-shadow: 0 12px 34px rgba(20,45,85,.16) !important;
     }
 
-    .bp-nav-item {
-        appearance: none;
-        -webkit-appearance: none;
-        cursor: pointer;
-        width: 100%;
-        min-width: 0;
-        height: 100%;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        padding: 0 6px;
-        margin: 0;
-        border: 1px solid #d6e2f0;
-        border-radius: 18px;
-        background: #edf3fa;
-        color: #526783;
-        text-decoration: none !important;
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 1;
-        white-space: nowrap;
-        overflow: hidden;
+    .st-key-bottom_nav > div,
+    .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
     }
 
-    .bp-nav-item.active {
-        color: #fff;
-        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%);
-        border-color: #2563eb;
-        box-shadow: 0 7px 18px rgba(37,99,235,.22);
+    .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 8px !important;
     }
 
-    .bp-nav-item:hover,
-    .bp-nav-item:focus,
-    .bp-nav-item:active {
-        text-decoration: none !important;
+    .st-key-bottom_nav div[data-testid="column"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
-    .bp-nav-icon {
-        flex: 0 0 auto;
-        font-size: 17px;
-        line-height: 1;
+    .st-key-bottom_nav div[data-testid="stButton"],
+    .st-key-bottom_nav div[data-testid="stButton"] > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
     }
 
-    .bp-nav-label {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    .st-key-bottom_nav button {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 100% !important;
+        height: 58px !important;
+        min-height: 58px !important;
+        max-height: 58px !important;
+
+        padding: 0 6px !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+
+        border-radius: 18px !important;
+        border: 1px solid #d6e2f0 !important;
+
+        font-family: 'Inter', sans-serif !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        box-shadow: none !important;
+    }
+
+    .st-key-bottom_nav button p {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .st-key-bottom_nav button[kind="primary"] {
+        color: #fff !important;
+        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 7px 18px rgba(37,99,235,.22) !important;
+    }
+
+    .st-key-bottom_nav button[kind="secondary"] {
+        color: #526783 !important;
+        background: #edf3fa !important;
+        border-color: #d6e2f0 !important;
     }
 
     @media (max-width: 480px) {
-        .bp-bottom-nav {
-            left: 12px;
-            right: 12px;
-            transform: none;
-            width: auto;
-            max-width: none;
-            height: 74px;
-            bottom: 8px;
-            padding: 6px;
-            gap: 6px;
-            border-radius: 22px;
+        .st-key-bottom_nav {
+            left: 12px !important;
+            right: 12px !important;
+            transform: none !important;
+            width: auto !important;
+            max-width: none !important;
+            bottom: 8px !important;
+            padding: 6px !important;
+            border-radius: 22px !important;
         }
 
-        .bp-nav-item {
-            border-radius: 17px;
-            gap: 5px;
-            padding: 0 4px;
-            font-size: 10.5px;
+        .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 6px !important;
         }
 
-        .bp-nav-icon {
-            font-size: 15px;
+        .st-key-bottom_nav button {
+            height: 58px !important;
+            min-height: 58px !important;
+            max-height: 58px !important;
+            padding: 0 4px !important;
+            border-radius: 17px !important;
+            font-size: 10.5px !important;
         }
     }
 
