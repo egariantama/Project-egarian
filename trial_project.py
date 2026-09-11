@@ -2328,15 +2328,15 @@ if st.session_state.active_menu == "Dashboard":
         '<div class="dash-stat-row"><div style="flex:1">'
         '<div class="dash-stat-name">PKS Rekanan</div>'
         f'<div class="bar-track"><div class="bar-fill" style="width:{rekanan/max_pks*100:.1f}%"></div></div>'
-        '</div><div class="dash-stat-value">{rekanan:,}'.replace(',', '.') + '</div></div>'
+        f'</div><div class="dash-stat-value">{rekanan:,}'.replace(',', '.') + '</div></div>'
         '<div class="dash-stat-row"><div style="flex:1">'
         '<div class="dash-stat-name">PKS Bancass</div>'
         f'<div class="bar-track"><div class="bar-fill" style="width:{bancass/max_pks*100:.1f}%"></div></div>'
-        '</div><div class="dash-stat-value">{bancass:,}'.replace(',', '.') + '</div></div>'
+        f'</div><div class="dash-stat-value">{bancass:,}'.replace(',', '.') + '</div></div>'
         '<div class="dash-stat-row"><div style="flex:1">'
         '<div class="dash-stat-name">Tidak Ada PKS</div>'
         f'<div class="bar-track"><div class="bar-fill" style="width:{no_pks/max(total,1)*100:.1f}%"></div></div>'
-        '</div><div class="dash-stat-value">{no_pks:,}'.replace(',', '.') + '</div></div>'
+        f'</div><div class="dash-stat-value">{no_pks:,}'.replace(',', '.') + '</div></div>'
         '</div>',
         unsafe_allow_html=True
     )
