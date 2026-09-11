@@ -2801,10 +2801,11 @@ elif st.session_state.active_menu == "Fee Based Income":
 
 # ------------------------------------------------------------
 # FINAL BOTTOM NAVIGATION
-# Native Streamlit buttons + locked equal-width 3-column layout.
-# Text is rendered with CSS pseudo-elements so long labels can NEVER
-# determine the button width or overflow outside its shape.
-# ------------------------------------------------------------
+# Clean native Streamlit navigation:
+# - 3 equal CSS-grid columns
+# - no pseudo-elements
+# - no fixed column width tricks
+# - native buttons remain fully clickable
 
 def _go_dashboard():
     st.session_state.active_menu = "Dashboard"
@@ -2818,195 +2819,182 @@ def _go_fee_based():
     st.session_state.active_menu = "Fee Based Income"
     st.session_state.selected_company = None
 
+
 st.markdown(
-    """<style>
-/* ============================================================
-   BOTTOM NAV — ONE LOCKED SHELL
-   ============================================================ */
+    """
+    <style>
+    /* ============================================================
+       BOTTOM NAV — CLEAN / EQUAL / MOBILE SAFE
+       ============================================================ */
 
-.st-key-bottom_nav_clickable {
-    position: fixed !important;
-    z-index: 100000 !important;
-    left: 50% !important;
-    bottom: 8px !important;
-    transform: translateX(-50%) !important;
-
-    width: min(720px, calc(100vw - 24px)) !important;
-    height: 74px !important;
-    padding: 6px !important;
-    box-sizing: border-box !important;
-
-    border: 1px solid #d7e3f2 !important;
-    border-radius: 22px !important;
-    background: rgba(255,255,255,.97) !important;
-    backdrop-filter: blur(18px) !important;
-    -webkit-backdrop-filter: blur(18px) !important;
-    box-shadow: 0 12px 34px rgba(20,45,85,.16) !important;
-}
-
-/* Three columns: mathematically equal. */
-.st-key-bottom_nav_clickable div[data-testid="stHorizontalBlock"] {
-    width: 100% !important;
-    height: 60px !important;
-    min-height: 60px !important;
-
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 6px !important;
-    align-items: stretch !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-}
-
-.st-key-bottom_nav_clickable div[data-testid="column"] {
-    flex: 1 1 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-}
-
-.st-key-bottom_nav_clickable div[data-testid="stButton"] {
-    width: 100% !important;
-    height: 58px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-}
-
-.st-key-bottom_nav_clickable button {
-    width: 100% !important;
-    height: 58px !important;
-    min-height: 58px !important;
-    max-height: 58px !important;
-
-    margin: 0 !important;
-    padding: 0 4px !important;
-    box-sizing: border-box !important;
-
-    border-radius: 17px !important;
-    border: 1px solid #d6e2f0 !important;
-    background: #edf3fa !important;
-
-    color: transparent !important;
-    -webkit-text-fill-color: transparent !important;
-    font-size: 0 !important;
-    line-height: 1 !important;
-
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: clip !important;
-
-    box-shadow: none !important;
-    cursor: pointer !important;
-    transition: transform .12s ease, background .16s ease,
-                box-shadow .16s ease !important;
-}
-
-/* Each label is deliberately generated inside the fixed shape.
-   The original Streamlit text is hidden, so its length cannot
-   push or stretch the button. */
-.st-key-bottom_nav_clickable div[data-testid="column"]:nth-child(1) button::after {
-    content: "▦  Dashboard";
-}
-
-.st-key-bottom_nav_clickable div[data-testid="column"]:nth-child(2) button::after {
-    content: "▤  Kerja Sama";
-}
-
-.st-key-bottom_nav_clickable div[data-testid="column"]:nth-child(3) button::after {
-    content: "💰  Fee Based Income";
-}
-
-.st-key-bottom_nav_clickable button::after {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-
-    color: #526783 !important;
-    -webkit-text-fill-color: #526783 !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 10.5px !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-    text-align: center !important;
-}
-
-.st-key-bottom_nav_clickable button:hover {
-    background: #e7f0fb !important;
-    border-color: #c9d9ed !important;
-}
-
-.st-key-bottom_nav_clickable button:hover::after {
-    color: #2563eb !important;
-    -webkit-text-fill-color: #2563eb !important;
-}
-
-.st-key-bottom_nav_clickable button:active {
-    transform: scale(.985) !important;
-}
-
-/* Active state is applied using the button kind assigned below. */
-.st-key-bottom_nav_clickable button[kind="primary"] {
-    background: linear-gradient(
-        135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%
-    ) !important;
-    border-color: #2563eb !important;
-    box-shadow: 0 7px 18px rgba(37,99,235,.22) !important;
-}
-
-.st-key-bottom_nav_clickable button[kind="primary"]::after {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-@media (max-width: 600px) {
     .st-key-bottom_nav_clickable {
-        left: 12px !important;
-        right: 12px !important;
-        transform: none !important;
-        width: auto !important;
-        height: 74px !important;
-        bottom: 8px !important;
+        position: fixed !important;
+        z-index: 100000 !important;
+        left: 50% !important;
+        bottom: 10px !important;
+        transform: translateX(-50%) !important;
+
+        width: min(720px, calc(100vw - 24px)) !important;
+        height: 72px !important;
         padding: 6px !important;
+        box-sizing: border-box !important;
+
+        border: 1px solid #d7e3f2 !important;
+        border-radius: 22px !important;
+        background: rgba(255,255,255,.97) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        box-shadow: 0 10px 30px rgba(20,45,85,.14) !important;
+
+        overflow: hidden !important;
     }
 
+    /* IMPORTANT: use GRID, not Streamlit's flex sizing. */
     .st-key-bottom_nav_clickable div[data-testid="stHorizontalBlock"] {
-        gap: 6px !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        width: 100% !important;
+        height: 60px !important;
+        min-width: 0 !important;
+        min-height: 60px !important;
+        gap: 7px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
+    /* Every Streamlit column becomes exactly one grid cell. */
+    .st-key-bottom_nav_clickable div[data-testid="column"] {
+        display: block !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        flex: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-bottom_nav_clickable div[data-testid="stButton"],
+    .st-key-bottom_nav_clickable .stButton {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 60px !important;
+        min-height: 60px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    /* Native button: fixed to its grid cell. */
     .st-key-bottom_nav_clickable button {
-        height: 58px !important;
-        min-height: 58px !important;
-        max-height: 58px !important;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 60px !important;
+        min-height: 60px !important;
+        max-height: 60px !important;
+
+        margin: 0 !important;
+        padding: 0 4px !important;
+        box-sizing: border-box !important;
+
         border-radius: 17px !important;
-        padding: 0 3px !important;
+        border: 1px solid #d6e2f0 !important;
+        background: #edf3fa !important;
+
+        color: #526783 !important;
+        -webkit-text-fill-color: #526783 !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+
+        box-shadow: none !important;
+        cursor: pointer !important;
     }
 
-    .st-key-bottom_nav_clickable button::after {
-        font-size: 10px !important;
+    /* Active item. */
+    .st-key-bottom_nav_clickable button[kind="primary"] {
+        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
+        border-color: #2563eb !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        box-shadow: 0 7px 18px rgba(37,99,235,.20) !important;
     }
-}
 
-.block-container {
-    padding-bottom: 6rem !important;
-}
-</style>""",
+    .st-key-bottom_nav_clickable button:hover {
+        background: #e8f1fb !important;
+        border-color: #c9d9ed !important;
+        color: #2563eb !important;
+        -webkit-text-fill-color: #2563eb !important;
+    }
+
+    .st-key-bottom_nav_clickable button[kind="primary"]:hover {
+        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+
+    .st-key-bottom_nav_clickable button:active {
+        transform: scale(.985) !important;
+    }
+
+    @media (max-width: 600px) {
+        .st-key-bottom_nav_clickable {
+            left: 12px !important;
+            right: 12px !important;
+            transform: none !important;
+            width: auto !important;
+            height: 70px !important;
+            bottom: 8px !important;
+            padding: 5px !important;
+            border-radius: 20px !important;
+        }
+
+        .st-key-bottom_nav_clickable div[data-testid="stHorizontalBlock"] {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            height: 60px !important;
+            min-height: 60px !important;
+            gap: 5px !important;
+        }
+
+        .st-key-bottom_nav_clickable div[data-testid="stButton"],
+        .st-key-bottom_nav_clickable .stButton,
+        .st-key-bottom_nav_clickable button {
+            height: 60px !important;
+            min-height: 60px !important;
+            max-height: 60px !important;
+        }
+
+        .st-key-bottom_nav_clickable button {
+            font-size: 10px !important;
+            padding: 0 2px !important;
+            border-radius: 16px !important;
+        }
+    }
+
+    /* Leave enough room so content never sits underneath the nav. */
+    .block-container {
+        padding-bottom: 5.5rem !important;
+    }
+    </style>
+    """,
     unsafe_allow_html=True,
 )
 
 _active = st.session_state.get("active_menu", "Dashboard")
 
 with st.container(key="bottom_nav_clickable"):
-    c1, c2, c3 = st.columns(3, gap="small")
+    c1, c2, c3 = st.columns(3, gap=None)
 
     with c1:
         st.button(
@@ -3034,4 +3022,3 @@ with st.container(key="bottom_nav_clickable"):
             type="primary" if _active == "Fee Based Income" else "secondary",
             use_container_width=True,
         )
-
