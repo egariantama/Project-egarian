@@ -1761,6 +1761,161 @@ section.main,
     }
 }
 
+
+/* ============================================================
+   BANCAPOCKET - DASHBOARD + KERJA SAMA NAVIGATION
+   ============================================================ */
+.st-key-top_nav {
+    margin: -4px 0 16px !important;
+}
+.st-key-top_nav [data-testid="column"] {
+    padding: 0 3px !important;
+}
+.st-key-top_nav button {
+    border-radius: 15px !important;
+    min-height: 42px !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    border: 1px solid #d9e5f4 !important;
+    box-shadow: 0 4px 14px rgba(37,99,235,.06) !important;
+}
+
+/* Dashboard */
+.dashboard-wrap { margin-top: 2px; }
+.dashboard-section { margin: 18px 0 9px; }
+.dashboard-section-title {
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: #17233d;
+    letter-spacing: -.3px;
+}
+.dashboard-section-sub {
+    font-size: 11px;
+    color: #8190a8;
+    margin-top: 4px;
+}
+
+.kpi-hero {
+    background: linear-gradient(135deg,#1245a0 0%,#2563eb 62%,#3b82f6 100%);
+    color: #fff;
+    border-radius: 22px;
+    padding: 18px 18px 17px;
+    box-shadow: 0 12px 28px rgba(37,99,235,.18);
+    position: relative;
+    overflow: hidden;
+}
+.kpi-hero:after {
+    content:"";
+    position:absolute;
+    width:150px;height:150px;
+    right:-65px;top:-72px;
+    border-radius:50%;
+    background:rgba(255,255,255,.10);
+}
+.kpi-hero .eyebrow { font-size:11px; font-weight:600; opacity:.86; }
+.kpi-hero .big { font-size:32px; font-weight:800; letter-spacing:-1px; margin-top:2px; position:relative; z-index:1; }
+.kpi-hero .caption { font-size:10px; opacity:.82; margin-top:2px; position:relative; z-index:1; }
+
+.dash-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+.dash-card {
+    background:#fff;
+    border:1px solid #dce7f4;
+    border-radius:19px;
+    padding:14px 14px 13px;
+    box-shadow:0 7px 20px rgba(20,45,85,.06);
+}
+.dash-card .label { font-size:10px; color:#7a8ba5; font-weight:600; }
+.dash-card .value { font-size:22px; line-height:1.05; color:#17233d; font-weight:800; margin-top:4px; }
+.dash-card .sub { font-size:10px; color:#91a0b6; margin-top:4px; }
+
+.dash-stat-row {
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; padding:10px 0; border-bottom:1px solid #edf2f8;
+}
+.dash-stat-row:last-child { border-bottom:0; padding-bottom:0; }
+.dash-stat-name { font-size:11px; color:#50617b; font-weight:600; }
+.dash-stat-value { font-size:13px; color:#17233d; font-weight:800; white-space:nowrap; }
+.bar-track { height:7px; background:#edf3fa; border-radius:99px; overflow:hidden; margin-top:5px; }
+.bar-fill { height:100%; background:linear-gradient(90deg,#2563eb,#60a5fa); border-radius:99px; }
+
+.financial-card {
+    background:#fff;
+    border:1px solid #dce7f4;
+    border-radius:21px;
+    padding:15px;
+    box-shadow:0 7px 20px rgba(20,45,85,.06);
+}
+.financial-note {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:6px 9px; border-radius:10px;
+    background:#eef5ff; color:#2563eb;
+    font-size:9px; font-weight:700;
+    margin:6px 0 8px;
+}
+.financial-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.fin-item { background:#f7faff; border-radius:15px; padding:11px 10px; border:1px solid #edf2f8; }
+.fin-item.full { grid-column:1 / -1; }
+.fin-item .label { font-size:9px; color:#7b8ca6; font-weight:600; }
+.fin-item .value { font-size:16px; color:#17233d; font-weight:800; margin-top:3px; letter-spacing:-.2px; }
+.fin-item .unit { font-size:9px; color:#95a3b8; font-weight:500; }
+
+.donut-card {
+    background:#fff; border:1px solid #dce7f4; border-radius:21px;
+    padding:15px; box-shadow:0 7px 20px rgba(20,45,85,.06);
+}
+.donut-layout { display:flex; align-items:center; gap:15px; }
+.donut {
+    width:112px; height:112px; border-radius:50%; flex:0 0 112px;
+    background:conic-gradient(#2563eb var(--pct), #e7eef8 0);
+    display:grid; place-items:center;
+}
+.donut:after { content:""; width:76px; height:76px; border-radius:50%; background:#fff; grid-area:1/1; }
+.donut-center { grid-area:1/1; z-index:1; text-align:center; }
+.donut-center .num { font-size:20px; font-weight:800; color:#17233d; }
+.donut-center .txt { font-size:8px; color:#8795aa; }
+.legend { flex:1; }
+.legend-row { display:flex; align-items:center; justify-content:space-between; margin:7px 0; gap:8px; }
+.legend-left { display:flex; align-items:center; gap:7px; font-size:10px; color:#5f708a; font-weight:600; }
+.legend-dot { width:8px; height:8px; border-radius:50%; background:#2563eb; flex:0 0 8px; }
+.legend-dot.muted { background:#d8e2ef; }
+.legend-value { font-size:11px; font-weight:800; color:#17233d; }
+
+.st-key-bottom_nav {
+    position: fixed !important;
+    z-index: 9999 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: 10px !important;
+    width: min(720px, calc(100% - 22px)) !important;
+    background: rgba(255,255,255,.95) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid #dce6f1 !important;
+    border-radius: 22px !important;
+    box-shadow: 0 10px 35px rgba(20,45,85,.14) !important;
+    padding: 7px !important;
+}
+.st-key-bottom_nav [data-testid="column"] { padding:0 3px !important; }
+.st-key-bottom_nav button {
+    min-height:42px !important;
+    border-radius:16px !important;
+    font-size:11px !important;
+    font-weight:700 !important;
+}
+
+/* Keep content clear of the fixed bottom navigation. */
+.block-container { padding-bottom: 6rem !important; }
+
+@media (max-width: 480px) {
+    .dash-grid-2 { gap:7px; }
+    .dash-card { padding:12px; }
+    .dash-card .value { font-size:19px; }
+    .financial-grid { gap:7px; }
+    .fin-item .value { font-size:14px; }
+    .donut { width:96px; height:96px; flex-basis:96px; }
+    .donut:after { width:65px; height:65px; }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1980,260 +2135,477 @@ df, column_mapping = prepare_data(df_raw)
 # ------------------------------------------------------------
 st.markdown("""
 <div class="bp-header">
-    <div class="bp-brand">BancassPocket</div>
-    <div class="bp-subtitle">Daftar Perusahaan Asuransi</div>
+    <div class="bp-brand">BancaPocket</div>
+    <div class="bp-subtitle">Partner Asuransi, Lebih Dekat</div>
     <div class="bp-caption">Informasi Rekanan Asuransi dalam Genggaman Anda</div>
     <div class="bp-shield">🛡️</div>
 </div>
 """, unsafe_allow_html=True)
 
-# ------------------------------------------------------------
-# MOBILE FILTERS — STICKY / FREEZE TOP
-# ------------------------------------------------------------
-# Native Streamlit buttons are used intentionally. Clicking a filter
-# performs only the normal Streamlit rerun; it does not open a new tab.
-
-if "category" not in st.session_state:
-    st.session_state.category = "All Asuransi"
-if "pks_filter" not in st.session_state or st.session_state.pks_filter not in {
-    "Lepas Filter", "PKS Rekanan", "PKS Bancass"
-}:
-    st.session_state.pks_filter = "Lepas Filter"
-
-category_items = [
-    ("▦  All", "All Asuransi"),
-    ("🏢  Umum", "Asuransi Umum"),
-    ("♥  Jiwa", "Asuransi Jiwa"),
-]
-
-def set_category(value):
-    st.session_state.category = value
-
-def set_pks(value):
-    st.session_state.pks_filter = value
-
-# Everything below is placed inside one Streamlit container so the
-# category + PKS controls can freeze together while the user scrolls.
-with st.container(key="sticky_filters"):
-
-    # ------------------------------------------------------------
-    # Row 1 — All / Umum / Jiwa
-    # ------------------------------------------------------------
-    st.markdown(
-        '<div class="filter-section-title">'
-        '<div class="main">Kategori Asuransi</div>'
-        '<div class="hint"><span style="padding-right:18px;">Pilih jenis asuransi</span></div>'
-        '</div>',
-        unsafe_allow_html=True
-    )
-
-    with st.container(key="category_filters"):
-        cat_cols = st.columns(3, gap="small")
-        for i, (label, value) in enumerate(category_items):
-            with cat_cols[i]:
-                # Short label; CSS supplies the icon/subtitle for the card UI.
-                short_label = ["All", "Umum", "Jiwa"][i]
-                st.button(
-                    short_label,
-                    key=f"category_btn_{i}",
-                    use_container_width=True,
-                    type="primary" if st.session_state.category == value else "secondary",
-                    on_click=set_category,
-                    args=(value,),
-                )
-
-    # ------------------------------------------------------------
-    # Row 2 — Lepas Filter / PKS Rekanan / PKS Bancass
-    # ------------------------------------------------------------
-    st.markdown(
-        '<div class="filter-section-title">'
-        '<div class="main">Jenis Kerja Sama</div>'
-        '<div class="hint"><span style="padding-right:18px;">Pilih atau lepas filter PKS</span></div>'
-        '</div>',
-        unsafe_allow_html=True
-    )
-
-    with st.container(key="pks_filters"):
-        # "Lepas Filter" hanya menghapus filter PKS. Filter kategori
-        # (All / Umum / Jiwa) dan pencarian nama tetap dipertahankan.
-        pks_items = ["Lepas Filter", "PKS Rekanan", "PKS Bancass"]
-        pks_cols = st.columns(3, gap="small")
-        for i, value in enumerate(pks_items):
-            with pks_cols[i]:
-                st.button(
-                    value,
-                    key=f"pks_btn_{i}",
-                    use_container_width=True,
-                    type="primary" if st.session_state.pks_filter == value else "secondary",
-                    on_click=set_pks,
-                    args=(value,),
-                )
 
 # ------------------------------------------------------------
+# APP NAVIGATION — hanya Dashboard & Kerja Sama
 # ------------------------------------------------------------
-# Search
-# ------------------------------------------------------------
-st.markdown('<div class="search-label">Cari Asuradur</div>', unsafe_allow_html=True)
-search = st.text_input(
-    "search",
-    placeholder="Cari nama asuransi...",
-    label_visibility="collapsed"
-)
+if "active_menu" not in st.session_state:
+    st.session_state.active_menu = "Dashboard"
 
-category = st.session_state.category
 
-# All Asuransi = tampilkan semua perusahaan.
-# Jika memilih kategori tertentu, filter berdasarkan Jenis Asuransi.
-if category == "All Asuransi":
-    filtered = df.copy()
-elif column_mapping["type"]:
-    filtered = df[df["Jenis Asuransi"].apply(infer_type).eq(category)].copy()
-else:
-    # Jika Excel belum memiliki kolom Jenis Asuransi,
-    # data tetap ditampilkan saat kategori dipilih.
-    filtered = df.copy()
-
-# Filter status PKS. Filter ini dapat dipakai bersamaan dengan
-# kategori Asuransi Umum / Jiwa dan pencarian nama.
-pks_filter = st.session_state.pks_filter
-
-if pks_filter == "PKS Rekanan":
-    filtered = filtered[
-        filtered["PKS Rekanan Perkreditan"]
-        .apply(clean_yes_no)
-        .eq("Yes")
-    ].copy()
-elif pks_filter == "PKS Bancass":
-    filtered = filtered[
-        filtered["PKS Bancassurance"]
-        .apply(clean_yes_no)
-        .eq("Yes")
-    ].copy()
-
-if search.strip():
-    filtered = filtered[
-        filtered["Nama Asuransi"].str.contains(
-            search.strip(), case=False, na=False
-        )
-    ].copy()
-
-# ------------------------------------------------------------
-# Section
-# ------------------------------------------------------------
-count_label = "Semua Asuransi" if category == "All Asuransi" else category
-pks_label = "" if pks_filter == "Lepas Filter" else f" • {pks_filter}"
-
-st.markdown(
-    f'<div class="section-title">Daftar Asuradur</div>'
-    f'<div class="section-count">Total {len(filtered)} {count_label}{pks_label}</div>',
-    unsafe_allow_html=True
-)
-
-# ------------------------------------------------------------
-# Cards
-# ------------------------------------------------------------
-if "selected_company" not in st.session_state:
+def set_active_menu(value):
+    st.session_state.active_menu = value
+    # Detail perusahaan tidak dibawa ketika berpindah menu.
     st.session_state.selected_company = None
 
-if filtered.empty:
-    st.markdown(
-        '<div class="empty">🔎<br><br><b>Asuradur tidak ditemukan</b><br>'
-        'Coba gunakan kata kunci lain.</div>',
-        unsafe_allow_html=True
-    )
-else:
-    for idx, row in filtered.iterrows():
-        name = str(row["Nama Asuransi"])
-        initials = company_initial(name)
-        selected = st.session_state.selected_company == name
-
-        credit = clean_yes_no(row["PKS Rekanan Perkreditan"])
-        banca = clean_yes_no(row["PKS Bancassurance"])
-
-        # IMPORTANT:
-        # This HTML is intentionally built as one continuous string.
-        # It avoids Streamlit Markdown interpreting indented HTML
-        # as a code block.
-        card_html = (
-            '<div class="company-card">'
-            '<div class="company-head">'
-            f'<div class="company-logo">{html.escape(initials)}</div>'
-            '<div style="min-width:0;">'
-            f'<div class="company-name">{html.escape(name)}</div>'
-            f'<div class="company-type">{html.escape(str(row["Jenis Asuransi"]) if category == "All Asuransi" else category)}</div>'
-            '</div>'
-            '<div class="arrow">›</div>'
-            '</div>'
-            '<div class="metrics">'
-            '<div class="metric">'
-            '<div class="metric-label">Investasi</div>'
-            f'<div class="metric-value">{format_number(row["Investasi"])}</div>'
-            '</div>'
-            '<div class="metric">'
-            '<div class="metric-label">Aset</div>'
-            f'<div class="metric-value">{format_number(row["Aset"])}</div>'
-            '</div>'
-            '<div class="metric">'
-            '<div class="metric-label">Ekuitas</div>'
-            f'<div class="metric-value">{format_number(row["Ekuitas"])}</div>'
-            '</div>'
-            '</div>'
-            '<div class="status-row">'
-            f'<div class="status {"yes" if credit == "Yes" else "no"}">'
-            f'PKS Rekanan<br>{credit}'
-            '</div>'
-            f'<div class="status {"yes" if banca == "Yes" else "no"}">'
-            f'PKS Bancass<br>{banca}'
-            '</div>'
-            '</div>'
-            '</div>'
+with st.container(key="top_nav"):
+    nav_cols = st.columns(2, gap="small")
+    with nav_cols[0]:
+        st.button(
+            "▦  Dashboard",
+            key="top_dashboard",
+            use_container_width=True,
+            type="primary" if st.session_state.active_menu == "Dashboard" else "secondary",
+            on_click=set_active_menu,
+            args=("Dashboard",),
+        )
+    with nav_cols[1]:
+        st.button(
+            "▤  Kerja Sama",
+            key="top_kerja_sama",
+            use_container_width=True,
+            type="primary" if st.session_state.active_menu == "Kerja Sama" else "secondary",
+            on_click=set_active_menu,
+            args=("Kerja Sama",),
         )
 
-        st.markdown(card_html, unsafe_allow_html=True)
+# ------------------------------------------------------------
+# DASHBOARD
+# ------------------------------------------------------------
+if st.session_state.active_menu == "Dashboard":
+    total = len(df)
+    umum = int(df["Jenis Asuransi"].apply(infer_type).eq("Asuransi Umum").sum())
+    jiwa = int(df["Jenis Asuransi"].apply(infer_type).eq("Asuransi Jiwa").sum())
+    rekanan = int(df["PKS Rekanan Perkreditan"].apply(clean_yes_no).eq("Yes").sum())
+    bancass = int(df["PKS Bancassurance"].apply(clean_yes_no).eq("Yes").sum())
+    no_pks = int(
+        (
+            df["PKS Rekanan Perkreditan"].apply(clean_yes_no).eq("No")
+            & df["PKS Bancassurance"].apply(clean_yes_no).eq("No")
+        ).sum()
+    )
 
-        if st.button(
-            "Lihat Detail" if not selected else "Tutup Detail",
-            key=f"detail_{idx}_{re.sub(r'[^a-zA-Z0-9]', '_', name)}",
-            use_container_width=True
-        ):
-            st.session_state.selected_company = None if selected else name
-            st.rerun()
+    def pct(value, base=total):
+        if not base:
+            return 0.0
+        return value / base * 100
 
-        if selected:
-            st.markdown(
-                '<div class="detail-card">'
-                f'<div class="detail-title">{html.escape(name)}</div>'
-                f'<div class="detail-sub">{html.escape(str(row["Jenis Asuransi"]) if category == "All Asuransi" else category)}</div>'
-                '<div class="detail-grid">'
-                '<div class="detail-metric">'
-                '<div class="label">Investasi</div>'
-                f'<div class="value">{format_number(row["Investasi"])} <small>Rp Miliar</small></div>'
-                '</div>'
-                '<div class="detail-metric">'
-                '<div class="label">Aset</div>'
-                f'<div class="value">{format_number(row["Aset"])} <small>Rp Miliar</small></div>'
-                '</div>'
-                '<div class="detail-metric">'
-                '<div class="label">Ekuitas</div>'
-                f'<div class="value">{format_number(row["Ekuitas"])} <small>Rp Miliar</small></div>'
-                '</div>'
-                '<div class="detail-metric">'
-                '<div class="label">Pendapatan Jasa Asuransi</div>'
-                f'<div class="value">{format_number(row["Pendapatan Jasa Asuransi"])} <small>Rp Miliar</small></div>'
-                '</div>'
-                '<div class="detail-metric">'
-                '<div class="label">Laba (Rugi)</div>'
-                f'<div class="value">{format_number(row["Laba (Rugi)"])} <small>Rp Miliar</small></div>'
-                '</div>'
-                '<div class="detail-metric">'
-                '<div class="label">PKS Rekanan Perkreditan</div>'
-                f'<div class="value">{credit}</div>'
-                '</div>'
-                '<div class="detail-metric">'
-                '<div class="label">PKS Bancassurance</div>'
-                f'<div class="value">{banca}</div>'
-                '</div>'
-                '</div>'
-                '</div>',
-                unsafe_allow_html=True
+    # FINANCIAL SUMMARY — KHUSUS PKS REKANAN
+    rekanan_df = df[df["PKS Rekanan Perkreditan"].apply(clean_yes_no).eq("Yes")].copy()
+
+    def financial_total(column):
+        if column not in rekanan_df.columns:
+            return pd.NA
+        series = pd.to_numeric(rekanan_df[column], errors="coerce")
+        if series.notna().any():
+            return series.sum()
+        return pd.NA
+
+    fin_investasi = financial_total("Investasi")
+    fin_aset = financial_total("Aset")
+    fin_ekuitas = financial_total("Ekuitas")
+    fin_pendapatan = financial_total("Pendapatan Jasa Asuransi")
+    fin_laba = financial_total("Laba (Rugi)")
+
+    st.markdown('<div class="dashboard-wrap">', unsafe_allow_html=True)
+
+    st.markdown(
+        f'<div class="kpi-hero">'
+        f'<div class="eyebrow">TOTAL ASURADUR</div>'
+        f'<div class="big">{total:,}'.replace(',', '.') + '</div>'
+        f'<div class="caption">Seluruh perusahaan asuransi dalam database BancaPocket</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="dashboard-section">'
+        '<div class="dashboard-section-title">Komposisi Asuradur</div>'
+        '<div class="dashboard-section-sub">Distribusi berdasarkan jenis perusahaan</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="dash-grid-2">'
+        '<div class="dash-card">'
+        '<div class="label">ASURANSI UMUM</div>'
+        f'<div class="value">{umum:,}'.replace(',', '.') + '</div>'
+        f'<div class="sub">{pct(umum):.1f}% dari total</div>'
+        '<div class="bar-track"><div class="bar-fill" style="width:' + f'{pct(umum):.1f}' + '%"></div></div>'
+        '</div>'
+        '<div class="dash-card">'
+        '<div class="label">ASURANSI JIWA</div>'
+        f'<div class="value">{jiwa:,}'.replace(',', '.') + '</div>'
+        f'<div class="sub">{pct(jiwa):.1f}% dari total</div>'
+        '<div class="bar-track"><div class="bar-fill" style="width:' + f'{pct(jiwa):.1f}' + '%"></div></div>'
+        '</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="dashboard-section">'
+        '<div class="dashboard-section-title">Status Kerja Sama</div>'
+        '<div class="dashboard-section-sub">Ringkasan status PKS pada seluruh asuradur</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="donut-card">'
+        '<div class="donut-layout">'
+        f'<div class="donut" style="--pct:{pct(rekanan):.2f}%">'
+        '<div class="donut-center">'
+        f'<div class="num">{pct(rekanan):.1f}%</div>'
+        '<div class="txt">REKANAN</div>'
+        '</div></div>'
+        '<div class="legend">'
+        '<div class="legend-row"><div class="legend-left"><span class="legend-dot"></span>PKS Rekanan</div>'
+        f'<div class="legend-value">{rekanan:,}'.replace(',', '.') + f' &nbsp;({pct(rekanan):.1f}%)</div></div>'
+        '<div class="legend-row"><div class="legend-left"><span class="legend-dot muted"></span>Tidak Ada PKS</div>'
+        f'<div class="legend-value">{no_pks:,}'.replace(',', '.') + f' &nbsp;({pct(no_pks):.1f}%)</div></div>'
+        '<div class="legend-row"><div class="legend-left"><span class="legend-dot" style="opacity:.45"></span>PKS Bancass</div>'
+        f'<div class="legend-value">{bancass:,}'.replace(',', '.') + f' &nbsp;({pct(bancass):.1f}%)</div></div>'
+        '</div></div></div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="dashboard-section">'
+        '<div class="dashboard-section-title">Cakupan Kerja Sama</div>'
+        '<div class="dashboard-section-sub">Jumlah asuradur berdasarkan jenis PKS</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    max_pks = max(rekanan, bancass, 1)
+    st.markdown(
+        '<div class="dash-card">'
+        '<div class="dash-stat-row"><div style="flex:1">'
+        '<div class="dash-stat-name">PKS Rekanan</div>'
+        f'<div class="bar-track"><div class="bar-fill" style="width:{rekanan/max_pks*100:.1f}%"></div></div>'
+        '</div><div class="dash-stat-value">{rekanan:,}'.replace(',', '.') + '</div></div>'
+        '<div class="dash-stat-row"><div style="flex:1">'
+        '<div class="dash-stat-name">PKS Bancass</div>'
+        f'<div class="bar-track"><div class="bar-fill" style="width:{bancass/max_pks*100:.1f}%"></div></div>'
+        '</div><div class="dash-stat-value">{bancass:,}'.replace(',', '.') + '</div></div>'
+        '<div class="dash-stat-row"><div style="flex:1">'
+        '<div class="dash-stat-name">Tidak Ada PKS</div>'
+        f'<div class="bar-track"><div class="bar-fill" style="width:{no_pks/max(total,1)*100:.1f}%"></div></div>'
+        '</div><div class="dash-stat-value">{no_pks:,}'.replace(',', '.') + '</div></div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="dashboard-section">'
+        '<div class="dashboard-section-title">Ringkasan Data Keuangan</div>'
+        '<div class="dashboard-section-sub">Kinerja agregat asuradur yang memiliki PKS Rekanan</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="financial-card">'
+        f'<div class="financial-note">✓ {rekanan:,}'.replace(',', '.') + ' Asuradur Rekanan</div>'
+        '<div class="financial-grid">'
+        '<div class="fin-item"><div class="label">INVESTASI</div>'
+        f'<div class="value">{format_number(fin_investasi)} <span class="unit">Rp Miliar</span></div></div>'
+        '<div class="fin-item"><div class="label">ASET</div>'
+        f'<div class="value">{format_number(fin_aset)} <span class="unit">Rp Miliar</span></div></div>'
+        '<div class="fin-item"><div class="label">EKUITAS</div>'
+        f'<div class="value">{format_number(fin_ekuitas)} <span class="unit">Rp Miliar</span></div></div>'
+        '<div class="fin-item"><div class="label">PENDAPATAN JASA ASURANSI</div>'
+        f'<div class="value">{format_number(fin_pendapatan)} <span class="unit">Rp Miliar</span></div></div>'
+        '<div class="fin-item full"><div class="label">LABA (RUGI)</div>'
+        f'<div class="value">{format_number(fin_laba)} <span class="unit">Rp Miliar</span></div></div>'
+        '</div></div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+else:
+    # ------------------------------------------------------------
+    # MOBILE FILTERS — STICKY / FREEZE TOP
+    # ------------------------------------------------------------
+    # Native Streamlit buttons are used intentionally. Clicking a filter
+    # performs only the normal Streamlit rerun; it does not open a new tab.
+
+    if "category" not in st.session_state:
+        st.session_state.category = "All Asuransi"
+    if "pks_filter" not in st.session_state or st.session_state.pks_filter not in {
+        "Lepas Filter", "PKS Rekanan", "PKS Bancass"
+    }:
+        st.session_state.pks_filter = "Lepas Filter"
+
+    category_items = [
+        ("▦  All", "All Asuransi"),
+        ("🏢  Umum", "Asuransi Umum"),
+        ("♥  Jiwa", "Asuransi Jiwa"),
+    ]
+
+    def set_category(value):
+        st.session_state.category = value
+
+    def set_pks(value):
+        st.session_state.pks_filter = value
+
+    # Everything below is placed inside one Streamlit container so the
+    # category + PKS controls can freeze together while the user scrolls.
+    with st.container(key="sticky_filters"):
+
+        # ------------------------------------------------------------
+        # Row 1 — All / Umum / Jiwa
+        # ------------------------------------------------------------
+        st.markdown(
+            '<div class="filter-section-title">'
+            '<div class="main">Kategori Asuransi</div>'
+            '<div class="hint"><span style="padding-right:18px;">Pilih jenis asuransi</span></div>'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        with st.container(key="category_filters"):
+            cat_cols = st.columns(3, gap="small")
+            for i, (label, value) in enumerate(category_items):
+                with cat_cols[i]:
+                    # Short label; CSS supplies the icon/subtitle for the card UI.
+                    short_label = ["All", "Umum", "Jiwa"][i]
+                    st.button(
+                        short_label,
+                        key=f"category_btn_{i}",
+                        use_container_width=True,
+                        type="primary" if st.session_state.category == value else "secondary",
+                        on_click=set_category,
+                        args=(value,),
+                    )
+
+        # ------------------------------------------------------------
+        # Row 2 — Lepas Filter / PKS Rekanan / PKS Bancass
+        # ------------------------------------------------------------
+        st.markdown(
+            '<div class="filter-section-title">'
+            '<div class="main">Jenis Kerja Sama</div>'
+            '<div class="hint"><span style="padding-right:18px;">Pilih atau lepas filter PKS</span></div>'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        with st.container(key="pks_filters"):
+            # "Lepas Filter" hanya menghapus filter PKS. Filter kategori
+            # (All / Umum / Jiwa) dan pencarian nama tetap dipertahankan.
+            pks_items = ["Lepas Filter", "PKS Rekanan", "PKS Bancass"]
+            pks_cols = st.columns(3, gap="small")
+            for i, value in enumerate(pks_items):
+                with pks_cols[i]:
+                    st.button(
+                        value,
+                        key=f"pks_btn_{i}",
+                        use_container_width=True,
+                        type="primary" if st.session_state.pks_filter == value else "secondary",
+                        on_click=set_pks,
+                        args=(value,),
+                    )
+
+    # ------------------------------------------------------------
+    # ------------------------------------------------------------
+    # Search
+    # ------------------------------------------------------------
+    st.markdown('<div class="search-label">Cari Asuradur</div>', unsafe_allow_html=True)
+    search = st.text_input(
+        "search",
+        placeholder="Cari nama asuransi...",
+        label_visibility="collapsed"
+    )
+
+    category = st.session_state.category
+
+    # All Asuransi = tampilkan semua perusahaan.
+    # Jika memilih kategori tertentu, filter berdasarkan Jenis Asuransi.
+    if category == "All Asuransi":
+        filtered = df.copy()
+    elif column_mapping["type"]:
+        filtered = df[df["Jenis Asuransi"].apply(infer_type).eq(category)].copy()
+    else:
+        # Jika Excel belum memiliki kolom Jenis Asuransi,
+        # data tetap ditampilkan saat kategori dipilih.
+        filtered = df.copy()
+
+    # Filter status PKS. Filter ini dapat dipakai bersamaan dengan
+    # kategori Asuransi Umum / Jiwa dan pencarian nama.
+    pks_filter = st.session_state.pks_filter
+
+    if pks_filter == "PKS Rekanan":
+        filtered = filtered[
+            filtered["PKS Rekanan Perkreditan"]
+            .apply(clean_yes_no)
+            .eq("Yes")
+        ].copy()
+    elif pks_filter == "PKS Bancass":
+        filtered = filtered[
+            filtered["PKS Bancassurance"]
+            .apply(clean_yes_no)
+            .eq("Yes")
+        ].copy()
+
+    if search.strip():
+        filtered = filtered[
+            filtered["Nama Asuransi"].str.contains(
+                search.strip(), case=False, na=False
             )
+        ].copy()
+
+    # ------------------------------------------------------------
+    # Section
+    # ------------------------------------------------------------
+    count_label = "Semua Asuransi" if category == "All Asuransi" else category
+    pks_label = "" if pks_filter == "Lepas Filter" else f" • {pks_filter}"
+
+    st.markdown(
+        f'<div class="section-title">Daftar Asuradur</div>'
+        f'<div class="section-count">Total {len(filtered)} {count_label}{pks_label}</div>',
+        unsafe_allow_html=True
+    )
+
+    # ------------------------------------------------------------
+    # Cards
+    # ------------------------------------------------------------
+    if "selected_company" not in st.session_state:
+        st.session_state.selected_company = None
+
+    if filtered.empty:
+        st.markdown(
+            '<div class="empty">🔎<br><br><b>Asuradur tidak ditemukan</b><br>'
+            'Coba gunakan kata kunci lain.</div>',
+            unsafe_allow_html=True
+        )
+    else:
+        for idx, row in filtered.iterrows():
+            name = str(row["Nama Asuransi"])
+            initials = company_initial(name)
+            selected = st.session_state.selected_company == name
+
+            credit = clean_yes_no(row["PKS Rekanan Perkreditan"])
+            banca = clean_yes_no(row["PKS Bancassurance"])
+
+            # IMPORTANT:
+            # This HTML is intentionally built as one continuous string.
+            # It avoids Streamlit Markdown interpreting indented HTML
+            # as a code block.
+            card_html = (
+                '<div class="company-card">'
+                '<div class="company-head">'
+                f'<div class="company-logo">{html.escape(initials)}</div>'
+                '<div style="min-width:0;">'
+                f'<div class="company-name">{html.escape(name)}</div>'
+                f'<div class="company-type">{html.escape(str(row["Jenis Asuransi"]) if category == "All Asuransi" else category)}</div>'
+                '</div>'
+                '<div class="arrow">›</div>'
+                '</div>'
+                '<div class="metrics">'
+                '<div class="metric">'
+                '<div class="metric-label">Investasi</div>'
+                f'<div class="metric-value">{format_number(row["Investasi"])}</div>'
+                '</div>'
+                '<div class="metric">'
+                '<div class="metric-label">Aset</div>'
+                f'<div class="metric-value">{format_number(row["Aset"])}</div>'
+                '</div>'
+                '<div class="metric">'
+                '<div class="metric-label">Ekuitas</div>'
+                f'<div class="metric-value">{format_number(row["Ekuitas"])}</div>'
+                '</div>'
+                '</div>'
+                '<div class="status-row">'
+                f'<div class="status {"yes" if credit == "Yes" else "no"}">'
+                f'PKS Rekanan<br>{credit}'
+                '</div>'
+                f'<div class="status {"yes" if banca == "Yes" else "no"}">'
+                f'PKS Bancass<br>{banca}'
+                '</div>'
+                '</div>'
+                '</div>'
+            )
+
+            st.markdown(card_html, unsafe_allow_html=True)
+
+            if st.button(
+                "Lihat Detail" if not selected else "Tutup Detail",
+                key=f"detail_{idx}_{re.sub(r'[^a-zA-Z0-9]', '_', name)}",
+                use_container_width=True
+            ):
+                st.session_state.selected_company = None if selected else name
+                st.rerun()
+
+            if selected:
+                st.markdown(
+                    '<div class="detail-card">'
+                    f'<div class="detail-title">{html.escape(name)}</div>'
+                    f'<div class="detail-sub">{html.escape(str(row["Jenis Asuransi"]) if category == "All Asuransi" else category)}</div>'
+                    '<div class="detail-grid">'
+                    '<div class="detail-metric">'
+                    '<div class="label">Investasi</div>'
+                    f'<div class="value">{format_number(row["Investasi"])} <small>Rp Miliar</small></div>'
+                    '</div>'
+                    '<div class="detail-metric">'
+                    '<div class="label">Aset</div>'
+                    f'<div class="value">{format_number(row["Aset"])} <small>Rp Miliar</small></div>'
+                    '</div>'
+                    '<div class="detail-metric">'
+                    '<div class="label">Ekuitas</div>'
+                    f'<div class="value">{format_number(row["Ekuitas"])} <small>Rp Miliar</small></div>'
+                    '</div>'
+                    '<div class="detail-metric">'
+                    '<div class="label">Pendapatan Jasa Asuransi</div>'
+                    f'<div class="value">{format_number(row["Pendapatan Jasa Asuransi"])} <small>Rp Miliar</small></div>'
+                    '</div>'
+                    '<div class="detail-metric">'
+                    '<div class="label">Laba (Rugi)</div>'
+                    f'<div class="value">{format_number(row["Laba (Rugi)"])} <small>Rp Miliar</small></div>'
+                    '</div>'
+                    '<div class="detail-metric">'
+                    '<div class="label">PKS Rekanan Perkreditan</div>'
+                    f'<div class="value">{credit}</div>'
+                    '</div>'
+                    '<div class="detail-metric">'
+                    '<div class="label">PKS Bancassurance</div>'
+                    f'<div class="value">{banca}</div>'
+                    '</div>'
+                    '</div>'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
+
+
+# ------------------------------------------------------------
+# BOTTOM NAVIGATION — hanya 2 menu
+# ------------------------------------------------------------
+with st.container(key="bottom_nav"):
+    bottom_cols = st.columns(2, gap="small")
+    with bottom_cols[0]:
+        st.button(
+            "▦  Dashboard",
+            key="bottom_dashboard",
+            use_container_width=True,
+            type="primary" if st.session_state.active_menu == "Dashboard" else "secondary",
+            on_click=set_active_menu,
+            args=("Dashboard",),
+        )
+    with bottom_cols[1]:
+        st.button(
+            "▤  Kerja Sama",
+            key="bottom_kerja_sama",
+            use_container_width=True,
+            type="primary" if st.session_state.active_menu == "Kerja Sama" else "secondary",
+            on_click=set_active_menu,
+            args=("Kerja Sama",),
+        )
