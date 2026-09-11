@@ -584,10 +584,7 @@ div[data-testid="stButton"] button:active {
     color:#2563eb;
 }
 
-/* Desktop still looks like phone/tablet */
-@media (min-width: 900px) {
-    .block-container { max-width: 780px !important; }
-}
+
 
 /* Mobile */
 @media (max-width: 480px) {
@@ -1291,9 +1288,12 @@ div[data-testid="stTextInput"] input {
 /* Prevent horizontal overflow on all screen sizes */
 html, body, #root, .stApp,
 [data-testid="stAppViewContainer"],
-[data-testid="stAppViewBlockContainer"],
-.block-container {
+[data-testid="stAppViewBlockContainer"] {
     max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.block-container {
     overflow-x: hidden !important;
 }
 
@@ -2800,12 +2800,75 @@ elif st.session_state.active_menu == "Fee Based Income":
     )
 
 # ------------------------------------------------------------
+
+# ============================================================
+# DESKTOP = MOBILE PHONE CANVAS
+# On desktop/PC the entire app stays narrow and centered,
+# matching the mobile composition. On real phones it is full width.
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* Desktop / laptop / PC */
+    @media (min-width: 601px) {
+        .stApp {
+            background:
+                radial-gradient(circle at 50% -10%, rgba(37,99,235,.12), transparent 32%),
+                linear-gradient(180deg, #eef4fc 0%, #e7eef8 100%) !important;
+        }
+
+        .block-container {
+            width: 430px !important;
+            max-width: 430px !important;
+            min-width: 430px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            padding: 18px 16px 96px !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Keep every main content element inside the phone canvas. */
+        .block-container > div {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Bottom nav has exactly the same phone width. */
+        .st-key-bottom_nav_clickable {
+            width: 430px !important;
+            max-width: 430px !important;
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+        }
+    }
+
+    /* Real phones / narrow screens */
+    @media (max-width: 600px) {
+        .block-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin: 0 !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+
+        .st-key-bottom_nav_clickable {
+            left: 12px !important;
+            right: 12px !important;
+            width: auto !important;
+            max-width: none !important;
+            transform: none !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # FINAL BOTTOM NAVIGATION
-# Clean native Streamlit navigation:
-# - 3 equal CSS-grid columns
-# - no pseudo-elements
-# - no fixed column width tricks
-# - native buttons remain fully clickable
+# Native Streamlit buttons, responsive for desktop and mobile.
 
 def _go_dashboard():
     st.session_state.active_menu = "Dashboard"
@@ -2824,17 +2887,17 @@ st.markdown(
     """
     <style>
     /* ============================================================
-       BOTTOM NAV — CLEAN / EQUAL / MOBILE SAFE
+       BOTTOM NAVIGATION
        ============================================================ */
 
     .st-key-bottom_nav_clickable {
         position: fixed !important;
         z-index: 100000 !important;
         left: 50% !important;
-        bottom: 10px !important;
+        bottom: 12px !important;
         transform: translateX(-50%) !important;
 
-        width: min(720px, calc(100vw - 24px)) !important;
+        width: min(760px, calc(100vw - 32px)) !important;
         height: 72px !important;
         padding: 6px !important;
         box-sizing: border-box !important;
@@ -2849,32 +2912,43 @@ st.markdown(
         overflow: hidden !important;
     }
 
-    /* IMPORTANT: use GRID, not Streamlit's flex sizing. */
+    /* Cancel Streamlit's default column spacing ONLY inside the nav. */
     .st-key-bottom_nav_clickable div[data-testid="stHorizontalBlock"] {
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        justify-content: stretch !important;
+
         width: 100% !important;
         height: 60px !important;
         min-width: 0 !important;
         min-height: 60px !important;
-        gap: 7px !important;
+
+        gap: 6px !important;
         margin: 0 !important;
         padding: 0 !important;
         box-sizing: border-box !important;
         overflow: hidden !important;
     }
 
-    /* Every Streamlit column becomes exactly one grid cell. */
     .st-key-bottom_nav_clickable div[data-testid="column"] {
-        display: block !important;
-        width: auto !important;
+        flex: 1 1 0 !important;
+        width: 0 !important;
         min-width: 0 !important;
         max-width: none !important;
-        flex: none !important;
+
         margin: 0 !important;
         padding: 0 !important;
         box-sizing: border-box !important;
         overflow: hidden !important;
+    }
+
+    .st-key-bottom_nav_clickable div[data-testid="column"] > div {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .st-key-bottom_nav_clickable div[data-testid="stButton"],
@@ -2889,9 +2963,11 @@ st.markdown(
         overflow: hidden !important;
     }
 
-    /* Native button: fixed to its grid cell. */
     .st-key-bottom_nav_clickable button {
-        display: block !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
@@ -2900,7 +2976,7 @@ st.markdown(
         max-height: 60px !important;
 
         margin: 0 !important;
-        padding: 0 4px !important;
+        padding: 0 8px !important;
         box-sizing: border-box !important;
 
         border-radius: 17px !important;
@@ -2922,9 +2998,10 @@ st.markdown(
         cursor: pointer !important;
     }
 
-    /* Active item. */
     .st-key-bottom_nav_clickable button[kind="primary"] {
-        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
+        background: linear-gradient(
+            135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%
+        ) !important;
         border-color: #2563eb !important;
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
@@ -2939,13 +3016,17 @@ st.markdown(
     }
 
     .st-key-bottom_nav_clickable button[kind="primary"]:hover {
-        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
+        background: linear-gradient(
+            135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%
+        ) !important;
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
     }
 
-    .st-key-bottom_nav_clickable button:active {
-        transform: scale(.985) !important;
+    @media (min-width: 1100px) {
+        .st-key-bottom_nav_clickable {
+            width: 760px !important;
+        }
     }
 
     @media (max-width: 600px) {
@@ -2954,37 +3035,33 @@ st.markdown(
             right: 12px !important;
             transform: none !important;
             width: auto !important;
-            height: 70px !important;
+
             bottom: 8px !important;
+            height: 70px !important;
             padding: 5px !important;
             border-radius: 20px !important;
         }
 
         .st-key-bottom_nav_clickable div[data-testid="stHorizontalBlock"] {
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 5px !important;
             height: 60px !important;
             min-height: 60px !important;
-            gap: 5px !important;
         }
 
-        .st-key-bottom_nav_clickable div[data-testid="stButton"],
-        .st-key-bottom_nav_clickable .stButton,
         .st-key-bottom_nav_clickable button {
             height: 60px !important;
             min-height: 60px !important;
             max-height: 60px !important;
-        }
 
-        .st-key-bottom_nav_clickable button {
-            font-size: 10px !important;
-            padding: 0 2px !important;
+            padding: 0 3px !important;
             border-radius: 16px !important;
+            font-size: 10px !important;
         }
     }
 
-    /* Leave enough room so content never sits underneath the nav. */
+    /* Clear content from the fixed navigation. */
     .block-container {
-        padding-bottom: 5.5rem !important;
+        padding-bottom: 6rem !important;
     }
     </style>
     """,
@@ -2994,7 +3071,7 @@ st.markdown(
 _active = st.session_state.get("active_menu", "Dashboard")
 
 with st.container(key="bottom_nav_clickable"):
-    c1, c2, c3 = st.columns(3, gap=None)
+    c1, c2, c3 = st.columns(3, gap="small")
 
     with c1:
         st.button(
