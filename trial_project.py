@@ -1876,38 +1876,46 @@ section.main,
     left: 50% !important;
     transform: translateX(-50%) !important;
     bottom: 10px !important;
-    width: min(720px, calc(100% - 20px)) !important;
-    max-width: calc(100% - 20px) !important;
+    width: min(720px, calc(100% - 24px)) !important;
+    max-width: min(720px, calc(100% - 24px)) !important;
     box-sizing: border-box !important;
-    background: rgba(255,255,255,.98) !important;
+    background: rgba(255,255,255,.985) !important;
     backdrop-filter: blur(18px) !important;
     -webkit-backdrop-filter: blur(18px) !important;
     border: 1px solid #d7e3f2 !important;
     border-radius: 22px !important;
     box-shadow: 0 12px 34px rgba(20,45,85,.16) !important;
-    padding: 7px !important;
+    padding: 8px !important;
 }
 
+/* Precisely equal 3-column layout: identical left, inter-button and right spacing. */
 .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    gap: 7px !important;
+    gap: 8px !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
-    align-items: stretch !important;
 }
 
 .st-key-bottom_nav div[data-testid="column"] {
+    flex: 1 1 0% !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.st-key-bottom_nav div[data-testid="column"] > div {
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
-    flex: 1 1 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
     box-sizing: border-box !important;
 }
 
@@ -1917,6 +1925,7 @@ section.main,
     max-width: 100% !important;
     min-width: 0 !important;
     margin: 0 !important;
+    padding: 0 !important;
     box-sizing: border-box !important;
 }
 
@@ -1929,7 +1938,7 @@ section.main,
     min-height: 56px !important;
     max-height: 56px !important;
     min-width: 0 !important;
-    padding: 7px 3px !important;
+    padding: 7px 6px !important;
     margin: 0 !important;
     border-radius: 17px !important;
     font-size: 11.5px !important;
@@ -1944,14 +1953,16 @@ section.main,
 }
 
 .st-key-bottom_nav button p {
+    display: block !important;
+    width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
-    text-overflow: clip !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
 }
 
-/* Active tab: strong blue, matching the main BancaPocket identity. */
 .st-key-bottom_nav button[kind="primary"] {
     color: #fff !important;
     background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
@@ -1959,7 +1970,6 @@ section.main,
     box-shadow: 0 7px 18px rgba(37,99,235,.22) !important;
 }
 
-/* Inactive tabs: clearly separated from the pale application background. */
 .st-key-bottom_nav button[kind="secondary"] {
     color: #526783 !important;
     background: #edf3fa !important;
@@ -1988,11 +1998,10 @@ section.main,
         height: 53px !important;
         min-height: 53px !important;
         max-height: 53px !important;
-        padding: 6px 2px !important;
+        padding: 6px 3px !important;
         border-radius: 16px !important;
         font-size: 10.5px !important;
         line-height: 1.05 !important;
-        white-space: nowrap !important;
     }
 }
 
