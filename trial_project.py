@@ -2040,9 +2040,19 @@ section.main,
     }
 
     .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
+        /* Break out of Streamlit's narrower inner content width.
+           The navigation container itself is the reference width. */
+        display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        width: calc(100vw - 36px) !important;
+        max-width: calc(100vw - 36px) !important;
+        min-width: 0 !important;
         gap: 6px !important;
+        margin-left: calc((100% - (100vw - 36px)) / 2) !important;
+        margin-right: 0 !important;
+        padding: 0 !important;
         overflow: visible !important;
+        box-sizing: border-box !important;
     }
 
     .st-key-bottom_nav div[data-testid="column"] {
@@ -2063,6 +2073,15 @@ section.main,
 
     .st-key-bottom_nav div[data-testid="column"]:nth-child(n+4) {
         display: none !important;
+    }
+    .st-key-bottom_nav div[data-testid="column"]:nth-child(-n+3) {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        flex: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .st-key-bottom_nav button {
