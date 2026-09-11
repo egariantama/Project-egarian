@@ -2999,7 +2999,8 @@ st.markdown(
 .block-container {
     padding-bottom: 6rem !important;
 }
-</style>"""
+</style>""",
+    unsafe_allow_html=True,
 )
 
 _active = st.session_state.get("active_menu", "Dashboard")
