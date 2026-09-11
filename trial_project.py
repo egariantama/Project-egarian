@@ -1855,7 +1855,7 @@ section.main,
 .donut-layout { display:flex; align-items:center; gap:15px; }
 .donut {
     width:112px; height:112px; border-radius:50%; flex:0 0 112px;
-    background:conic-gradient(#2563eb var(--pct), #e7eef8 0);
+    background:conic-gradient(#2563eb 0 var(--rekanan-pct), #d8e2ef var(--rekanan-pct) var(--no-pks-end), #8fb1f5 var(--no-pks-end) 100%);
     display:grid; place-items:center;
 }
 .donut:after { content:""; width:76px; height:76px; border-radius:50%; background:#fff; grid-area:1/1; }
@@ -1867,6 +1867,7 @@ section.main,
 .legend-left { display:flex; align-items:center; gap:7px; font-size:10px; color:#5f708a; font-weight:600; }
 .legend-dot { width:8px; height:8px; border-radius:50%; background:#2563eb; flex:0 0 8px; }
 .legend-dot.muted { background:#d8e2ef; }
+.legend-dot.banca-dot { background:#8fb1f5; }
 .legend-value { font-size:11px; font-weight:800; color:#17233d; }
 
 .st-key-bottom_nav {
@@ -2298,17 +2299,17 @@ if st.session_state.active_menu == "Dashboard":
     st.markdown(
         '<div class="donut-card">'
         '<div class="donut-layout">'
-        f'<div class="donut" style="--pct:{pct(rekanan):.2f}%">'
+        f'<div class="donut" style="--rekanan-pct:{donut_rekanan_pct:.2f}%;--no-pks-end:{donut_no_pks_end:.2f}%">'
         '<div class="donut-center">'
-        f'<div class="num">{pct(rekanan):.1f}%</div>'
-        '<div class="txt">REKANAN</div>'
+        '<div class="num">3</div>'
+        '<div class="txt">JENIS PKS</div>'
         '</div></div>'
         '<div class="legend">'
         '<div class="legend-row"><div class="legend-left"><span class="legend-dot"></span>PKS Rekanan</div>'
         f'<div class="legend-value">{rekanan:,}'.replace(',', '.') + f' &nbsp;({pct(rekanan):.1f}%)</div></div>'
         '<div class="legend-row"><div class="legend-left"><span class="legend-dot muted"></span>Tidak Ada PKS</div>'
         f'<div class="legend-value">{no_pks:,}'.replace(',', '.') + f' &nbsp;({pct(no_pks):.1f}%)</div></div>'
-        '<div class="legend-row"><div class="legend-left"><span class="legend-dot" style="opacity:.45"></span>PKS Bancass</div>'
+        '<div class="legend-row"><div class="legend-left"><span class="legend-dot banca-dot"></span>PKS Bancass</div>'
         f'<div class="legend-value">{bancass:,}'.replace(',', '.') + f' &nbsp;({pct(bancass):.1f}%)</div></div>'
         '</div></div></div>',
         unsafe_allow_html=True
@@ -2321,6 +2322,18 @@ if st.session_state.active_menu == "Dashboard":
         '</div>',
         unsafe_allow_html=True
     )
+
+    # Donut 3 warna. Karena status PKS dapat overlap (satu asuradur
+    # dapat memiliki PKS Rekanan dan PKS Bancass sekaligus), segmen
+    # donut dinormalisasi dari total ketiga hitungan. Angka asli dan
+    # persentase terhadap total asuradur tetap ditampilkan di legend.
+    donut_total = rekanan + no_pks + bancass
+    if donut_total > 0:
+        donut_rekanan_pct = rekanan / donut_total * 100
+        donut_no_pks_end = donut_rekanan_pct + (no_pks / donut_total * 100)
+    else:
+        donut_rekanan_pct = 0
+        donut_no_pks_end = 0
 
     max_pks = max(rekanan, bancass, 1)
     st.markdown(
