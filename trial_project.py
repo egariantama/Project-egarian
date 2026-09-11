@@ -2350,6 +2350,13 @@ st.markdown("""
 if "active_menu" not in st.session_state:
     st.session_state.active_menu = "Dashboard"
 
+# Custom bottom navigation uses a URL query parameter instead of
+# Streamlit's st.columns(), removing internal column-width side effects.
+_ALLOWED_MENUS = {"Dashboard", "Kerja Sama", "Fee Based Income"}
+_menu_from_url = st.query_params.get("menu")
+if _menu_from_url in _ALLOWED_MENUS:
+    st.session_state.active_menu = _menu_from_url
+
 def set_active_menu(value):
     st.session_state.active_menu = value
     # Detail perusahaan tidak dibawa ketika berpindah menu.
@@ -2795,33 +2802,141 @@ elif st.session_state.active_menu == "Fee Based Income":
 # ------------------------------------------------------------
 # BOTTOM NAVIGATION — Dashboard, Kerja Sama, Fee Based Income
 # ------------------------------------------------------------
-with st.container(key="bottom_nav"):
-    bottom_cols = st.columns(3, gap="small")
-    with bottom_cols[0]:
-        st.button(
-            "▦  Dashboard",
-            key="bottom_dashboard",
-            use_container_width=True,
-            type="primary" if st.session_state.active_menu == "Dashboard" else "secondary",
-            on_click=set_active_menu,
-            args=("Dashboard",),
-        )
-    with bottom_cols[1]:
-        st.button(
-            "▤  Kerja Sama",
-            key="bottom_kerja_sama",
-            use_container_width=True,
-            type="primary" if st.session_state.active_menu == "Kerja Sama" else "secondary",
-            on_click=set_active_menu,
-            args=("Kerja Sama",),
-        )
-    with bottom_cols[2]:
-        st.button(
-            "💰  Fee Based Income",
-            key="bottom_fee_based_income",
-            use_container_width=True,
-            type="primary" if st.session_state.active_menu == "Fee Based Income" else "secondary",
-            on_click=set_active_menu,
-            args=("Fee Based Income",),
-        )
+# ------------------------------------------------------------
+# CUSTOM BOTTOM NAVIGATION — EXACT 3-SHAPE GRID
+# ------------------------------------------------------------
+_nav_active = st.session_state.active_menu
+
+st.markdown(
+    f"""
+    <div class="bp-bottom-nav">
+        <a class="bp-nav-item {'active' if _nav_active == 'Dashboard' else ''}"
+           href="?menu=Dashboard" aria-label="Dashboard">
+            <span class="bp-nav-icon">▦</span>
+            <span class="bp-nav-label">Dashboard</span>
+        </a>
+        <a class="bp-nav-item {'active' if _nav_active == 'Kerja Sama' else ''}"
+           href="?menu=Kerja%20Sama" aria-label="Kerja Sama">
+            <span class="bp-nav-icon">▤</span>
+            <span class="bp-nav-label">Kerja Sama</span>
+        </a>
+        <a class="bp-nav-item {'active' if _nav_active == 'Fee Based Income' else ''}"
+           href="?menu=Fee%20Based%20Income" aria-label="Fee Based Income">
+            <span class="bp-nav-icon">💰</span>
+            <span class="bp-nav-label">Fee Based Income</span>
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+    <style>
+    /* Custom navigation: exactly three real grid items. */
+    .bp-bottom-nav {
+        position: fixed;
+        z-index: 99999;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        width: min(720px, calc(100vw - 24px));
+        height: 76px;
+        padding: 8px;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        border: 1px solid #d7e3f2;
+        border-radius: 24px;
+        background: rgba(255,255,255,.97);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 12px 34px rgba(20,45,85,.16);
+        overflow: hidden;
+    }
+
+    .bp-nav-item {
+        width: 100%;
+        min-width: 0;
+        height: 100%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 0 6px;
+        margin: 0;
+        border: 1px solid #d6e2f0;
+        border-radius: 18px;
+        background: #edf3fa;
+        color: #526783;
+        text-decoration: none !important;
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .bp-nav-item.active {
+        color: #fff;
+        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%);
+        border-color: #2563eb;
+        box-shadow: 0 7px 18px rgba(37,99,235,.22);
+    }
+
+    .bp-nav-item:hover,
+    .bp-nav-item:focus,
+    .bp-nav-item:active {
+        text-decoration: none !important;
+    }
+
+    .bp-nav-icon {
+        flex: 0 0 auto;
+        font-size: 17px;
+        line-height: 1;
+    }
+
+    .bp-nav-label {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+        .bp-bottom-nav {
+            left: 12px;
+            right: 12px;
+            transform: none;
+            width: auto;
+            max-width: none;
+            height: 74px;
+            bottom: 8px;
+            padding: 6px;
+            gap: 6px;
+            border-radius: 22px;
+        }
+
+        .bp-nav-item {
+            border-radius: 17px;
+            gap: 5px;
+            padding: 0 4px;
+            font-size: 10.5px;
+        }
+
+        .bp-nav-icon {
+            font-size: 15px;
+        }
+    }
+
+    .block-container {
+        padding-bottom: 6rem !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
