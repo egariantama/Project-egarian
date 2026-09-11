@@ -2803,28 +2803,48 @@ elif st.session_state.active_menu == "Fee Based Income":
 # BOTTOM NAVIGATION — Dashboard, Kerja Sama, Fee Based Income
 # ------------------------------------------------------------
 # ------------------------------------------------------------
-# CUSTOM BOTTOM NAVIGATION — EXACT 3-SHAPE GRID
+# FINAL BOTTOM NAVIGATION
+# Visual: fixed custom 3-grid (equal width)
+# Interaction: hidden native Streamlit radio
 # ------------------------------------------------------------
+
+_nav_options = ["Dashboard", "Kerja Sama", "Fee Based Income"]
+
+if "_nav_selector" not in st.session_state:
+    st.session_state._nav_selector = st.session_state.get("active_menu", "Dashboard")
+
+st.radio(
+    "BancaPocket Navigation",
+    _nav_options,
+    key="_nav_selector",
+    horizontal=True,
+    label_visibility="collapsed",
+)
+
+if st.session_state._nav_selector != st.session_state.get("active_menu"):
+    st.session_state.active_menu = st.session_state._nav_selector
+    st.session_state.selected_company = None
+
 _nav_active = st.session_state.active_menu
 
 st.markdown(
     f"""
-    <div class="bp-bottom-nav">
-        <a class="bp-nav-item {'active' if _nav_active == 'Dashboard' else ''}"
-           href="?menu=Dashboard" aria-label="Dashboard">
-            <span class="bp-nav-icon">▦</span>
-            <span class="bp-nav-label">Dashboard</span>
-        </a>
-        <a class="bp-nav-item {'active' if _nav_active == 'Kerja Sama' else ''}"
-           href="?menu=Kerja%20Sama" aria-label="Kerja Sama">
-            <span class="bp-nav-icon">▤</span>
-            <span class="bp-nav-label">Kerja Sama</span>
-        </a>
-        <a class="bp-nav-item {'active' if _nav_active == 'Fee Based Income' else ''}"
-           href="?menu=Fee%20Based%20Income" aria-label="Fee Based Income">
-            <span class="bp-nav-icon">💰</span>
-            <span class="bp-nav-label">Fee Based Income</span>
-        </a>
+    <div class="bp-bottom-nav-final" aria-label="Navigasi BancaPocket">
+        <div class="bp-nav-final-item {'active' if _nav_active == 'Dashboard' else ''}"
+             data-nav="Dashboard" role="button" tabindex="0">
+            <span class="bp-nav-final-icon">▦</span>
+            <span class="bp-nav-final-label">Dashboard</span>
+        </div>
+        <div class="bp-nav-final-item {'active' if _nav_active == 'Kerja Sama' else ''}"
+             data-nav="Kerja Sama" role="button" tabindex="0">
+            <span class="bp-nav-final-icon">▤</span>
+            <span class="bp-nav-final-label">Kerja Sama</span>
+        </div>
+        <div class="bp-nav-final-item {'active' if _nav_active == 'Fee Based Income' else ''}"
+             data-nav="Fee Based Income" role="button" tabindex="0">
+            <span class="bp-nav-final-icon">💰</span>
+            <span class="bp-nav-final-label">Fee Based Income</span>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
@@ -2833,109 +2853,167 @@ st.markdown(
 st.markdown(
     """
     <style>
-    /* Custom navigation: exactly three real grid items. */
-    .bp-bottom-nav {
-        position: fixed;
-        z-index: 99999;
-        left: 50%;
-        bottom: 10px;
-        transform: translateX(-50%);
-        width: min(720px, calc(100vw - 24px));
-        height: 76px;
-        padding: 8px;
-        box-sizing: border-box;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-        border: 1px solid #d7e3f2;
-        border-radius: 24px;
-        background: rgba(255,255,255,.97);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        box-shadow: 0 12px 34px rgba(20,45,85,.16);
-        overflow: hidden;
+    /* Hide ONLY the navigation radio. It remains in the DOM for interaction. */
+    div[data-testid="stRadio"]:has(input[value="Dashboard"]) {
+        position: fixed !important;
+        left: -10000px !important;
+        top: -10000px !important;
+        width: 1px !important;
+        height: 1px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
     }
 
-    .bp-nav-item {
-        width: 100%;
-        min-width: 0;
-        height: 100%;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        padding: 0 6px;
-        margin: 0;
-        border: 1px solid #d6e2f0;
-        border-radius: 18px;
-        background: #edf3fa;
-        color: #526783;
-        text-decoration: none !important;
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        font-weight: 600;
-        line-height: 1;
-        white-space: nowrap;
-        overflow: hidden;
+    /* FINAL VISUAL NAV — independent from Streamlit columns/buttons */
+    .bp-bottom-nav-final {
+        position: fixed !important;
+        z-index: 99998 !important;
+        left: 12px !important;
+        right: 12px !important;
+        bottom: 8px !important;
+        width: auto !important;
+        height: 74px !important;
+        padding: 6px !important;
+        box-sizing: border-box !important;
+
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+
+        border: 1px solid #d7e3f2 !important;
+        border-radius: 22px !important;
+        background: rgba(255,255,255,.97) !important;
+        backdrop-filter: blur(18px) !important;
+        -webkit-backdrop-filter: blur(18px) !important;
+        box-shadow: 0 12px 34px rgba(20,45,85,.16) !important;
+
+        pointer-events: auto !important;
     }
 
-    .bp-nav-item.active {
-        color: #fff;
-        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%);
-        border-color: #2563eb;
-        box-shadow: 0 7px 18px rgba(37,99,235,.22);
+    .bp-nav-final-item {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 100% !important;
+        box-sizing: border-box !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 5px !important;
+
+        padding: 0 4px !important;
+        border: 1px solid #d6e2f0 !important;
+        border-radius: 17px !important;
+
+        background: #edf3fa !important;
+        color: #526783 !important;
+
+        font-family: 'Inter', sans-serif !important;
+        font-size: 10.5px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+
+        cursor: pointer !important;
+        user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
 
-    .bp-nav-item:hover,
-    .bp-nav-item:focus,
-    .bp-nav-item:active {
-        text-decoration: none !important;
+    .bp-nav-final-item.active {
+        color: #fff !important;
+        background: linear-gradient(135deg,#1557c7 0%,#2563eb 58%,#3b82f6 100%) !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 7px 18px rgba(37,99,235,.22) !important;
     }
 
-    .bp-nav-icon {
-        flex: 0 0 auto;
-        font-size: 17px;
-        line-height: 1;
+    .bp-nav-final-item:active {
+        transform: scale(.985) !important;
     }
 
-    .bp-nav-label {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    .bp-nav-final-icon {
+        flex: 0 0 auto !important;
+        font-size: 15px !important;
+        line-height: 1 !important;
     }
 
-    @media (max-width: 480px) {
-        .bp-bottom-nav {
-            left: 12px;
-            right: 12px;
-            transform: none;
-            width: auto;
-            max-width: none;
-            height: 74px;
-            bottom: 8px;
-            padding: 6px;
-            gap: 6px;
-            border-radius: 22px;
-        }
-
-        .bp-nav-item {
-            border-radius: 17px;
-            gap: 5px;
-            padding: 0 4px;
-            font-size: 10.5px;
-        }
-
-        .bp-nav-icon {
-            font-size: 15px;
-        }
+    .bp-nav-final-label {
+        min-width: 0 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
     }
 
     .block-container {
         padding-bottom: 6rem !important;
     }
+
+    @media (min-width: 700px) {
+        .bp-bottom-nav-final {
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            width: min(720px, calc(100vw - 24px)) !important;
+        }
+    }
     </style>
+
+    <script>
+    (function () {
+        function wireBancaPocketNav() {
+            const nav = document.querySelector('.bp-bottom-nav-final');
+            if (!nav) return;
+
+            const items = nav.querySelectorAll('.bp-nav-final-item[data-nav]');
+            const radios = Array.from(
+                document.querySelectorAll(
+                    'div[data-testid="stRadio"] input[type="radio"]'
+                )
+            );
+
+            items.forEach(function(item) {
+                if (item.dataset.wired === "1") return;
+
+                const value = item.dataset.nav;
+                const radio = radios.find(function(r) {
+                    return r.value === value;
+                });
+
+                if (!radio) return;
+
+                item.dataset.wired = "1";
+
+                item.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (!radio.checked) {
+                        radio.click();
+                    }
+                });
+
+                item.addEventListener("keydown", function(e) {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        radio.click();
+                    }
+                });
+            });
+        }
+
+        wireBancaPocketNav();
+
+        const observer = new MutationObserver(function() {
+            wireBancaPocketNav();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    })();
+    </script>
     """,
     unsafe_allow_html=True,
 )
