@@ -2314,7 +2314,7 @@ if st.session_state.active_menu == "Dashboard":
         f'<div class="donut" style="--rekanan-pct:{donut_rekanan_pct:.2f}%;--no-pks-end:{donut_no_pks_end:.2f}%">'
         '<div class="donut-center">'
         '<div class="num">3</div>'
-        '<div class="txt">JENIS PKS</div>'
+        ''
         '</div></div>'
         '<div class="legend">'
         '<div class="legend-row"><div class="legend-left"><span class="legend-dot"></span>PKS Rekanan</div>'
