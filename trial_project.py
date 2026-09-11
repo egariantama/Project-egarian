@@ -1888,18 +1888,33 @@ section.main,
     padding: 8px !important;
 }
 
-/* Mobile-safe 3-column layout: force each column to exactly 1/3 of the available width. */
+/* ============================================================
+   BOTTOM NAV — TRUE EDGE-TO-EDGE 3 EQUAL COLUMNS
+   The previous layout left an unused strip on the right on iPhone.
+   Force the actual Streamlit horizontal block and every wrapper to
+   occupy the full navigation width, then divide it into 3 equal cells.
+   ============================================================ */
+.st-key-bottom_nav > div,
+.st-key-bottom_nav > div > div,
+.st-key-bottom_nav div[data-testid="stVerticalBlock"],
+.st-key-bottom_nav div[data-testid="stVerticalBlockBorderWrapper"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
 .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
     display: grid !important;
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: none !important;
     min-width: 0 !important;
     gap: 8px !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
-    overflow: hidden !important;
+    overflow: visible !important;
 }
 
 .st-key-bottom_nav div[data-testid="column"] {
@@ -1929,6 +1944,13 @@ section.main,
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
+}
+
+.st-key-bottom_nav div[data-testid="stButton"] > button,
+.st-key-bottom_nav div[data-testid="stButton"] button {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
 }
 
 .st-key-bottom_nav button {
@@ -1985,17 +2007,35 @@ section.main,
 
 @media (max-width: 480px) {
     .st-key-bottom_nav {
+        left: 50% !important;
+        right: auto !important;
         bottom: 8px !important;
-        width: calc(100% - 16px) !important;
-        max-width: calc(100% - 16px) !important;
+        width: calc(100vw - 24px) !important;
+        max-width: calc(100vw - 24px) !important;
         padding: 6px !important;
         border-radius: 21px !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+    }
+
+    /* On narrow screens use the viewport as the single source of truth.
+       This eliminates Streamlit's hidden inner max-width that caused the
+       blank strip after Fee Based Income. */
+    .st-key-bottom_nav > div,
+    .st-key-bottom_nav > div > div,
+    .st-key-bottom_nav div[data-testid="stVerticalBlock"],
+    .st-key-bottom_nav div[data-testid="stVerticalBlockBorderWrapper"],
+    .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .st-key-bottom_nav div[data-testid="stHorizontalBlock"] {
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 5px !important;
-        overflow: hidden !important;
+        gap: 6px !important;
+        overflow: visible !important;
     }
 
     .st-key-bottom_nav div[data-testid="column"] {
